@@ -38,15 +38,15 @@ The API documentation is available at `http://localhost:3000/api`.  You can use 
 ## User Registration
 You can register a new user by sending a POST request to the `/auth/register` endpoint with the following parameters:
 
-* `email`: The user's email address.
-* `password`: The user's password.  It should meet the defined password policy which requires at least 8 characters and at least one letter and one special character.
-* `name`: The user's full name.
-* `phoneNumber`: The user's phone number.
+* `email`: The user's email address (required, unique, valid format).
+* `password`: The user's password (required, minimum 8 characters, at least one uppercase, one lowercase, and one number).
+* `firstName`: The user's first name (optional).
+* `lastName`: The user's last name (optional).
 
 
 ## Key Features:
 
-* **User Registration:** Allows users to create new accounts with email, password, name, and phone number.  Input validation is performed to ensure data integrity.
+* **User Registration:** Allows users to create new accounts with email, password, first name, and last name. Input validation is performed to ensure data integrity, including email format, password complexity, and uniqueness checks.  A confirmation email is sent upon successful registration.
 * **(Other features can be listed here as they are developed)**
 
 
