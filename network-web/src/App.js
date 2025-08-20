@@ -4,7 +4,9 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from
 import ForgotPassword from './components/ForgotPassword';
 import ProfileManagement from './components/ProfileManagement';
 import AppInformation from './components/AppInformation';
-import MatchingResults from './components/MatchingResults'; // Import MatchingResults component
+import MatchingResults from './components/MatchingResults';
+import ErrorDisplay from './components/ErrorDisplay'; // Import ErrorDisplay component
+
 
 const App = () => {
   const navigate = useNavigate();
