@@ -2,7 +2,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ForgotPassword from './components/ForgotPassword';
-import ProfileManagement from './components/ProfileManagement'; // Import the component
+import ProfileManagement from './components/ProfileManagement';
+import AppInformation from './components/AppInformation'; // Import AppInformation component
 
 const App = () => {
   return (
@@ -10,11 +11,13 @@ const App = () => {
       <Routes>
         {/* ... other routes ... */}
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/profile" element={<ProfileManagement />} /> {/* Add the route for ProfileManagement */}
+        <Route path="/profile" element={<ProfileManagement />} />
+        <Route path="/application-information" element={<AppInformation />} />
       </Routes>
     </Router>
   );
 };
 
 export default App;
+
 ```
