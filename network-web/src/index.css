@@ -1,27 +1,63 @@
 ```css
-/* AppInformation Styles */
-.app-information {
+/* MatchingResults Styles */
+.matching-results {
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  margin-bottom: 20px; /* Space between components */
+  margin-bottom: 20px;
 }
 
-.app-information h2 {
-  margin-top: 0; /* Remove default h2 top margin */
-}
-
-.app-information p {
+.matching-results-progress {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
   margin-bottom: 10px;
 }
 
-.app-information ul {
-  list-style-type: disc; /* Or any other list style */
-  padding-left: 20px;
+.matching-results-progress-bar {
+  height: 20px;
+  background-color: #4caf50;
+  width: 0%; /* Updated dynamically */
+  transition: width 0.5s ease-in-out;
 }
 
-.app-information li {
+.matching-results-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px; /* Add some spacing */
+}
+
+.matching-results-loading > span {
+  margin-right: 10px; /* Space between spinner and text */
+}
+
+
+
+.matching-results-group {
+  margin-bottom: 20px;
+}
+
+.matching-results-group h3 {
+  margin-top: 0;
+}
+
+.matching-results-group ul {
+  list-style: none;
+  padding: 0;
+}
+
+.matching-results-group li {
   margin-bottom: 5px;
+}
+
+.shared-interest {
+  background-color: #f0f0f0;
+  padding: 2px 5px;
+  border-radius: 4px;
+  margin-left: 5px;
+  font-weight: bold;
 }
 ```
