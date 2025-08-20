@@ -1,7 +1,8 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
-import './MatchingResults.css'; // Create this CSS file for styling
+import './MatchingResults.css';
 import axios from 'axios';
+import { ShareSocial } from 'react-share-social'
 
 const MatchingResults = () => {
   const [group, setGroup] = useState(null);
@@ -10,14 +11,13 @@ const MatchingResults = () => {
   useEffect(() => {
     const fetchMatchingResults = async () => {
       try {
-        const groupResponse = await axios.get('/api/groups/my-group'); // Replace with your API endpoint
+        const groupResponse = await axios.get('/api/groups/my-group');
         setGroup(groupResponse.data);
 
-        const userResponse = await axios.get('/api/users/me'); // Replace with your API endpoint
+        const userResponse = await axios.get('/api/users/me');
         setUser(userResponse.data);
       } catch (error) {
         console.error("Error fetching matching results:", error);
-        // Handle error, e.g., display an error message
       }
     };
 
@@ -29,13 +29,14 @@ const MatchingResults = () => {
   }
 
   const sharedInterests = (member) => {
-    if (!user.interests || !member.interests) return []; // Handle cases where interests are undefined
+    if (!user.interests || !member.interests) return [];
 
-    const userInterests = user.interests.split(','); // Assuming interests are stored as comma-separated strings
+    const userInterests = user.interests.split(',');
     const memberInterests = member.interests.split(',');
     return userInterests.filter(interest => memberInterests.includes(interest));
   };
 
+  const socialMediaUrl = 'http://localhost:3000/matching'; // Replace with your actual URL
 
   return (
     <div className="matching-results">
@@ -44,7 +45,6 @@ const MatchingResults = () => {
         {group.members.map(member => (
           <div key={member.id} className="member-card">
             <h3>{member.name}</h3>
-            {/* Conditionally render shared interests */}
             {sharedInterests(member).length > 0 && (
               <div className="shared-interests">
                 <h4>Shared Interests:</h4>
@@ -58,10 +58,14 @@ const MatchingResults = () => {
           </div>
         ))}
       </div>
+      <ShareSocial
+        url={socialMediaUrl}
+        socialTypes={['facebook', 'twitter', 'linkedin', 'whatsapp']}
+      />
     </div>
   );
 };
 
-
 export default MatchingResults;
+
 ```
