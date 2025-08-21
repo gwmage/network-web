@@ -10,6 +10,7 @@ type CommentProps = {
     createdAt: string;
     postId: number;
     userId: number;
+    replies?: CommentProps['comment'][]; // Add replies field
   };
   currentUser: number | null;
   onCommentDelete: (commentId: number) => void;
@@ -33,17 +34,25 @@ const Comment: React.FC<CommentProps> = ({ comment, currentUser, onCommentDelete
     }
   };
 
-  const formattedDate = new Date(comment.createdAt).toLocaleString(); // Format the date
+  const formattedDate = new Date(comment.createdAt).toLocaleString();
 
   return (
     <div className="comment">
       <p className="comment-content">{comment.content}</p>
       <p className="comment-author">By: {comment.author}</p>
-      <p className="comment-date">Posted on: {formattedDate}</p> {/* Display formatted date */}
+      <p className="comment-date">Posted on: {formattedDate}</p>
       {currentUser === comment.userId && (
         <button onClick={handleDelete} disabled={isDeleting}>
           {isDeleting ? 'Deleting...' : 'Delete'}
         </button>
+      )}
+      {/* Render replies */}
+      {comment.replies && comment.replies.length > 0 && (
+        <div className="replies">
+          {comment.replies.map((reply) => (
+            <Comment key={reply.id} comment={reply} currentUser={currentUser} onCommentDelete={onCommentDelete} />
+          ))}
+        </div>
       )}
     </div>
   );

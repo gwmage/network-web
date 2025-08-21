@@ -1,6 +1,7 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
-import { getComments } from '../utils/api';
+import * as api from '../utils/api';
+import Comment from './Comment';
 
 const CommentList = ({ postId, onCommentUpdate }) => {
   const [comments, setComments] = useState([]);
@@ -10,7 +11,7 @@ const CommentList = ({ postId, onCommentUpdate }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const fetchedComments = await getComments(postId);
+        const fetchedComments = await api.getComments(postId);
         setComments(fetchedComments);
       } catch (err) {
         setError(err);
@@ -34,17 +35,20 @@ const CommentList = ({ postId, onCommentUpdate }) => {
     return <p>No comments yet.</p>;
   }
 
+  const renderComments = (comments) => {
+    return comments.map((comment) => (
+      <li key={comment.id}>
+        <Comment comment={comment} postId={postId} onCommentUpdate={onCommentUpdate} />
+        {comment.replies && <ul>{renderComments(comment.replies)}</ul>}
+      </li>
+    ));
+  };
+
   return (
     <div>
       <h3>Comments</h3>
       <ul>
-        {comments.map((comment) => (
-          <li key={comment.id}>
-            <p>{comment.content}</p>
-            <p>By: {comment.author || 'Anonymous'}</p>
-            <p>Posted on: {comment.createdAt || 'Unknown'}</p>
-          </li>
-        ))}
+        {renderComments(comments)}
       </ul>
     </div>
   );
