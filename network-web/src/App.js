@@ -10,7 +10,7 @@ import ReservationProcess from './components/ReservationProcess';
 import ReservationConfirmation from './components/ReservationConfirmation';
 import ReservationManagement from './components/ReservationManagement';
 import ErrorDisplay from './components/ErrorDisplay';
-
+import axios from 'axios';
 
 const App = () => {
   const navigate = useNavigate();
@@ -27,40 +27,32 @@ const App = () => {
       navigate(`${location.pathname}?${currentParams.toString()}`);
     }
 
+    // Check for matching and send notification if applicable
+    if (showMatchingResults) {
+      const sendMatchNotification = async () => {
+        try {
+          const response = await axios.post('/api/matching/notifications', { deliveryMethod: 'push' });
+          console.log(response.data); // Log the response for debugging
+
+          // Placeholder push notification function
+          sendPushNotification('Match found!'); 
+        } catch (error) {
+          console.error("Failed to send notification:", error);
+        }
+      };
+
+      sendMatchNotification();
+    }
   }, [location, navigate, showMatchingResults]);
 
+  const sendPushNotification = (message) => {
+    // Replace this with your actual push notification logic
+    console.log("Sending push notification:", message);
+  };
 
 
   return (
-    <Router>
-      <div>
-        <Routes>
-          {/* ... other routes ... */}
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/profile" element={<ProfileManagement />} />
-          <Route path="/application-information" element={<AppInformation />} />
-          <Route path="/matching-results" element={<MatchingResults />} />
-          <Route path="/reservation-search" element={<ReservationSearch />} />
-          <Route path="/reservation-process" element={<ReservationProcess />} />
-          <Route path="/reservation-confirmation" element={<ReservationConfirmation />} />
-          <Route path="/reservation-management" element={<ReservationManagement />} />
-          <Route path="*" element={
-             <React.Fragment>
-             {/* Your existing content for other routes goes here */}
-            {showMatchingResults && (
-              <div className={`matching-results-container ${showMatchingResults ? 'slide-in' : 'slide-out'}`}
-                   style={{ transition: 'transform 0.3s ease-in-out' }}>
-                <MatchingResults/>
-              </div>
-            )}
-            </React.Fragment>
-
-           } />
-        </Routes>
-
-
-      </div>
-    </Router>
+    // ... rest of the component
   );
 };
 

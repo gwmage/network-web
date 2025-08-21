@@ -57,4 +57,66 @@
   }
 }
 
+/* Notification Settings Styles */
+.notification-settings-container {
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.notification-settings-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Notification Message Styles */
+.notification {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.notification-success {
+  background-color: lightgreen;
+  color: green;
+}
+
+.notification-pending {
+  background-color: lightyellow;
+  color: orange;
+}
+
+.notification-error {
+  background-color: lightpink;
+  color: red;
+}
+
+/* Unread Indicator Styles */
+.unread-indicator {
+  display: inline-block;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  padding: 2px 5px;
+  border-radius: 50%;
+  margin-left: 5px;
+}
+
+/* Loading/Error State Styles */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-style: italic;
+  color: gray;
+}
+
+.error-state {
+  color: red;
+  font-weight: bold;
+}
+
 ```
