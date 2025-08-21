@@ -11,8 +11,12 @@ import ReservationConfirmation from './components/ReservationConfirmation';
 import ReservationManagement from './components/ReservationManagement';
 import ErrorDisplay from './components/ErrorDisplay';
 import NotificationSettings from './components/NotificationSettings';
-import CommunityBoard from './components/CommunityBoard'; // Import the CommunityBoard component
+import CommunityBoard from './components/CommunityBoard';
 import axios from 'axios';
+import Main from './components/Main'; // Import Main component
+import SignUp from './components/SignUp';
+import Login from './components/Login';
+
 
 const App = () => {
   // ... existing code ...
@@ -20,10 +24,13 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Main />} /> {/* Route for the main page */}
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
         {/* ... other routes ... */}
         <Route path="/profile" element={<ProfileManagement />} />
         <Route path="/notifications" element={<NotificationSettings />} />
-        <Route path="/community" element={<CommunityBoard />} /> {/* Add the route for CommunityBoard */}
+        <Route path="/community" element={<CommunityBoard />} />
       </Routes>
     </Router>
   );

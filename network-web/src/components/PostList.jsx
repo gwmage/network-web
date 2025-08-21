@@ -13,7 +13,7 @@ const PostList = () => {
     const fetchPosts = async () => {
       try {
         const data = await api.getPosts(currentPage, postsPerPage); // Assuming API function for fetching posts with pagination
-        setPosts(data.posts || data); // Use data.posts if the API returns an object with a 'posts' property, otherwise use data directly.
+        setPosts(data); 
         setLoading(false);
       } catch (err) {
         setError(err);
@@ -26,7 +26,7 @@ const PostList = () => {
 
   // Logic for displaying page numbers
   const pageNumbers = [];
-  const totalPages = Math.ceil((posts.totalCount || posts.length) / postsPerPage); // Calculate total pages based on API response or data length if no totalCount is provided
+  const totalPages = Math.ceil(posts.length / postsPerPage); // Calculate total pages
 
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
