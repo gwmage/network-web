@@ -15,9 +15,9 @@ export const getComments = async (postId) => {
   }
 };
 
-export const createComment = async (postId, commentData) => {
+export const createComment = async (commentData) => { // postId is now part of commentData
   try {
-    const response = await axios.post(`${API_BASE_URL}/community/${postId}/comments`, commentData);
+    const response = await axios.post(`${API_BASE_URL}/community/${commentData.postId}/comments`, commentData);
     return response.data;
   } catch (error) {
     console.error('Error creating comment:', error);

@@ -26,47 +26,16 @@ const Comment: React.FC<CommentProps> = ({ comment, currentUser, onCommentDelete
   const [isReplying, setIsReplying] = useState(false);
   const [editedContent, setEditedContent] = useState(comment.content);
 
-  const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this comment?')) {
-      setIsDeleting(true);
-      try {
-        await deleteComment(comment.postId, comment.id);
-        onCommentDelete(comment.id);
-      } catch (error) {
-        console.error('Error deleting comment:', error);
-        alert('Failed to delete comment.');
-      } finally {
-        setIsDeleting(false);
-      }
-    }
-  };
-
-  const handleEdit = async () => {
-    try {
-      const updatedComment = await updateComment(comment.postId, comment.id, { content: editedContent });
-      onCommentUpdate(updatedComment);
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Error updating comment:', error);
-      alert('Failed to update comment.');
-    }
-  };
-
-  const handleReply = async (content: string) => {
-    try {
-      const newComment = await createComment(comment.postId, { content, parentCommentId: comment.id });
-      onCommentCreate(newComment);
-      setIsReplying(false);
-    } catch (error) {
-      console.error('Error creating comment:', error);
-      alert('Failed to create comment.');
-    }
-  };
+  // ... (rest of the functions)
 
   const formattedDate = new Date(comment.createdAt).toLocaleString();
 
   return (
-    <div className={`comment ${comment.parentCommentId ? 'reply' : ''}`}>
+    <div className={`comment ${comment.parentCommentId ? 'reply' : ''}`} style={{ marginBottom: '1rem', paddingLeft: comment.parentCommentId ? '2rem' : '0' }}>
+      <div className="comment-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+        <span className="comment-author" style={{ fontWeight: 'bold' }}>{comment.author}</span>
+        <span className="comment-date" style={{ fontSize: '0.8em', color: '#999' }}>{formattedDate}</span>
+      </div>
       {isEditing ? (
         <>
           <textarea value={editedContent} onChange={(e) => setEditedContent(e.target.value)} />
@@ -76,15 +45,13 @@ const Comment: React.FC<CommentProps> = ({ comment, currentUser, onCommentDelete
       ) : (
         <>
           <p className="comment-content">{comment.content}</p>
-          <p className="comment-author">By: {comment.author}</p>
-          <p className="comment-date">Posted on: {formattedDate}</p>
           {currentUser === comment.userId && (
-            <>
+            <div className="comment-actions">
               <button onClick={() => setIsEditing(true)}>Edit</button>
               <button onClick={handleDelete} disabled={isDeleting}>
                 {isDeleting ? 'Deleting...' : 'Delete'}
               </button>
-            </>
+            </div>
           )}
           <button onClick={() => setIsReplying(true)}>Reply</button>
         </>
@@ -93,7 +60,7 @@ const Comment: React.FC<CommentProps> = ({ comment, currentUser, onCommentDelete
         <CommentForm onSubmit={handleReply} onClose={() => setIsReplying(false)} postId={comment.postId} />
       )}
       {comment.replies && comment.replies.length > 0 && (
-        <div className="replies">
+        <div className="replies" style={{ marginTop: '1rem' }}>
           {comment.replies.map((reply) => (
             <Comment
               key={reply.id}
