@@ -35,20 +35,24 @@ const CommentList = ({ postId, onCommentUpdate }) => {
     return <p>No comments yet.</p>;
   }
 
-  const renderComments = (comments) => {
-    return comments.map((comment) => (
-      <li key={comment.id}>
-        <Comment comment={comment} postId={postId} onCommentUpdate={onCommentUpdate} />
-        {comment.replies && <ul>{renderComments(comment.replies)}</ul>}
-      </li>
-    ));
-  };
-
   return (
     <div>
       <h3>Comments</h3>
       <ul>
-        {renderComments(comments)}
+        {comments.map((comment) => (
+          <Comment
+            key={comment.id}
+            comment={comment}
+            currentUser={1} // Replace with actual current user ID
+            onCommentDelete={(commentId) => {
+              // Update the comment list after deletion
+              setComments(comments.filter((c) => c.id !== commentId));
+              if (onCommentUpdate) {
+                onCommentUpdate(); // Notify parent component about update
+              }
+            }}
+          />
+        ))}
       </ul>
     </div>
   );

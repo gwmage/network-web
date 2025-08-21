@@ -12,6 +12,7 @@ import ReservationManagement from './components/ReservationManagement';
 import ErrorDisplay from './components/ErrorDisplay';
 import NotificationSettings from './components/NotificationSettings';
 import CommunityBoard from './components/CommunityBoard';
+import PostDetails from './components/PostDetails'; // Import PostDetails component
 import axios from 'axios';
 import Main from './components/Main';
 import SignUp from './components/SignUp';
@@ -26,6 +27,7 @@ const App = () => {
       <Routes>
         {/* ... other routes ... */}
         <Route path="/community" element={<CommunityBoard />} />
+        <Route path="/community/:postId" element={<PostDetails />} /> {/* Route for individual post details */}
       </Routes>
     </Router>
   );
