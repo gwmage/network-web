@@ -5,43 +5,28 @@ const API_BASE_URL = '/api'; // Or your API base URL
 
 // ... (Existing code remains unchanged)
 
-export const getComments = async (postId) => {
+export const adminLogin = async (username, password) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/community/${postId}/comments`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching comments:', error);
-    throw error;
-  }
-};
+    const response = await axios.post(`${API_BASE_URL}/auth/admin/login`, { username, password }, { withCredentials: true }); // withCredentials for HttpOnly cookies
+    const { accessToken } = response.data;
 
-export const createComment = async (commentData) => { // postId is now part of commentData
-  try {
-    const response = await axios.post(`${API_BASE_URL}/community/${commentData.postId}/comments`, commentData);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating comment:', error);
-    throw error;
-  }
-};
+    // Securely store the token (choose one method)
+    // 1. localStorage (less secure, but simpler for demonstration)
+    // localStorage.setItem('accessToken', accessToken);
 
-export const updateComment = async (postId, commentId, commentData) => {
-  try {
-    const response = await axios.put(`${API_BASE_URL}/community/${postId}/comments/${commentId}`, commentData);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating comment:', error);
-    throw error;
-  }
-};
+    // 2. HttpOnly cookies (more secure, handled by 'withCredentials')
+    // The cookie will be automatically stored by the browser due to the 'withCredentials' option.
 
-export const deleteComment = async (postId, commentId) => {
-  try {
-    const response = await axios.delete(`${API_BASE_URL}/community/${postId}/comments/${commentId}`);
-    return response.data;
+    return accessToken; 
   } catch (error) {
-    console.error('Error deleting comment:', error);
-    throw error;
+    console.error('Admin login failed:', error);
+
+    // Handle specific error messages (if available from the backend)
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message); // Re-throw the error with the backend message
+    } else {
+      throw new Error('Admin login failed. Please try again.'); // Generic error message
+    }
   }
 };
 
