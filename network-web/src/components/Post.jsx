@@ -25,18 +25,12 @@ const Post = ({ post, onDelete }) => {
     <div className="post-container">
       <Link to={`/posts/${post.id}`}><h3>{post.title}</h3></Link>
       <p>{post.content}</p>
-      {/* Conditionally render delete button if user owns the post */}
+      <Link to={`/posts/${post.id}/comments`}>View Comments</Link> {/* Link to comments */}
       {post.ownedByCurrentUser && (
         <button onClick={handleDelete} disabled={isDeleting}>
           {isDeleting ? 'Deleting...' : 'Delete'}
         </button>
       )}
-      <h4>Comments</h4>
-      {post.comments.map((comment) => (
-        <div key={comment.id} className="comment">
-          <p>{comment.content}</p>
-        </div>
-      ))}
     </div>
   );
 };

@@ -32,13 +32,23 @@ const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) =>
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <textarea value={content} onChange={handleChange} required />
-      <div>
-        <button type="submit" disabled={isUpdating}>
+    <form onSubmit={handleSubmit} className="comment-form"> {/* Add className for styling */}
+      <textarea 
+        value={content} 
+        onChange={handleChange} 
+        required 
+        placeholder="Write your comment..."
+        className="comment-textarea" // Add className for styling
+      />
+      <div className="comment-buttons"> {/* Add className for styling */}
+        <button type="submit" disabled={isUpdating} className="comment-submit"> {/* Add className for styling */}
           {comment ? 'Update Comment' : 'Add Comment'}
         </button>
-        {onClose && <button type="button" onClick={onClose} disabled={isUpdating}>Cancel</button>}
+        {onClose && (
+          <button type="button" onClick={onClose} disabled={isUpdating} className="comment-cancel"> {/* Add className for styling */}
+            Cancel
+          </button>
+        )}
       </div>
     </form>
   );
