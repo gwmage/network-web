@@ -34,8 +34,24 @@
   margin-top: 10px;
 }
 
+/* Comment styles */
+.comment-list {
+  list-style: none;
+  padding-left: 20px; /* Indent comments */
+}
 
-/* Responsive Styles for Mobile */
+.comment-item {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
+.comment-author {
+  font-weight: bold;
+}
+
+
+/* Responsive Styles */
 @media (max-width: 768px) {
   .community-board-container {
     width: 95%;
@@ -51,20 +67,19 @@
   }
 }
 
-/* Comment styles */
-.comment-list {
-    list-style: none;
-    padding-left: 20px; /* Indent comments */
-}
+@media (max-width: 500px) {
+  .post-meta {
+    font-size: 0.7em;
+  }
+  .post-content {
+    font-size: 0.8em;
+  }
+  .comment-author{
+    font-size: 0.9em;
+  }
+  .comment-content{
+    font-size: 0.8em
+  }
 
-.comment-item {
-    border-bottom: 1px solid #eee;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-
-}
-
-.comment-author {
-    font-weight: bold;
 }
 ```
