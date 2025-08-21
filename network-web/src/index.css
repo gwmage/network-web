@@ -1,30 +1,6 @@
 ```css
-/* Connection Status Styles */
-.connection-status {
-  margin-top: 10px; /* Add some spacing */
-  font-weight: bold; /* Make it visually distinct */
-}
-
-.connection-status.connected {
-  color: green; /* Indicate connected status */
-}
-
-.connection-status.pending {
-  color: orange; /* Indicate pending status */
-}
-
-.connection-status.failed {
-  color: red; /* Indicate failed status */
-}
-
-/* Error Message Styles */
-.error-message {
-  color: red;
-  margin-top: 5px; /* Add some spacing */
-}
-
-/* Reservation Styles */
-.reservation-container {
+/* Community Board Styles */
+.community-board-container {
   width: 80%;
   margin: 20px auto;
   padding: 20px;
@@ -33,90 +9,62 @@
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.reservation-details {
+.post-list {
+  list-style: none;
+  padding: 0;
+}
+
+.post-item {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
   margin-bottom: 10px;
 }
 
-.reservation-label {
-  font-weight: bold;
-}
-
-
-@media (max-width: 768px) {
-  .reservation-container {
-    width: 95%;
-    padding: 15px;
-  }
-
-  .reservation-label {
-    font-size: 16px;
-  }
-  
-  .reservation-details {
-    font-size: 14px;
-  }
-}
-
-/* Notification Settings Styles */
-.notification-settings-container {
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.notification-settings-label {
+.post-title {
   font-weight: bold;
   margin-bottom: 5px;
 }
 
-/* Notification Message Styles */
-.notification {
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+.post-meta {
+  font-size: 0.8em;
+  color: #999;
 }
 
-.notification-success {
-  background-color: lightgreen;
-  color: green;
+.post-content {
+  margin-top: 10px;
 }
 
-.notification-pending {
-  background-color: lightyellow;
-  color: orange;
+
+/* Responsive Styles for Mobile */
+@media (max-width: 768px) {
+  .community-board-container {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .post-title {
+    font-size: 1.2em;
+  }
+
+  .post-meta, .post-content {
+    font-size: 0.9em;
+  }
 }
 
-.notification-error {
-  background-color: lightpink;
-  color: red;
+/* Comment styles */
+.comment-list {
+    list-style: none;
+    padding-left: 20px; /* Indent comments */
 }
 
-/* Unread Indicator Styles */
-.unread-indicator {
-  display: inline-block;
-  background-color: red;
-  color: white;
-  font-size: 12px;
-  padding: 2px 5px;
-  border-radius: 50%;
-  margin-left: 5px;
+.comment-item {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+
 }
 
-/* Loading/Error State Styles */
-.loading-state {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-style: italic;
-  color: gray;
+.comment-author {
+    font-weight: bold;
 }
-
-.error-state {
-  color: red;
-  font-weight: bold;
-}
-
 ```

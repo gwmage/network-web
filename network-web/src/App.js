@@ -10,7 +10,8 @@ import ReservationProcess from './components/ReservationProcess';
 import ReservationConfirmation from './components/ReservationConfirmation';
 import ReservationManagement from './components/ReservationManagement';
 import ErrorDisplay from './components/ErrorDisplay';
-import NotificationSettings from './components/NotificationSettings'; // Import the component
+import NotificationSettings from './components/NotificationSettings';
+import CommunityBoard from './components/CommunityBoard'; // Import the CommunityBoard component
 import axios from 'axios';
 
 const App = () => {
@@ -20,8 +21,9 @@ const App = () => {
     <Router>
       <Routes>
         {/* ... other routes ... */}
-        <Route path="/profile" element={<ProfileManagement />} /> {/* Example: Nested under profile */}
-        <Route path="/notifications" element={<NotificationSettings />} /> {/* Example: Dedicated route */}
+        <Route path="/profile" element={<ProfileManagement />} />
+        <Route path="/notifications" element={<NotificationSettings />} />
+        <Route path="/community" element={<CommunityBoard />} /> {/* Add the route for CommunityBoard */}
       </Routes>
     </Router>
   );
