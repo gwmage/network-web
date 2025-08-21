@@ -46,7 +46,24 @@ const PostForm = ({ post, onSubmit, onUpdate }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* ... (rest of the form remains unchanged) */}
+      <label htmlFor="title">Title:</label>
+      <input type="text" name="title" id="title" value={formData.title} onChange={handleChange} required />
+
+      <label htmlFor="content">Content:</label>
+      <textarea name="content" id="content" value={formData.content} onChange={handleChange} required />
+
+      <label htmlFor="category">Category:</label>
+      <select name="category" id="category" value={formData.category} onChange={handleChange}>
+        <option value="">Select a category</option>
+        {/* Replace with actual category options */}
+        <option value="general">General</option>
+        <option value="technology">Technology</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label htmlFor="tags">Tags (comma-separated):</label>
+      <input type="text" name="tags" id="tags" value={formData.tags} onChange={handleChange} />
+
       <button type="submit">{post ? 'Update Post' : 'Create Post'}</button>
     </form>
   );

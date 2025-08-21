@@ -1,6 +1,6 @@
 ```typescript
 import React, { useState } from 'react';
-import { updateComment } from '../utils/api';
+import { createComment, updateComment } from '../utils/api';
 
 const CommentForm = ({ comment, onSubmit, onClose, postId }) => {
   const [content, setContent] = useState(comment?.content || '');
@@ -18,8 +18,8 @@ const CommentForm = ({ comment, onSubmit, onClose, postId }) => {
         // Update existing comment
         await updateComment(postId, comment.id, { content });
       } else {
-        // Create new comment - handled by parent component
-        onSubmit({ content });
+        // Create new comment
+        await createComment(postId, { content });
       }
       onClose(); // Close the form after submission
     } catch (error) {

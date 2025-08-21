@@ -1,32 +1,34 @@
 ```typescript
-import React from 'react';
-import PostList from './PostList'; // Assuming you'll create this component
-import LoadingIndicator from './LoadingIndicator'; // Assuming you'll create this component
-// Import Filters component if needed
+import React, { useState, useEffect } from 'react';
+import PostList from './PostList';
+import LoadingIndicator from './LoadingIndicator';
+import Filters from './Filters'; // Import the Filters component
 
 const CommunityBoard = () => {
-  const [posts, setPosts] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  // Add other state variables as needed for filters, pagination, etc.
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState({ category: '', tags: [] }); // State for filters
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchPosts = async () => {
       try {
-        // Replace with your actual API call
-        const response = await fetch('/api/posts'); 
+        const queryParams = new URLSearchParams(filters).toString(); // Convert filters to query string
+        const response = await fetch(`/api/posts?${queryParams}`); // Include filters in API call
         const data = await response.json();
         setPosts(data);
       } catch (error) {
         console.error("Error fetching posts:", error);
-        // Handle error, e.g., display an error message
       } finally {
         setLoading(false);
       }
     };
 
     fetchPosts();
-  }, []);
+  }, [filters]); // Re-fetch posts when filters change
 
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters); // Update filter state when Filters component changes
+  };
 
   return (
     <div>
@@ -35,9 +37,8 @@ const CommunityBoard = () => {
         <LoadingIndicator />
       ) : (
         <>
-          {/* Add Filters component here if needed */}
-          <PostList posts={posts} /> 
-          {/* Add pagination component here if needed */}
+          <Filters onFilterChange={handleFilterChange} /> {/* Include the Filters component */}
+          <PostList posts={posts} />
         </>
       )}
     </div>
@@ -45,4 +46,5 @@ const CommunityBoard = () => {
 };
 
 export default CommunityBoard;
+
 ```

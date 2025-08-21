@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import * as api from '../utils/api';
+import Comment from './Comment';
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -9,6 +10,7 @@ const PostDetails = () => {
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentUser, setCurrentUser] = useState(1); // Replace with actual user ID retrieval
 
   useEffect(() => {
     const fetchPostDetails = async () => {
@@ -24,6 +26,13 @@ const PostDetails = () => {
 
     fetchPostDetails();
   }, [postId]);
+
+  const handleCommentDelete = (commentId) => {
+    setPost((prevPost) => ({
+      ...prevPost,
+      comments: prevPost.comments.filter((comment) => comment.id !== commentId),
+    }));
+  };
 
   if (loading) {
     return <div>Loading post details...</div>;
@@ -46,7 +55,11 @@ const PostDetails = () => {
         <ul>
           {post.comments.map((comment) => (
             <li key={comment.id}>
-              <p>{comment.content}</p>
+              <Comment
+                comment={comment}
+                currentUser={currentUser}
+                onCommentDelete={handleCommentDelete}
+              />
             </li>
           ))}
         </ul>

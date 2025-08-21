@@ -5,34 +5,27 @@ const API_BASE_URL = '/api'; // Or your API base URL
 
 // ... (Existing code remains unchanged)
 
-
-export const getPosts = async (page = 1, limit = 10, filter = {}) => {
+export const getCategories = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/posts`, {
-      params: { page, limit, ...filter }, // Includes filter parameters
-    });
+    const response = await axios.get(`${API_BASE_URL}/categories`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching posts:', error);
+    console.error('Error fetching categories:', error);
+    throw error;
+  }
+};
+
+export const getTags = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/tags`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching tags:', error);
     throw error;
   }
 };
 
 
-// ... (Other functions for createPost, getPost, updatePost, deletePost remain unchanged)
-
-export const getComments = async (postId, page = 1, limit = 10) => { // Added pagination for comments
-  try {
-    const response = await axios.get(`${API_BASE_URL}/posts/${postId}/comments`, {
-      params: { page, limit },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching comments:', error);
-    throw error;
-  }
-};
-
-// ... (Other functions for createComment, updateComment, deleteComment remain unchanged)
+// ... (Other functions remain unchanged)
 
 ```
