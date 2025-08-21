@@ -1,6 +1,6 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
-import { updatePost } from '../utils/api';
+import { createPost, updatePost } from '../utils/api';
 
 const PostForm = ({ post, onSubmit, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -9,11 +9,14 @@ const PostForm = ({ post, onSubmit, onUpdate }) => {
     category: '',
     tags: '',
   });
+  const [error, setError] = useState(null);
+
 
   useEffect(() => {
     if (post) {
       setFormData({
         ...post,
+        category: post.category || '', // Handle cases where category might be missing
         tags: post.tags ? post.tags.join(',') : '',
       });
     }
@@ -25,27 +28,31 @@ const PostForm = ({ post, onSubmit, onUpdate }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null); // Clear any previous errors
 
     const updatedPostData = {
       ...formData,
       tags: formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : [],
     };
 
-    if (post) {
-      try {
+    try {
+      if (post) {
         const updatedPost = await updatePost(post.id, updatedPostData);
         onUpdate(updatedPost);
-      } catch (error) {
-        console.error("Error updating post:", error);
-        // Handle error, e.g., display error message to user
+      } else {
+        const newPost = await createPost(updatedPostData);
+        onSubmit(newPost);
       }
-    } else {
-      onSubmit(updatedPostData);
+    } catch (error) {
+      setError("Failed to submit post. Please try again later.");
+      console.error("Error creating/updating post:", error);
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
+      {error && <div className="error-message">{error}</div>}
+
       <label htmlFor="title">Title:</label>
       <input type="text" name="title" id="title" value={formData.title} onChange={handleChange} required />
 
@@ -55,7 +62,6 @@ const PostForm = ({ post, onSubmit, onUpdate }) => {
       <label htmlFor="category">Category:</label>
       <select name="category" id="category" value={formData.category} onChange={handleChange}>
         <option value="">Select a category</option>
-        {/* Replace with actual category options */}
         <option value="general">General</option>
         <option value="technology">Technology</option>
         <option value="other">Other</option>

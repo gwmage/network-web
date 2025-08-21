@@ -1,58 +1,28 @@
 ```css
-/* Comment styles */
-.comment-list {
-  list-style: none;
-  padding-left: 20px; /* Indent comments */
-  margin-top: 20px; /* Separate comments from post content */
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .community-board-container {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .post-title {
+    font-size: 1.2em;
+  }
+
+  .post-meta, .post-content {
+    font-size: 0.9em;
+  }
+
+  .community-board-filters {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .comment-list {
+    padding-left: 10px; /* Reduce comment indent on smaller screens */
+  }
 }
-
-.comment-item {
-  border-bottom: 1px solid #eee;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-}
-
-.comment-author {
-  font-weight: bold;
-}
-
-.comment-content {
-    margin-top: 5px;
-}
-
-.comment-date {
-  font-size: 0.8em;
-  color: #999;
-}
-
-.comment-actions {
-  margin-top: 5px;
-  display: flex;
-  gap: 5px; /* Add some space between buttons */
-}
-
-form { /* Style the comment form */
-  margin-top: 20px;
-  border-top: 1px solid #eee; /* Separate form visually */
-  padding-top: 10px;
-}
-
-form textarea {
-  width: 100%;
-  padding: 5px;
-  margin-bottom: 5px;
-  border: 1px solid #ccc;
-}
-
-form button {
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  cursor: pointer;
-  background-color: #fff;
-}
-
-
 
 @media (max-width: 500px) {
   .post-meta {
@@ -67,12 +37,15 @@ form button {
   .comment-content{
     font-size: 0.8em
   }
-  .comment-actions button { /* Make buttons smaller on very small screens */
-    padding: 3px 6px;
-    font-size: 0.8em;
+  .comment-actions { /* Adjust comment actions on very small screens */
+    flex-direction: column;  /* Stack action buttons vertically */
+    align-items: flex-start; /* Align to the left */
   }
-  form textarea { /* Adjust textarea size on smaller screens */
-    font-size: 0.9em;
+  .comment-actions button {
+    width: 100%; /* Make buttons full width */
+    margin-bottom: 5px;
   }
+
+
 }
 ```

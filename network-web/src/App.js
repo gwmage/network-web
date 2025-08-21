@@ -13,7 +13,7 @@ import ErrorDisplay from './components/ErrorDisplay';
 import NotificationSettings from './components/NotificationSettings';
 import CommunityBoard from './components/CommunityBoard';
 import axios from 'axios';
-import Main from './components/Main'; // Import Main component
+import Main from './components/Main';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 
@@ -24,12 +24,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Main />} /> {/* Route for the main page */}
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/login" element={<Login />} />
         {/* ... other routes ... */}
-        <Route path="/profile" element={<ProfileManagement />} />
-        <Route path="/notifications" element={<NotificationSettings />} />
         <Route path="/community" element={<CommunityBoard />} />
       </Routes>
     </Router>

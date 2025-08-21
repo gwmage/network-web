@@ -1,21 +1,22 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
 import PostList from './PostList';
+import PostForm from './PostForm'; // Import PostForm
 import LoadingIndicator from './LoadingIndicator';
-import Filters from './Filters'; // Import the Filters component
+import Filters from './Filters';
 
 const CommunityBoard = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ category: '', tags: [] }); // State for filters
+  const [filters, setFilters] = useState({ category: '', tags: [] });
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const queryParams = new URLSearchParams(filters).toString(); // Convert filters to query string
-        const response = await fetch(`/api/posts?${queryParams}`); // Include filters in API call
+        const queryParams = new URLSearchParams(filters).toString();
+        const response = await fetch(`/api/posts?${queryParams}`);
         const data = await response.json();
-        setPosts(data);
+        setPosts(data.items); // Access items from the paginated response
       } catch (error) {
         console.error("Error fetching posts:", error);
       } finally {
@@ -24,20 +25,26 @@ const CommunityBoard = () => {
     };
 
     fetchPosts();
-  }, [filters]); // Re-fetch posts when filters change
+  }, [filters]);
 
   const handleFilterChange = (newFilters) => {
-    setFilters(newFilters); // Update filter state when Filters component changes
+    setFilters(newFilters);
   };
+
+  const handlePostCreated = (newPost) => {
+    setPosts([newPost, ...posts]); // Add the new post to the beginning of the list
+  };
+
 
   return (
     <div>
       <h1>Community Board</h1>
+      <PostForm onPostCreated={handlePostCreated} /> {/* Include the PostForm component */}
       {loading ? (
         <LoadingIndicator />
       ) : (
         <>
-          <Filters onFilterChange={handleFilterChange} /> {/* Include the Filters component */}
+          <Filters onFilterChange={handleFilterChange} />
           <PostList posts={posts} />
         </>
       )}

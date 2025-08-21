@@ -8,18 +8,15 @@ const Filters = ({ onFilterChange }) => {
   const [availableTags, setAvailableTags] = useState([]);
 
   useEffect(() => {
-    // Fetch categories and tags from API or other data source
     const fetchCategoriesAndTags = async () => {
       try {
-        // Replace with your actual API calls
         const categoriesData = await fetch('/api/categories').then(res => res.json());
-        const tagsData = await fetch('/api/tags').then(res => res.json()); 
+        const tagsData = await fetch('/api/tags').then(res => res.json());
 
         setCategories(categoriesData);
         setAvailableTags(tagsData);
       } catch (error) {
         console.error("Error fetching categories and tags:", error);
-        // Handle error, e.g., display an error message
       }
     };
 
@@ -44,7 +41,6 @@ const Filters = ({ onFilterChange }) => {
         : prevTags.filter(t => t !== tag);
     });
   };
-
 
   return (
     <div>
