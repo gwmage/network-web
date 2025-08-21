@@ -33,7 +33,7 @@ const NotificationSettings = () => {
         push: pushNotifications,
         email: emailNotifications,
       });
-      // Optionally show a success message to the user
+      // Update UI state immediately after successful save
       alert('Notification settings saved!');
     } catch (err) {
       console.error("Error saving notification settings:", err);
@@ -81,4 +81,5 @@ const NotificationSettings = () => {
 };
 
 export default NotificationSettings;
+
 ```
