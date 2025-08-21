@@ -51,8 +51,15 @@ const Notifications = () => {
         <ul>
           {notifications.map((notification) => (
             <li key={notification.id} className={notification.read ? 'read' : 'unread'} onClick={() => markAsRead(notification.id)}>
-              {/* Display notification content */}
-              {notification.message}
+              {/* Display notification content based on type */}
+              {notification.type === 'comment' && (
+                <span>
+                  New comment on your post: {notification.message}
+                </span>
+              )}
+              {notification.type === 'other' && (
+                <span>{notification.message}</span>
+              )}
             </li>
           ))}
         </ul>

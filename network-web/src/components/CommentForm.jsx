@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { createComment, updateComment } from '../utils/api';
 
-const CommentForm = ({ comment, onSubmit, onClose, postId }) => {
+const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) => {
   const [content, setContent] = useState(comment?.content || '');
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -19,8 +19,9 @@ const CommentForm = ({ comment, onSubmit, onClose, postId }) => {
         await updateComment(postId, comment.id, { content });
       } else {
         // Create new comment
-        await createComment(postId, { content });
+        await createComment(postId, { content, parentCommentId });
       }
+      onSubmit(); // Callback to update comment list
       onClose(); // Close the form after submission
     } catch (error) {
       console.error('Error updating/creating comment:', error);

@@ -5,22 +5,32 @@ const API_BASE_URL = '/api'; // Or your API base URL
 
 // ... (Existing code remains unchanged)
 
-export const getCategories = async () => {
+export const createComment = async (postId, commentData) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/categories`);
+    const response = await axios.post(`${API_BASE_URL}/community/${postId}/comments`, commentData);
     return response.data;
   } catch (error) {
-    console.error('Error fetching categories:', error);
+    console.error('Error creating comment:', error);
     throw error;
   }
 };
 
-export const getTags = async () => {
+export const updateComment = async (postId, commentId, commentData) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/tags`);
+    const response = await axios.put(`${API_BASE_URL}/community/${postId}/comments/${commentId}`, commentData);
     return response.data;
   } catch (error) {
-    console.error('Error fetching tags:', error);
+    console.error('Error updating comment:', error);
+    throw error;
+  }
+};
+
+export const deleteComment = async (postId, commentId) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/community/${postId}/comments/${commentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting comment:', error);
     throw error;
   }
 };

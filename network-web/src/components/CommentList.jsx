@@ -1,6 +1,7 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
 import { getComments } from '../utils/api';
+import Comment from './Comment';
 
 const CommentList = ({ postId, onCommentUpdate }) => {
   const [comments, setComments] = useState([]);
@@ -20,8 +21,7 @@ const CommentList = ({ postId, onCommentUpdate }) => {
     };
 
     fetchComments();
-  }, [postId, onCommentUpdate]); // Add onCommentUpdate to dependency array
-
+  }, [postId, onCommentUpdate]);
 
   if (loading) {
     return <p>Loading comments...</p>;
@@ -40,11 +40,15 @@ const CommentList = ({ postId, onCommentUpdate }) => {
       <h3>Comments</h3>
       <ul>
         {comments.map((comment) => (
-          <li key={comment.id}>
-            <p>{comment.content}</p>
-            <p>By: {comment.author || 'Anonymous'}</p>
-            <p>Posted on: {comment.createdAt || 'Unknown'}</p>
-          </li>
+          <Comment
+            key={comment.id}
+            comment={comment}
+            currentUser={1} // Replace with actual current user ID
+            onCommentDelete={() => {
+              // Update the comment list after deletion by fetching comments again
+              setComments(comments.filter((c) => c.id !== comment.id));
+            }}
+          />
         ))}
       </ul>
     </div>
