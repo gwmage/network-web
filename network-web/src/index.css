@@ -1,51 +1,81 @@
 ```css
-/* Responsive Styles */
+/* Comment Form Styling */
+.comment-form {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 20px; /* Separate from comment threads */
+}
+
+.comment-textarea {
+  width: calc(100% - 22px); /* Account for padding and border */
+  height: 80px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  resize: vertical; /* Allow vertical resizing */
+}
+
+
+.comment-buttons {
+    display: flex;
+    justify-content: flex-end;
+
+}
+
+.comment-buttons button{
+    margin-left: 5px;
+    padding: 5px 10px;
+}
+
+
+/* Comment Thread Styling */
+.comment-list {
+  list-style: none;
+  padding: 0;
+}
+
+.comment-item {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+  margin-bottom: 10px;
+}
+
+.comment-author {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+
+.comment-actions button {
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    font-family: arial, sans-serif;
+    color: #069;
+    text-decoration: underline;
+    cursor: pointer;
+}
+/* Responsive Design for Comments */
 @media (max-width: 768px) {
-  .community-board-container {
-    width: 95%;
-    padding: 10px;
-  }
+    .comment-form {
+        margin-bottom: 10px
+    }
+    .comment-textarea {
+        height: 60px
+    }
+    .comment-list {
+        padding-left: 0px; /* Further reduce indent on smaller screens */
+    }   
+    .comment-buttons {
+        flex-direction: column; /* Stack buttons vertically */
+        align-items: flex-start; /* Align to the start */
+    }
 
-  .post-title {
-    font-size: 1.2em;
-  }
-
-  .post-meta, .post-content {
-    font-size: 0.9em;
-  }
-
-  .community-board-filters {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .comment-list {
-    padding-left: 10px; /* Reduce comment indent on smaller screens */
-  }
-}
-
-@media (max-width: 500px) {
-  .post-meta {
-    font-size: 0.7em;
-  }
-  .post-content {
-    font-size: 0.8em;
-  }
-  .comment-author{
-    font-size: 0.9em;
-  }
-  .comment-content{
-    font-size: 0.8em
-  }
-  .comment-actions { /* Adjust comment actions on very small screens */
-    flex-direction: column;  /* Stack action buttons vertically */
-    align-items: flex-start; /* Align to the left */
-  }
-  .comment-actions button {
-    width: 100%; /* Make buttons full width */
-    margin-bottom: 5px;
-  }
-
+    .comment-buttons button {
+        width: fit-content; /* Make buttons full width */
+        margin-bottom: 5px; /* Add spacing */
+    }
 
 }
+
 ```

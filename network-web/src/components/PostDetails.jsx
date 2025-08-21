@@ -71,6 +71,9 @@ const PostDetails = () => {
       <p>{post.content}</p>
 
       <h3>Comments</h3>
+      {/* Pass postId to CommentForm */}
+      <CommentForm postId={postId} onCommentCreate={handleCommentCreate} />
+
       {post.comments && post.comments.length > 0 ? (
         <ul>
           {post.comments.map((comment) => (
@@ -87,7 +90,7 @@ const PostDetails = () => {
         <p>No comments yet.</p>
       )}
 
-      <CommentForm onCommentCreate={handleCommentCreate} />
+
 
       <button onClick={() => navigate(-1)}>Back to Post List</button>
     </div>
@@ -95,4 +98,5 @@ const PostDetails = () => {
 };
 
 export default PostDetails;
+
 ```

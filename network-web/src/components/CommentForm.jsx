@@ -19,9 +19,10 @@ const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) =>
         await updateComment(postId, comment.id, { content });
       } else {
         // Create new comment
-        await createComment(postId, { content, parentCommentId });
+        await createComment(postId, { content, parentCommentId, postId: postId }); // Include postId in request body
       }
       onSubmit(); // Callback to update comment list
+      setContent(''); // Clear the input field after submitting
       onClose(); // Close the form after submission
     } catch (error) {
       console.error('Error updating/creating comment:', error);
@@ -32,20 +33,20 @@ const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) =>
   };
 
   return (
-    <form onSubmit={handleSubmit} className="comment-form"> {/* Add className for styling */}
-      <textarea 
-        value={content} 
-        onChange={handleChange} 
-        required 
+    <form onSubmit={handleSubmit} className="comment-form">
+      <textarea
+        value={content}
+        onChange={handleChange}
+        required
         placeholder="Write your comment..."
-        className="comment-textarea" // Add className for styling
+        className="comment-textarea"
       />
-      <div className="comment-buttons"> {/* Add className for styling */}
-        <button type="submit" disabled={isUpdating} className="comment-submit"> {/* Add className for styling */}
+      <div className="comment-buttons">
+        <button type="submit" disabled={isUpdating} className="comment-submit">
           {comment ? 'Update Comment' : 'Add Comment'}
         </button>
         {onClose && (
-          <button type="button" onClick={onClose} disabled={isUpdating} className="comment-cancel"> {/* Add className for styling */}
+          <button type="button" onClick={onClose} disabled={isUpdating} className="comment-cancel">
             Cancel
           </button>
         )}
