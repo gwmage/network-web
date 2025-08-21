@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import * as api from '../utils/api';
 import Comment from './Comment';
+import CommentForm from './CommentForm';
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -27,11 +28,44 @@ const PostDetails = () => {
     fetchPostDetails();
   }, [postId]);
 
-  const handleCommentDelete = (commentId) => {
-    setPost((prevPost) => ({
-      ...prevPost,
-      comments: prevPost.comments.filter((comment) => comment.id !== commentId),
-    }));
+  const handleCommentCreate = async (newComment) => {
+    try {
+      const createdComment = await api.createComment({ ...newComment, postId });
+      setPost((prevPost) => ({
+        ...prevPost,
+        comments: [...prevPost.comments, createdComment],
+      }));
+    } catch (error) {
+      // Handle error, e.g., display error message
+      console.error("Error creating comment:", error);
+    }
+  };
+
+
+  const handleCommentUpdate = async (updatedComment) => {
+    try {
+      await api.updateComment(postId, updatedComment.id, updatedComment);
+      setPost((prevPost) => ({
+        ...prevPost,
+        comments: prevPost.comments.map((comment) =>
+          comment.id === updatedComment.id ? updatedComment : comment
+        ),
+      }));
+    } catch (error) {
+      console.error("Error updating comment:", error);
+    }
+  }
+
+  const handleCommentDelete = async (commentId) => {
+    try {
+      await api.deleteComment(postId, commentId);
+      setPost((prevPost) => ({
+        ...prevPost,
+        comments: prevPost.comments.filter((comment) => comment.id !== commentId),
+      }));
+    } catch (error) {
+      console.error("Error deleting comment:", error)
+    }
   };
 
   if (loading) {
@@ -50,6 +84,9 @@ const PostDetails = () => {
     <div>
       <h2>{post.title}</h2>
       <p>{post.content}</p>
+
+      <CommentForm onSubmit={handleCommentCreate} postId={postId} />
+
       <h3>Comments</h3>
       {post.comments && post.comments.length > 0 ? (
         <ul>
@@ -58,7 +95,9 @@ const PostDetails = () => {
               <Comment
                 comment={comment}
                 currentUser={currentUser}
+                onCommentUpdate={handleCommentUpdate}
                 onCommentDelete={handleCommentDelete}
+                postId={postId}
               />
             </li>
           ))}

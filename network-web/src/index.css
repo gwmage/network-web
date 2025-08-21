@@ -1,43 +1,9 @@
 ```css
-/* Community Board Styles */
-.community-board-container {
-  width: 80%;
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.post-list {
-  list-style: none;
-  padding: 0;
-}
-
-.post-item {
-  border-bottom: 1px solid #eee;
-  padding: 10px 0;
-  margin-bottom: 10px;
-}
-
-.post-title {
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.post-meta {
-  font-size: 0.8em;
-  color: #999;
-}
-
-.post-content {
-  margin-top: 10px;
-}
-
 /* Comment styles */
 .comment-list {
   list-style: none;
   padding-left: 20px; /* Indent comments */
+  margin-top: 20px; /* Separate comments from post content */
 }
 
 .comment-item {
@@ -54,49 +20,39 @@
     margin-top: 5px;
 }
 
-
-/* New Styles for UI elements */
-.community-board-filters {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+.comment-date {
+  font-size: 0.8em;
+  color: #999;
 }
 
-.community-board-pagination {
+.comment-actions {
+  margin-top: 5px;
   display: flex;
-  justify-content: center;
+  gap: 5px; /* Add some space between buttons */
+}
+
+form { /* Style the comment form */
   margin-top: 20px;
+  border-top: 1px solid #eee; /* Separate form visually */
+  padding-top: 10px;
 }
 
-.community-board-pagination button {
-  margin: 0 5px;
+form textarea {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 5px;
+  border: 1px solid #ccc;
+}
+
+form button {
   padding: 5px 10px;
   border: 1px solid #ccc;
   border-radius: 3px;
   cursor: pointer;
+  background-color: #fff;
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .community-board-container {
-    width: 95%;
-    padding: 10px;
-  }
 
-  .post-title {
-    font-size: 1.2em;
-  }
-
-  .post-meta, .post-content {
-    font-size: 0.9em;
-  }
-
-  .community-board-filters {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
 
 @media (max-width: 500px) {
   .post-meta {
@@ -111,6 +67,12 @@
   .comment-content{
     font-size: 0.8em
   }
+  .comment-actions button { /* Make buttons smaller on very small screens */
+    padding: 3px 6px;
+    font-size: 0.8em;
+  }
+  form textarea { /* Adjust textarea size on smaller screens */
+    font-size: 0.9em;
+  }
 }
-
 ```
