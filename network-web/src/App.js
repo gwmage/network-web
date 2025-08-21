@@ -9,13 +9,14 @@ import ReservationSearch from './components/ReservationSearch';
 import ReservationProcess from './components/ReservationProcess';
 import ReservationConfirmation from './components/ReservationConfirmation';
 import ReservationManagement from './components/ReservationManagement';
-import ErrorDisplay from './components/ErrorDisplay';
+import MatchingResultNotifications from './components/MatchingResultNotifications'; // Import the component
 
 
 const App = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showMatchingResults, setShowMatchingResults] = useState(false);
+  const [matchingResults, setMatchingResults] = useState(null); // Store matching results
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -36,29 +37,21 @@ const App = () => {
       <div>
         <Routes>
           {/* ... other routes ... */}
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/profile" element={<ProfileManagement />} />
-          <Route path="/application-information" element={<AppInformation />} />
-          <Route path="/matching-results" element={<MatchingResults />} />
-          <Route path="/reservation-search" element={<ReservationSearch />} />
-          <Route path="/reservation-process" element={<ReservationProcess />} />
-          <Route path="/reservation-confirmation" element={<ReservationConfirmation />} />
-          <Route path="/reservation-management" element={<ReservationManagement />} />
-          <Route path="*" element={
-             <React.Fragment>
-             {/* Your existing content for other routes goes here */}
-            {showMatchingResults && (
-              <div className={`matching-results-container ${showMatchingResults ? 'slide-in' : 'slide-out'}`}
-                   style={{ transition: 'transform 0.3s ease-in-out' }}>
-                <MatchingResults/>
-              </div>
-            )}
-            </React.Fragment>
-
-           } />
+          <Route path="/matching-results" element={<MatchingResults setMatchingResults={setMatchingResults}/>} /> {/* Pass the setter function */}
+          {/* ... other routes ... */}
         </Routes>
 
+        {/* Conditionally render MatchingResultNotifications */}
+        {matchingResults && ( // Check if matchingResults data is available
+          <MatchingResultNotifications matchingResults={matchingResults} />
+        )}
 
+         {/* Existing slide-in/out logic */}
+        {showMatchingResults && (
+          <div className={`matching-results-container ${showMatchingResults ? 'slide-in' : 'slide-out'}`} style={{ transition: 'transform 0.3s ease-in-out' }}>
+            <MatchingResults setMatchingResults={setMatchingResults} /> {/* Pass the setter function here as well */}
+          </div>
+        )}
       </div>
     </Router>
   );
