@@ -43,10 +43,26 @@ You can register a new user by sending a POST request to the `/auth/register` en
 * `firstName`: The user's first name (optional).
 * `lastName`: The user's last name (optional).
 
+## Notification Settings
+
+Users can configure their notification preferences through the following API endpoints:
+
+* **GET /notifications/preferences:** Retrieves the current notification preferences for the logged-in user.
+* **POST /notifications/preferences:** Updates the notification preferences for the logged-in user.  The request body should be in JSON format:
+    ```json
+    {
+      "push": true,  // Whether to receive push notifications
+      "email": false // Whether to receive email notifications
+    }
+    ```
+
+* **GET /notifications:** Retrieves all notifications for the logged-in user.
+
 
 ## Key Features:
 
 * **User Registration:** Allows users to create new accounts with email, password, first name, and last name. Input validation is performed to ensure data integrity, including email format, password complexity, and uniqueness checks.  A confirmation email is sent upon successful registration.
+* **Notification Settings:** Allows users to customize their notification preferences for various events, such as receiving match results and reservation updates via push notifications or email.
 * **(Other features can be listed here as they are developed)**
 
 

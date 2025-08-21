@@ -1,5 +1,6 @@
 ```typescript
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // Import Link
 import './ProfileManagement.css'; // Create this file for specific styles
 
 const ProfileManagement = () => {
@@ -46,37 +47,11 @@ const ProfileManagement = () => {
 
         <button type="submit">Save Profile</button>
       </form>
+      <Link to="/notification-settings">Notification Settings</Link> {/* Add the link */}
     </div>
   );
 };
 
 export default ProfileManagement;
-
-```
-
-```css
-/* network-web/src/components/ProfileManagement.css */
-.form-container {
-    /* Styles from network-web/src/index.css will be applied */
-    /* Add or override specific styles here as needed */
-}
-
-
-@media (max-width: 768px) { /* Example breakpoint */
-  .form-container {
-    width: 95%; /* Adjust width for smaller screens */
-    padding: 15px; /* Adjust padding */
-  }
-  
-  /* Other responsive adjustments as necessary */
-  input[type="text"],
-  textarea {
-    font-size: 16px; /* Adjust font size */
-  }
-
-  button {
-    font-size: 16px; /* Adjust button font size */
-  }
-}
 
 ```

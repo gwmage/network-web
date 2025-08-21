@@ -10,51 +10,23 @@ import ReservationProcess from './components/ReservationProcess';
 import ReservationConfirmation from './components/ReservationConfirmation';
 import ReservationManagement from './components/ReservationManagement';
 import ErrorDisplay from './components/ErrorDisplay';
+import NotificationSettings from './components/NotificationSettings'; // Import the component
 import axios from 'axios';
 
 const App = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [showMatchingResults, setShowMatchingResults] = useState(false);
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    setShowMatchingResults(location.pathname === '/matching-results' || params.get('matching') === 'true');
-
-    if (showMatchingResults && location.pathname !== '/matching-results') {
-      const currentParams = new URLSearchParams(location.search);
-      currentParams.set('matching', 'true');
-      navigate(`${location.pathname}?${currentParams.toString()}`);
-    }
-
-    // Check for matching and send notification if applicable
-    if (showMatchingResults) {
-      const sendMatchNotification = async () => {
-        try {
-          const response = await axios.post('/api/matching/notifications', { deliveryMethod: 'push' });
-          console.log(response.data); // Log the response for debugging
-
-          // Placeholder push notification function
-          sendPushNotification('Match found!'); 
-        } catch (error) {
-          console.error("Failed to send notification:", error);
-        }
-      };
-
-      sendMatchNotification();
-    }
-  }, [location, navigate, showMatchingResults]);
-
-  const sendPushNotification = (message) => {
-    // Replace this with your actual push notification logic
-    console.log("Sending push notification:", message);
-  };
-
+  // ... existing code ...
 
   return (
-    // ... rest of the component
+    <Router>
+      <Routes>
+        {/* ... other routes ... */}
+        <Route path="/profile" element={<ProfileManagement />} /> {/* Example: Nested under profile */}
+        <Route path="/notifications" element={<NotificationSettings />} /> {/* Example: Dedicated route */}
+      </Routes>
+    </Router>
   );
 };
 
 export default App;
+
 ```

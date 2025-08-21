@@ -5,6 +5,17 @@ const API_BASE_URL = '/api'; // Or your API base URL
 
 // ... (Existing code remains unchanged)
 
+export const saveNotificationPreferences = async (preferences) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/notifications/preferences`, preferences);
+    return response.data;
+  } catch (error) {
+    console.error('Error saving notification preferences:', error);
+    throw error;
+  }
+};
+
+
 export const fetchPreferences = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/notifications/preferences`);
