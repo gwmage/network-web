@@ -1,31 +1,6 @@
 ```css
-/* Connection Status Styles */
-.connection-status {
-  margin-top: 10px; /* Add some spacing */
-  font-weight: bold; /* Make it visually distinct */
-}
-
-.connection-status.connected {
-  color: green; /* Indicate connected status */
-}
-
-.connection-status.pending {
-  color: orange; /* Indicate pending status */
-}
-
-.connection-status.failed {
-  color: red; /* Indicate failed status */
-}
-
-/* Error Message Styles */
-.error-message {
-  color: red;
-  margin-top: 5px; /* Add some spacing */
-}
-
-/* Reservation Styles */
-.reservation-container {
-  width: 80%;
+/* Notification Settings Styles */
+.notification-settings-container {
   margin: 20px auto;
   padding: 20px;
   border: 1px solid #ccc;
@@ -33,28 +8,32 @@
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.reservation-details {
-  margin-bottom: 10px;
-}
-
-.reservation-label {
+.notification-settings-label {
   font-weight: bold;
+  margin-bottom: 5px;
 }
 
+/* Notification Message Styles */
+.notification {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
 
-@media (max-width: 768px) {
-  .reservation-container {
-    width: 95%;
-    padding: 15px;
-  }
+.notification-success {
+  background-color: lightgreen;
+  color: green;
+}
 
-  .reservation-label {
-    font-size: 16px;
-  }
-  
-  .reservation-details {
-    font-size: 14px;
-  }
+.notification-pending {
+  background-color: lightyellow;
+  color: orange;
+}
+
+.notification-error {
+  background-color: lightpink;
+  color: red;
 }
 
 ```
