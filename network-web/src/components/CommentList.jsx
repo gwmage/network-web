@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { getComments } from '../utils/api';
 
-const CommentList = ({ postId }) => {
+const CommentList = ({ postId, onCommentUpdate }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,7 +20,7 @@ const CommentList = ({ postId }) => {
     };
 
     fetchComments();
-  }, [postId]);
+  }, [postId, onCommentUpdate]); // Add onCommentUpdate to dependency array
 
 
   if (loading) {

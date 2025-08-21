@@ -8,12 +8,15 @@ const PostList = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10); // Example: 10 posts per page
+  const [totalPages, setTotalPages] = useState(1);
+
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const data = await api.getPosts(currentPage, postsPerPage); // Assuming API function for fetching posts with pagination
-        setPosts(data); 
+        const data = await api.getPosts(currentPage, postsPerPage);
+        setPosts(data.posts || []); // Ensure data.posts exists
+        setTotalPages(data.totalPages || 1); // Get total pages from API response
         setLoading(false);
       } catch (err) {
         setError(err);
@@ -26,8 +29,6 @@ const PostList = () => {
 
   // Logic for displaying page numbers
   const pageNumbers = [];
-  const totalPages = Math.ceil(posts.length / postsPerPage); // Calculate total pages
-
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
   }
@@ -43,9 +44,11 @@ const PostList = () => {
   return (
     <div>
       {posts.map((post) => (
-        <div key={post.id}>{/* Display post content here */}
+        <div key={post.id}>
           <h3>{post.title}</h3>
-          <p>{post.content}</p>
+          <p>{post.summary}</p> {/* Display summary */}
+          <p>Category: {post.category}</p> {/* Display category */}
+          <p>Tags: {post.tags && post.tags.join(', ')}</p> {/* Display tags */}
         </div>
       ))}
 
@@ -61,4 +64,5 @@ const PostList = () => {
 };
 
 export default PostList;
+
 ```
