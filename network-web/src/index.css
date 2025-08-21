@@ -17,10 +17,44 @@
   color: red; /* Indicate failed status */
 }
 
-
 /* Error Message Styles */
 .error-message {
   color: red;
   margin-top: 5px; /* Add some spacing */
 }
+
+/* Reservation Styles */
+.reservation-container {
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-details {
+  margin-bottom: 10px;
+}
+
+.reservation-label {
+  font-weight: bold;
+}
+
+
+@media (max-width: 768px) {
+  .reservation-container {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .reservation-label {
+    font-size: 16px;
+  }
+  
+  .reservation-details {
+    font-size: 14px;
+  }
+}
+
 ```

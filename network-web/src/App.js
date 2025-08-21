@@ -5,7 +5,11 @@ import ForgotPassword from './components/ForgotPassword';
 import ProfileManagement from './components/ProfileManagement';
 import AppInformation from './components/AppInformation';
 import MatchingResults from './components/MatchingResults';
-import ErrorDisplay from './components/ErrorDisplay'; // Import ErrorDisplay component
+import ReservationSearch from './components/ReservationSearch';
+import ReservationProcess from './components/ReservationProcess';
+import ReservationConfirmation from './components/ReservationConfirmation';
+import ReservationManagement from './components/ReservationManagement';
+import ErrorDisplay from './components/ErrorDisplay';
 
 
 const App = () => {
@@ -14,18 +18,14 @@ const App = () => {
   const [showMatchingResults, setShowMatchingResults] = useState(false);
 
   useEffect(() => {
-    // Check if '/matching-results' is in the URL, even as a query parameter
     const params = new URLSearchParams(location.search);
     setShowMatchingResults(location.pathname === '/matching-results' || params.get('matching') === 'true');
 
-     // If matching results should be shown, and we're not already on the /matching-results route
     if (showMatchingResults && location.pathname !== '/matching-results') {
-      // Add the matching parameter without navigating to a new route
       const currentParams = new URLSearchParams(location.search);
       currentParams.set('matching', 'true');
       navigate(`${location.pathname}?${currentParams.toString()}`);
     }
-
 
   }, [location, navigate, showMatchingResults]);
 
@@ -40,7 +40,10 @@ const App = () => {
           <Route path="/profile" element={<ProfileManagement />} />
           <Route path="/application-information" element={<AppInformation />} />
           <Route path="/matching-results" element={<MatchingResults />} />
-           {/* Other routes can conditionally render MatchingResults via the query parameter */}
+          <Route path="/reservation-search" element={<ReservationSearch />} />
+          <Route path="/reservation-process" element={<ReservationProcess />} />
+          <Route path="/reservation-confirmation" element={<ReservationConfirmation />} />
+          <Route path="/reservation-management" element={<ReservationManagement />} />
           <Route path="*" element={
              <React.Fragment>
              {/* Your existing content for other routes goes here */}
@@ -53,10 +56,6 @@ const App = () => {
             </React.Fragment>
 
            } />
-
-
-
-
         </Routes>
 
 
@@ -66,5 +65,4 @@ const App = () => {
 };
 
 export default App;
-
 ```
