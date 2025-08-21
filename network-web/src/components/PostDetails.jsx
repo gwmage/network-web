@@ -28,6 +28,34 @@ const PostDetails = () => {
     fetchPostDetails();
   }, [postId]);
 
+  const handleCommentCreate = async (newComment) => {
+    try {
+      const createdComment = await api.createComment({ ...newComment, postId });
+      setPost((prevPost) => ({
+        ...prevPost,
+        comments: [...prevPost.comments, createdComment],
+      }));
+    } catch (error) {
+      // Handle error, e.g., display error message
+      console.error("Error creating comment:", error);
+    }
+  };
+
+
+  const handleCommentUpdate = async (updatedComment) => {
+    try {
+      await api.updateComment(postId, updatedComment.id, updatedComment);
+      setPost((prevPost) => ({
+        ...prevPost,
+        comments: prevPost.comments.map((comment) =>
+          comment.id === updatedComment.id ? updatedComment : comment
+        ),
+      }));
+    } catch (error) {
+      console.error("Error updating comment:", error);
+    }
+  }
+
   const handleCommentDelete = async (commentId) => {
     try {
       await api.deleteComment(postId, commentId);
@@ -36,22 +64,9 @@ const PostDetails = () => {
         comments: prevPost.comments.filter((comment) => comment.id !== commentId),
       }));
     } catch (error) {
-      console.error("Error deleting comment:", error);
+      console.error("Error deleting comment:", error)
     }
   };
-
-
-  const handleCommentCreate = async (newComment) => {
-    try {
-      const createdComment = await api.createComment(postId, newComment);
-      setPost((prevPost) => ({
-        ...prevPost,
-        comments: [...prevPost.comments, createdComment],
-      }));
-    } catch (error) {
-      console.error('Error creating comment:', error);
-    }
-  }
 
   if (loading) {
     return <div>Loading post details...</div>;
@@ -70,10 +85,9 @@ const PostDetails = () => {
       <h2>{post.title}</h2>
       <p>{post.content}</p>
 
-      <h3>Comments</h3>
-      {/* Pass postId to CommentForm */}
-      <CommentForm postId={postId} onCommentCreate={handleCommentCreate} />
+      <CommentForm onSubmit={handleCommentCreate} postId={postId} />
 
+      <h3>Comments</h3>
       {post.comments && post.comments.length > 0 ? (
         <ul>
           {post.comments.map((comment) => (
@@ -81,7 +95,9 @@ const PostDetails = () => {
               <Comment
                 comment={comment}
                 currentUser={currentUser}
+                onCommentUpdate={handleCommentUpdate}
                 onCommentDelete={handleCommentDelete}
+                postId={postId}
               />
             </li>
           ))}
@@ -89,9 +105,6 @@ const PostDetails = () => {
       ) : (
         <p>No comments yet.</p>
       )}
-
-
-
       <button onClick={() => navigate(-1)}>Back to Post List</button>
     </div>
   );

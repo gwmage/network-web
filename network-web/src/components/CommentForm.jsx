@@ -19,14 +19,13 @@ const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) =>
         await updateComment(postId, comment.id, { content });
       } else {
         // Create new comment
-        await createComment(postId, { content, parentCommentId, postId: postId }); // Include postId in request body
+        await createComment(postId, { content, parentCommentId, postId: postId });
       }
-      onSubmit(); // Callback to update comment list
-      setContent(''); // Clear the input field after submitting
-      onClose(); // Close the form after submission
+      onSubmit();
+      setContent('');
+      onClose();
     } catch (error) {
       console.error('Error updating/creating comment:', error);
-      // Handle error, e.g., display error message
     } finally {
       setIsUpdating(false);
     }
