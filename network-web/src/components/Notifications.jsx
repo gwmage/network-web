@@ -54,7 +54,9 @@ const Notifications = () => {
               {/* Display notification content based on type */}
               {notification.type === 'comment' && (
                 <span>
-                  New comment on your post: {notification.message}
+                  New comment on your post: {notification.data.commentContent} by {notification.data.authorId}
+                  {' '} {/* Add more details from notification.data as needed */}
+                  <a href={`/posts/${notification.data.postId}`}>View Post</a>
                 </span>
               )}
               {notification.type === 'other' && (

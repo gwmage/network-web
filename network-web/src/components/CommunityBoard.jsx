@@ -1,9 +1,11 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
 import PostList from './PostList';
-import PostForm from './PostForm'; // Import PostForm
+import PostForm from './PostForm';
 import LoadingIndicator from './LoadingIndicator';
 import Filters from './Filters';
+import CommentList from './CommentList';
+import { getComments } from '../utils/api';
 
 const CommunityBoard = () => {
   const [posts, setPosts] = useState([]);
@@ -16,7 +18,7 @@ const CommunityBoard = () => {
         const queryParams = new URLSearchParams(filters).toString();
         const response = await fetch(`/api/posts?${queryParams}`);
         const data = await response.json();
-        setPosts(data.items); // Access items from the paginated response
+        setPosts(data.items);
       } catch (error) {
         console.error("Error fetching posts:", error);
       } finally {
@@ -32,20 +34,35 @@ const CommunityBoard = () => {
   };
 
   const handlePostCreated = (newPost) => {
-    setPosts([newPost, ...posts]); // Add the new post to the beginning of the list
+    setPosts([newPost, ...posts]);
+  };
+
+  const [comments, setComments] = useState([]);
+  const [currentPostId, setCurrentPostId] = useState(null);
+
+  const fetchComments = async (postId) => {
+    try {
+      const fetchedComments = await getComments(postId);
+      setComments(fetchedComments);
+      setCurrentPostId(postId)
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
   };
 
 
   return (
     <div>
       <h1>Community Board</h1>
-      <PostForm onPostCreated={handlePostCreated} /> {/* Include the PostForm component */}
+      <PostForm onPostCreated={handlePostCreated} />
       {loading ? (
         <LoadingIndicator />
       ) : (
         <>
           <Filters onFilterChange={handleFilterChange} />
-          <PostList posts={posts} />
+          <PostList posts={posts} onPostSelect={fetchComments} /> {/* Pass the fetchComments function */}
+          {currentPostId && <CommentList comments={comments} postId={currentPostId} />} {/* Conditionally render CommentList */}
+
         </>
       )}
     </div>

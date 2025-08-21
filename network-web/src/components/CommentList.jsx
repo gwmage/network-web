@@ -3,16 +3,19 @@ import React, { useState, useEffect } from 'react';
 import * as api from '../utils/api';
 import Comment from './Comment';
 
-const CommentList = ({ postId, onCommentUpdate }) => {
+const CommentList = ({ postId, onCommentUpdate, currentUser }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const fetchedComments = await api.getComments(postId);
-        setComments(fetchedComments);
+        const { comments: fetchedComments, hasMore } = await api.getComments(postId, page);
+        setComments((prevComments) => (page === 1 ? fetchedComments : [...prevComments, ...fetchedComments]));
+        setHasMore(hasMore);
       } catch (err) {
         setError(err);
       } finally {
@@ -21,7 +24,7 @@ const CommentList = ({ postId, onCommentUpdate }) => {
     };
 
     fetchComments();
-  }, [postId, onCommentUpdate]);
+  }, [postId, page, onCommentUpdate]);
 
   if (loading) {
     return <p>Loading comments...</p>;
@@ -35,6 +38,10 @@ const CommentList = ({ postId, onCommentUpdate }) => {
     return <p>No comments yet.</p>;
   }
 
+  const loadMore = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
   return (
     <div>
       <h3>Comments</h3>
@@ -43,17 +50,21 @@ const CommentList = ({ postId, onCommentUpdate }) => {
           <Comment
             key={comment.id}
             comment={comment}
-            currentUser={1} // Replace with actual current user ID
+            currentUser={currentUser}
             onCommentDelete={(commentId) => {
-              // Update the comment list after deletion
               setComments(comments.filter((c) => c.id !== commentId));
               if (onCommentUpdate) {
-                onCommentUpdate(); // Notify parent component about update
+                onCommentUpdate();
               }
             }}
           />
         ))}
       </ul>
+      {hasMore && (
+        <button onClick={loadMore} disabled={loading}>
+          Load More
+        </button>
+      )}
     </div>
   );
 };
