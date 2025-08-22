@@ -2,20 +2,18 @@
 import React, { useState, useEffect } from 'react';
 import * as api from '../utils/api';
 import Comment from './Comment';
+import CommentForm from './CommentForm';
 
 const CommentList = ({ postId, onCommentUpdate, currentUser }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const { comments: fetchedComments, hasMore } = await api.getComments(postId, page);
-        setComments((prevComments) => (page === 1 ? fetchedComments : [...prevComments, ...fetchedComments]));
-        setHasMore(hasMore);
+        const fetchedComments = await api.getComments(postId);
+        setComments(fetchedComments);
       } catch (err) {
         setError(err);
       } finally {
@@ -24,52 +22,65 @@ const CommentList = ({ postId, onCommentUpdate, currentUser }) => {
     };
 
     fetchComments();
-  }, [postId, page, onCommentUpdate]);
+  }, [postId, onCommentUpdate]);
+
+  const handleCreateComment = async (newComment) => {
+    try {
+      const createdComment = await api.createComment({ ...newComment, postId });
+      setComments([...comments, createdComment]);
+    } catch (err) {
+      setError("Error creating comment: " + err.message);
+    }
+  };
+
+
+  const handleUpdateComment = async (updatedComment) => {
+    try {
+      await api.updateComment(updatedComment.id, updatedComment);
+      setComments(comments.map((comment) => (comment.id === updatedComment.id ? updatedComment : comment)));
+    } catch (err) {
+      setError("Error updating comment: " + err.message);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await api.deleteComment(commentId);
+      setComments(comments.filter((comment) => comment.id !== commentId));
+    } catch (err) {
+      setError("Error deleting comment: " + err.message);
+    }
+  };
+
 
   if (loading) {
     return <p>Loading comments...</p>;
   }
 
   if (error) {
-    return <p>Error loading comments: {error.message}</p>;
+    return <p>Error loading comments: {error}</p>;
   }
 
   if (!comments || comments.length === 0) {
     return <p>No comments yet.</p>;
   }
 
-  const loadMore = () => {
-    setPage((prevPage) => prevPage + 1);
-  };
-
-  const renderComments = (comments, level = 0) => {
-    return comments.map((comment) => (
-      <div key={comment.id} style={{ marginLeft: `${level * 20}px` }}>
-        <Comment
-          comment={comment}
-          currentUser={currentUser}
-          onCommentDelete={(commentId) => {
-            setComments(comments.filter((c) => c.id !== commentId));
-            if (onCommentUpdate) {
-              onCommentUpdate();
-            }
-          }}
-          onCommentReply={(content) => { /* Handle reply logic here */}}
-        />
-        {comment.replies && renderComments(comment.replies, level + 1)}
-      </div>
-    ));
-  };
-
   return (
     <div>
       <h3>Comments</h3>
-      {renderComments(comments)}
-      {hasMore && (
-        <button onClick={loadMore} disabled={loading}>
-          Load More
-        </button>
-      )}
+      <CommentForm onSubmit={handleCreateComment} postId={postId} />
+      <ul>
+        {comments.map((comment) => (
+          <Comment
+            key={comment.id}
+            comment={comment}
+            currentUser={currentUser}
+            onUpdate={handleUpdateComment}
+            onDelete={handleDeleteComment}
+            postId={postId}
+          />
+        ))}
+      </ul>
     </div>
   );
 };

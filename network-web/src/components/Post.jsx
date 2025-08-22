@@ -1,11 +1,10 @@
 ```typescript
 import React, { useState } from 'react';
 import { deletePost } from '../utils/api';
-import { Link } from 'react-router-dom';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
 
-const Post = ({ post, onDelete }) => {
+const Post = ({ post, onDelete, currentUser }) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -23,23 +22,17 @@ const Post = ({ post, onDelete }) => {
     }
   };
 
-  const handleCommentCreate = (newComment) => {
-    // Update the post object with the new comment
-    post.comments = [...post.comments, newComment];
-  };
-
-
   return (
     <div className="post-container">
-      <Link to={`/posts/${post.id}`}><h3>{post.title}</h3></Link>
+      <h3>{post.title}</h3>
       <p>{post.content}</p>
       {post.ownedByCurrentUser && (
         <button onClick={handleDelete} disabled={isDeleting}>
           {isDeleting ? 'Deleting...' : 'Delete'}
         </button>
       )}
-      <CommentForm postId={post.id} onCommentCreate={handleCommentCreate} />
-      <CommentList comments={post.comments} postId={post.id} />
+      <CommentList comments={post.comments} postId={post.id} currentUser={currentUser} />
+      <CommentForm postId={post.id} currentUser={currentUser}/>
     </div>
   );
 };

@@ -1,60 +1,61 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
 import PostList from './PostList';
-import PostDetails from './PostDetails'; // Import PostDetails
+import PostDetails from './PostDetails';
 import PostForm from './PostForm';
-import CommentForm from './CommentForm'; // Import CommentForm
-import CommentList from './CommentList'; // Import CommentList
+import CommentForm from './CommentForm';
+import CommentList from './CommentList';
 import LoadingIndicator from './LoadingIndicator';
 import Filters from './Filters';
-import { getComments } from '../utils/api'; // Import getComments
+import { getPosts, getComments } from '../utils/api'; // Import getPosts and getComments
 
 const CommunityBoard = () => {
   const [posts, setPosts] = useState([]);
-  const [comments, setComments] = useState([]); // State for comments
-  const [currentPost, setCurrentPost] = useState(null); // State for the selected post
-  const [currentPostId, setCurrentPostId] = useState(null); // State for the ID of the selected post for comments
+  const [comments, setComments] = useState([]);
+  const [currentPost, setCurrentPost] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // State for error handling
   const [filters, setFilters] = useState({ category: '', tags: [] });
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const queryParams = new URLSearchParams(filters).toString();
-        const response = await fetch(`/api/posts?${queryParams}`);
-        const data = await response.json();
-        setPosts(data.items);
+        const data = await getPosts(filters); // Use getPosts with filters
+        setPosts(data.items || []); // Handle potential undefined 'items'
       } catch (error) {
         console.error("Error fetching posts:", error);
+        setError("Failed to load posts. Please try again later."); // Set error message
       } finally {
         setLoading(false);
       }
     };
 
     fetchPosts();
-  }, [filters]);
+  }, [filters]); // Add filters as a dependency
 
-  const handleFilterChange = (newFilters) => {
-    setFilters(newFilters);
-  };
-
-  const handlePostCreated = (newPost) => {
-    setPosts([newPost, ...posts]);
-  };
-
-  const fetchComments = async (postId) => { // Function to fetch comments for a post
+  const fetchComments = async (postId) => {
     try {
-      const fetchedComments = await getComments(postId);
-      setComments(fetchedComments);
-      setCurrentPostId(postId)
+      const data = await getComments(postId);
+      setComments(data);
     } catch (error) {
       console.error('Error fetching comments:', error);
+      setError("Failed to load comments. Please try again later."); // Set error message for comments
     }
   };
 
-  const handlePostSelect = (post) => { // Handler for selecting a post
+
+  const handlePostSelect = (post) => {
     setCurrentPost(post);
-    fetchComments(post.id); // Fetch comments when a post is selected
+    fetchComments(post.id);
+  };
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+    setLoading(true); // Show loading indicator when filters change
+  };
+
+  const handlePostCreated = (newPost) => {
+      setPosts([newPost, ...posts]);
   };
 
 
@@ -64,18 +65,19 @@ const CommunityBoard = () => {
       <PostForm onPostCreated={handlePostCreated} />
       {loading ? (
         <LoadingIndicator />
+      ) : error ? (
+        <p style={{ color: 'red' }}>{error}</p> // Display error message
       ) : (
         <>
           <Filters onFilterChange={handleFilterChange} />
           <PostList posts={posts} onPostSelect={handlePostSelect} />
-          {currentPost && ( // Conditionally render PostDetails and CommentForm
+          {currentPost && ( // Conditionally render PostDetails and CommentForm/List
             <>
               <PostDetails post={currentPost} />
-              <CommentForm postId={currentPost.id} /> {/* Pass postId to CommentForm */}
+              <CommentForm postId={currentPost.id} />
+              <CommentList comments={comments} postId={currentPost.id} />
             </>
           )}
-          {currentPostId && <CommentList comments={comments} postId={currentPostId} />} {/* Conditionally render CommentList */}
-
         </>
       )}
     </div>

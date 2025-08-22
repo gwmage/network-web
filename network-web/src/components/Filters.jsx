@@ -42,6 +42,7 @@ const Filters = ({ onFilterChange }) => {
     });
   };
 
+
   return (
     <div>
       <label htmlFor="categorySelect">Category:</label>
@@ -71,4 +72,5 @@ const Filters = ({ onFilterChange }) => {
 };
 
 export default Filters;
+
 ```

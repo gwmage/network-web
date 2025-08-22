@@ -24,9 +24,9 @@ const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) =>
         // Create new comment
         await createComment(postId, { content, parentCommentId });
       }
-      onSubmit();
-      setContent('');
-      onClose();
+      onSubmit(); // Callback to parent component to refresh comments
+      setContent(''); // Clear the input field
+      onClose(); // Close the form
     } catch (error) {
       console.error('Error updating/creating comment:', error);
       setError('Failed to submit comment. Please try again.');
