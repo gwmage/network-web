@@ -1,6 +1,6 @@
 ```javascript
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import ForgotPassword from './components/ForgotPassword';
 import ProfileManagement from './components/ProfileManagement';
 import AppInformation from './components/AppInformation';
@@ -12,27 +12,59 @@ import ReservationManagement from './components/ReservationManagement';
 import ErrorDisplay from './components/ErrorDisplay';
 import NotificationSettings from './components/NotificationSettings';
 import CommunityBoard from './components/CommunityBoard';
-import PostDetails from './components/PostDetails'; // Import PostDetails component
+import PostDetails from './components/PostDetails';
 import axios from 'axios';
 import Main from './components/Main';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
-
+import AdminLogin from './components/AdminLogin';
+import AdminDashboard from './components/AdminDashboard';
 
 const App = () => {
-  // ... existing code ...
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const adminToken = localStorage.getItem('adminToken');
+    setIsLoggedIn(!!token);
+    setIsAdminLoggedIn(!!adminToken);
+  }, []);
+
+  const ProtectedRoute = ({ children }) => {
+    if (!isLoggedIn) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  };
+
+  const AdminProtectedRoute = ({ children }) => {
+    if (!isAdminLoggedIn) {
+      return <Navigate to="/admin/login" />;
+    }
+    return children;
+  };
+
 
   return (
     <Router>
       <Routes>
         {/* ... other routes ... */}
         <Route path="/community" element={<CommunityBoard />} />
-        <Route path="/community/:postId" element={<PostDetails />} /> {/* Add route for PostDetails */}
+        <Route path="/community/:postId" element={<PostDetails />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboard />
+            </AdminProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
 };
 
 export default App;
-
 ```

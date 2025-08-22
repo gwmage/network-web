@@ -1,39 +1,47 @@
 ```css
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .community-board-container {
-    width: 95%;
-    padding: 10px;
-  }
-
-  .post-title {
-    font-size: 1.2em;
-  }
-
-  .post-meta, .post-content {
-    font-size: 0.9em;
-  }
-
-  .comment-list {
-    padding-left: 10px; /* Reduce comment indent on smaller screens */
-  }
+/* Admin Dashboard Styles */
+.admin-dashboard {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f8f9fa; /* Light gray background */
 }
 
-@media (max-width: 500px) {
-  .post-meta {
-    font-size: 0.7em;
-  }
-  .post-content {
-    font-size: 0.8em;
-  }
-  .comment-author{
-    font-size: 0.9em;
-  }
-  .comment-content{
-    font-size: 0.8em
-  }
-  .comment-list {
-    padding-left: 0; /* Remove comment indent on very small screens */
+.admin-dashboard h1 {
+  color: #007bff; /* Blue heading */
+  margin-bottom: 20px;
+}
+
+.admin-dashboard nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-dashboard nav li {
+  margin-bottom: 10px;
+}
+
+.admin-dashboard nav a {
+  display: block;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #333;
+}
+
+.admin-dashboard nav a:hover {
+  background-color: #f0f0f0;
+}
+
+
+/* Responsive Styles for Admin Dashboard */
+@media (max-width: 768px) {
+  .admin-dashboard {
+    padding: 10px;
   }
 }
 ```

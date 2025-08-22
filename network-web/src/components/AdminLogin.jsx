@@ -11,6 +11,7 @@ const AdminLogin = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: '' });
+    setGeneralError(''); // Clear general error on input change
   };
 
   const handleSubmit = async (e) => {
@@ -34,12 +35,10 @@ const AdminLogin = () => {
         }
       } else {
         const data = await response.json();
-        // Store the token or perform other actions
         localStorage.setItem('adminToken', data.accessToken);
         console.log('Login successful:', data);
-        navigate('/admin'); // Redirect to admin dashboard
+        navigate('/admin');
       }
-
     } catch (error) {
       console.error('An error occurred:', error);
       setGeneralError('An error occurred during login.');
@@ -48,10 +47,12 @@ const AdminLogin = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" name="username" onChange={handleChange} />
+      <label htmlFor="username">Username:</label>
+      <input type="text" id="username" name="username" onChange={handleChange} value={formData.username} />
       {errors.username && <p style={{ color: 'red' }}>{errors.username}</p>}
 
-      <input type="password" name="password" onChange={handleChange} />
+      <label htmlFor="password">Password:</label>
+      <input type="password" id="password" name="password" onChange={handleChange} value={formData.password} />
       {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
 
       {generalError && <p style={{ color: 'red' }}>{generalError}</p>}
@@ -62,4 +63,5 @@ const AdminLogin = () => {
 };
 
 export default AdminLogin;
+
 ```

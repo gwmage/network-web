@@ -1,5 +1,7 @@
 ```typescript
 import React from 'react';
+import { Link } from 'react-router-dom';
+import './AdminDashboard.css'; // Import CSS for styling
 
 const AdminDashboard = () => {
   return (
@@ -8,20 +10,27 @@ const AdminDashboard = () => {
       <nav>
         <ul>
           <li>
-            <a href="/admin/users">User Management</a>
+            <Link to="/admin/users">User Management</Link>
           </li>
           <li>
-            <a href="/admin/matching">Matching Management</a>
+            <Link to="/admin/matching">Matching Management</Link>
           </li>
           <li>
-            <a href="/admin/settings">System Settings</a>
+            <Link to="/admin/settings">System Settings</Link>
+          </li>
+          <li>
+            <Link to="/admin/permissions">Permission Management</Link>
           </li>
         </ul>
       </nav>
-      {/* Other sections of the dashboard can be added here */}
+      {/* Outlet for rendering child components */}
+      <div className="admin-content">
+        {/* React Router Outlet will be placed here */}
+      </div>
     </div>
   );
 };
 
 export default AdminDashboard;
+
 ```
