@@ -1,17 +1,21 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
-import { getComments, deleteComment } from '../utils/api';
+import * as api from '../utils/api';
+import Comment from './Comment';
 
-const CommentList = ({ postId, onCommentUpdate }) => {
+const CommentList = ({ postId, onCommentUpdate, currentUser }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const fetchedComments = await getComments(postId);
-        setComments(fetchedComments);
+        const { comments: fetchedComments, hasMore } = await api.getComments(postId, page);
+        setComments((prevComments) => (page === 1 ? fetchedComments : [...prevComments, ...fetchedComments]));
+        setHasMore(hasMore);
       } catch (err) {
         setError(err);
       } finally {
@@ -20,18 +24,7 @@ const CommentList = ({ postId, onCommentUpdate }) => {
     };
 
     fetchComments();
-  }, [postId, onCommentUpdate]);
-
-  const handleDeleteComment = async (commentId) => {
-    try {
-      await deleteComment(postId, commentId);
-      setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
-    } catch (error) {
-      console.error("Error deleting comment:", error);
-      // Optionally, display an error message to the user
-    }
-  };
-
+  }, [postId, page, onCommentUpdate]);
 
   if (loading) {
     return <p>Loading comments...</p>;
@@ -45,19 +38,38 @@ const CommentList = ({ postId, onCommentUpdate }) => {
     return <p>No comments yet.</p>;
   }
 
+  const loadMore = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  const renderComments = (comments, level = 0) => {
+    return comments.map((comment) => (
+      <div key={comment.id} style={{ marginLeft: `${level * 20}px` }}>
+        <Comment
+          comment={comment}
+          currentUser={currentUser}
+          onCommentDelete={(commentId) => {
+            setComments(comments.filter((c) => c.id !== commentId));
+            if (onCommentUpdate) {
+              onCommentUpdate();
+            }
+          }}
+          onCommentReply={(content) => { /* Handle reply logic here */}}
+        />
+        {comment.replies && renderComments(comment.replies, level + 1)}
+      </div>
+    ));
+  };
+
   return (
     <div>
       <h3>Comments</h3>
-      <ul>
-        {comments.map((comment) => (
-          <li key={comment.id}>
-            <p>{comment.content}</p>
-            <p>By: {comment.author || 'Anonymous'}</p>
-            <p>Posted on: {comment.createdAt || 'Unknown'}</p>
-            <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+      {renderComments(comments)}
+      {hasMore && (
+        <button onClick={loadMore} disabled={loading}>
+          Load More
+        </button>
+      )}
     </div>
   );
 };

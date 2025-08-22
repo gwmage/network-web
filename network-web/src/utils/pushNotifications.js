@@ -34,4 +34,34 @@ export const sendPushNotification = async (notificationData: any) => {
   }
 };
 
+export const handleCommentPushNotification = async (commentData: any, type: string) => {
+  // Customize the notification message based on the comment action (create, update, delete)
+  let message;
+  switch (type) {
+    case 'create':
+      message = `New comment on post ${commentData.postId}: ${commentData.commentContent}`;
+      break;
+    case 'update':
+      message = `Comment updated on post ${commentData.postId}: ${commentData.commentContent}`;
+      break;
+    case 'delete':
+      message = `Comment deleted on post ${commentData.postId}`;
+      break;
+    default:
+      message = 'Comment activity on a post';
+  }
+
+  const notificationData = {
+    title: 'Comment Notification',
+    body: message,
+    data: {
+      postId: commentData.postId,
+      commentId: commentData.commentId,
+      // Add any other relevant data for deep linking or other actions
+    },
+  };
+
+  await sendPushNotification(notificationData);
+};
+
 ```

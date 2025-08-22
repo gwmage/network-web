@@ -1,53 +1,85 @@
 ```typescript
-import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { CommentList } from './CommentList';
+import { CommentForm } from './CommentForm';
 import PostDetails from './PostDetails';
-import axios from 'axios';
+import { createComment, updateComment, deleteComment } from '../services/commentService'; // Adjust path as needed
 
-jest.mock('axios');
+jest.mock('../services/commentService'); // Mock the comment service
 
-describe('PostDetails Component', () => {
-  const mockPost = {
-    id: 1,
-    title: 'Test Post Title',
-    content: 'Test Post Content',
-    category: 'general',
-    tags: ['test', 'post'],
-    createdAt: '2024-11-20T12:00:00Z',
-    updatedAt: '2024-11-20T12:00:00Z',
-  };
+const mockPost = {
+  id: 1,
+  title: 'Test Post',
+  content: 'Test content',
+  comments: [],
+};
 
-  it('renders post details correctly', async () => {
-    axios.get.mockResolvedValue({ data: mockPost });
-    render(<PostDetails match={{ params: { id: '1' } }} />);
+const mockComments = [
+  { id: 1, content: 'Comment 1', createdAt: '2024-01-01', author: { username: 'user1' } },
+  { id: 2, content: 'Comment 2', createdAt: '2024-01-02', author: { username: 'user2' } },
+];
 
-    expect(await screen.findByText('Test Post Title')).toBeInTheDocument();
-    expect(screen.getByText('Test Post Content')).toBeInTheDocument();
+describe('PostDetails', () => {
+  it('renders post details correctly', () => {
+    render(<PostDetails post={mockPost} />);
+    expect(screen.getByText('Test Post')).toBeInTheDocument();
+    expect(screen.getByText('Test content')).toBeInTheDocument();
   });
 
-  it('handles loading state', () => {
-    axios.get.mockImplementation(() => new Promise(() => {})); // Pending promise for loading state
-    render(<PostDetails match={{ params: { id: '1' } }} />);
-    // Add loading state assertion (e.g., checking for a loading indicator)
-  });
-
-
-  it('handles error state', async () => {
-    const errorMessage = 'Error fetching post details';
-    axios.get.mockRejectedValue(new Error(errorMessage));
-
-    render(<PostDetails match={{ params: { id: '1' } }} />);
-
-    expect(await screen.findByText(errorMessage)).toBeInTheDocument(); // or check for error message display logic.
+  it('displays comments', () => {
+    render(<PostDetails post={{ ...mockPost, comments: mockComments }} />);
+    mockComments.forEach((comment) => {
+      expect(screen.getByText(comment.content)).toBeInTheDocument();
+    });
   });
 
 
+  it('creates a new comment', async () => {
+    render(<PostDetails post={mockPost} />);
 
-  it('renders without crashing when no match prop provided', async () => {
+    const commentInput = screen.getByRole('textbox');
+    fireEvent.change(commentInput, { target: { value: 'New comment' } });
+    fireEvent.submit(commentInput.closest("form"));
 
-    render(<PostDetails />);
+
+    expect(createComment).toHaveBeenCalledWith(mockPost.id, { content: 'New comment' });
+    await expect(createComment(mockPost.id, { content: 'New comment' })).resolves.not.toThrow();
+
   });
+
+  it('updates an existing comment', async () => {
+
+    render(<PostDetails post={{ ...mockPost, comments: mockComments }} />);
+
+    const updateMock = jest.fn().mockResolvedValue(null);
+    updateComment.mockImplementation(updateMock)
+
+    fireEvent.click(screen.getByRole('button', {name: /edit comment 1/i}))
+
+    const commentInput = screen.getByRole('textbox');
+    fireEvent.change(commentInput, { target: { value: 'Updated comment' } });
+    fireEvent.submit(commentInput.closest("form"));
+
+    expect(updateComment).toHaveBeenCalled();
+
+
+
+  });
+
+  it('deletes a comment', async () => {
+      const deleteMock = jest.fn().mockResolvedValue(null);
+      deleteComment.mockImplementation(deleteMock);
+
+    render(<PostDetails post={{ ...mockPost, comments: mockComments }} />);
+
+    fireEvent.click(screen.getByRole('button', {name: /delete comment 1/i}))
+
+    expect(deleteComment).toHaveBeenCalledWith(mockPost.id, mockComments[0].id);
+
+  });
+
+
+
 });
-
 
 ```

@@ -1,6 +1,7 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
 import * as api from '../utils/api'; // Import the API functions
+import { Link } from 'react-router-dom'; // Import Link
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -25,11 +26,10 @@ const Notifications = () => {
 
   const markAsRead = async (notificationId) => {
     try {
-      await api.updateNotificationReadStatus(notificationId, true); // Call API to update status
+      await api.updateNotificationReadStatus(notificationId, true);
       setNotifications(notifications.map((n) => (n.id === notificationId ? { ...n, read: true } : n)));
     } catch (err) {
       console.error('Error marking notification as read:', err);
-      // Handle error, e.g., show a message to the user
     }
   };
 
@@ -51,12 +51,10 @@ const Notifications = () => {
         <ul>
           {notifications.map((notification) => (
             <li key={notification.id} className={notification.read ? 'read' : 'unread'} onClick={() => markAsRead(notification.id)}>
-              {/* Display notification content based on type */}
               {notification.type === 'comment' && (
                 <span>
-                  New comment on your post: {notification.data.commentContent} by {notification.data.authorId}
-                  {' '} {/* Add more details from notification.data as needed */}
-                  <a href={`/posts/${notification.data.postId}`}>View Post</a>
+                  New comment on your post: {notification.data.commentContent.substring(0,50)}... by {notification.data.authorId}{' '}
+                  <Link to={`/posts/${notification.data.postId}`}>View Post</Link>
                 </span>
               )}
               {notification.type === 'other' && (
