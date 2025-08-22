@@ -1,53 +1,39 @@
 ```css
-/* Comment styles */
-.comment-list {
-  list-style: none;
-  padding-left: 20px; /* Indent comments */
-  margin-top: 20px; /* Separate comments from post content */
-  background-color: #f8f8f8; /* Light background for comment display area */
-  border-radius: 5px;
-  padding: 10px;
-}
-
-.comment {
-  border: 1px solid #ddd; /* Add a border to each comment */
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #fff; /* White background for individual comments */
-  border-radius: 5px;
-}
-
-.comment-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-
-.comment.reply {
-  margin-left: 20px; /* Indent replies */
-  border-left: 2px solid #ccc; /* Visual indicator for reply */
-}
-
-
-.comment-form {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 20px; /* Separate from comment threads */
-  background-color: #fff; /* White background for input area */
-  border-radius: 5px;
-}
-
+/* Responsive Styles */
 @media (max-width: 768px) {
-  .comment {
-    padding: 5px;
+  .community-board-container {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .post-title {
+    font-size: 1.2em;
+  }
+
+  .post-meta, .post-content {
+    font-size: 0.9em;
+  }
+
+  .comment-list {
+    padding-left: 10px; /* Reduce comment indent on smaller screens */
+  }
+}
+
+@media (max-width: 500px) {
+  .post-meta {
+    font-size: 0.7em;
+  }
+  .post-content {
+    font-size: 0.8em;
+  }
+  .comment-author{
+    font-size: 0.9em;
+  }
+  .comment-content{
+    font-size: 0.8em
   }
   .comment-list {
-    padding-left: 10px;
-  }
-  .comment.reply {
-    margin-left: 10px;
+    padding-left: 0; /* Remove comment indent on very small screens */
   }
 }
-
 ```
