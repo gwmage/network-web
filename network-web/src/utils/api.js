@@ -5,98 +5,100 @@ const API_BASE_URL = '/api/community'; // Updated base URL
 
 // ... (Existing code remains unchanged)
 
-export const getPosts = async (page = 1, limit = 10, filter = {}) => {
+// User Management
+export const getUsers = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/posts`, {
-      params: { page, limit, ...filter },
-    });
+    const response = await axios.get('/api/admin/users');
     return response.data;
   } catch (error) {
-    console.error('Error fetching posts:', error);
+    console.error('Error fetching users:', error);
     throw error;
   }
 };
 
-export const createPost = async (postData) => {
+export const createUser = async (userData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/posts`, postData);
+    const response = await axios.post('/api/admin/users', userData);
     return response.data;
   } catch (error) {
-    console.error('Error creating post:', error);
+    console.error('Error creating user:', error);
     throw error;
   }
 };
 
-export const getPost = async (postId) => {
+export const updateUser = async (userId, userData) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/posts/${postId}`);
+    const response = await axios.put(`/api/admin/users/${userId}`, userData);
     return response.data;
   } catch (error) {
-    console.error('Error fetching post:', error);
+    console.error('Error updating user:', error);
     throw error;
   }
 };
 
-export const updatePost = async (postId, postData) => {
+export const deleteUser = async (userId) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/posts/${postId}`, postData);
+    const response = await axios.delete(`/api/admin/users/${userId}`);
     return response.data;
   } catch (error) {
-    console.error('Error updating post:', error);
-    throw error;
-  }
-};
-
-export const deletePost = async (postId) => {
-  try {
-    const response = await axios.delete(`${API_BASE_URL}/posts/${postId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting post:', error);
+    console.error('Error deleting user:', error);
     throw error;
   }
 };
 
 
-export const getComments = async (postId, page = 1, limit = 10) => {
+// Matching Management
+export const getAllGroups = async () => {
+    try {
+        const response = await axios.get('/api/admin/groups');
+        return response.data;
+    }
+    catch (error) {
+        console.error('Error getting all groups:', error);
+        throw error;
+    }
+}
+
+export const getGroupById = async (groupId) => {
+    try {
+        const response = await axios.get(`/api/admin/groups/${groupId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error getting group by ID:', error);
+        throw error;
+    }
+}
+
+
+
+export const startMatching = async () => {
+    try {
+      const response = await axios.post('/api/matching');
+      return response.data;
+    } catch (error) {
+      console.error('Error starting matching:', error);
+      throw error;
+    }
+  };
+
+
+// System Settings
+export const getSystemSettings = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/posts/${postId}/comments`, {
-      params: { page, limit },
-    });
+    const response = await axios.get('/api/admin/settings');
     return response.data;
   } catch (error) {
-    console.error('Error fetching comments:', error);
+    console.error('Error getting system settings:', error);
     throw error;
   }
 };
 
-export const createComment = async (postId, commentData) => {
+export const updateSystemSettings = async (settingsData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/posts/${postId}/comments`, commentData);
+    const response = await axios.put('/api/admin/settings', settingsData);
     return response.data;
   } catch (error) {
-    console.error('Error creating comment:', error);
-    throw error;
-  }
-};
-
-
-export const updateComment = async (postId, commentId, commentData) => {
-  try {
-    const response = await axios.put(`${API_BASE_URL}/posts/${postId}/comments/${commentId}`, commentData);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating comment:', error);
-    throw error;
-  }
-};
-
-export const deleteComment = async (postId, commentId) => {
-  try {
-    const response = await axios.delete(`${API_BASE_URL}/posts/${postId}/comments/${commentId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting comment:', error);
+    console.error('Error updating system settings:', error);
     throw error;
   }
 };

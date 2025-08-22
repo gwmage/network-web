@@ -11,7 +11,7 @@ const AdminMembers = () => {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const data = await api.getMembers(); // Assuming an API function to fetch members
+        const data = await api.getMembers();
         setMembers(data);
       } catch (err) {
         setError(err);
@@ -22,6 +22,16 @@ const AdminMembers = () => {
 
     fetchMembers();
   }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      await api.deleteMember(id);
+      setMembers(members.filter((member) => member.id !== id));
+    } catch (err) {
+      setError(err);
+    }
+  };
+
 
   if (loading) {
     return <div>Loading members...</div>;
@@ -34,11 +44,14 @@ const AdminMembers = () => {
   return (
     <div>
       <h2>Member Management</h2>
-      {/* Display members here */}
       {members.length > 0 ? (
         <ul>
           {members.map((member) => (
-            <li key={member.id}>{member.name}</li> // Assuming 'id' and 'name' properties
+            <li key={member.id}>
+              {member.name} ({member.email}) 
+              <button onClick={() => handleDelete(member.id)}>Delete</button>
+              {/* Add Edit functionality here */}
+            </li>
           ))}
         </ul>
       ) : (
