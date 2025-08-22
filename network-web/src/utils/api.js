@@ -1,106 +1,32 @@
 ```typescript
 import axios from 'axios';
 
-const API_BASE_URL = '/api/community'; // Updated base URL
+const API_BASE_URL = '/api'; // Or your API base URL
 
 // ... (Existing code remains unchanged)
 
-// User Management
-export const getUsers = async () => {
+export const getCommentNotifications = async (userId) => {
   try {
-    const response = await axios.get('/api/admin/users');
+    const response = await axios.get(`${API_BASE_URL}/users/${userId}/comment-notifications`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching users:', error);
-    throw error;
-  }
-};
-
-export const createUser = async (userData) => {
-  try {
-    const response = await axios.post('/api/admin/users', userData);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating user:', error);
-    throw error;
-  }
-};
-
-export const updateUser = async (userId, userData) => {
-  try {
-    const response = await axios.put(`/api/admin/users/${userId}`, userData);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating user:', error);
-    throw error;
-  }
-};
-
-export const deleteUser = async (userId) => {
-  try {
-    const response = await axios.delete(`/api/admin/users/${userId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting user:', error);
+    console.error('Error fetching comment notifications:', error);
     throw error;
   }
 };
 
 
-// Matching Management
-export const getAllGroups = async () => {
-    try {
-        const response = await axios.get('/api/admin/groups');
-        return response.data;
-    }
-    catch (error) {
-        console.error('Error getting all groups:', error);
-        throw error;
-    }
-}
-
-export const getGroupById = async (groupId) => {
-    try {
-        const response = await axios.get(`/api/admin/groups/${groupId}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error getting group by ID:', error);
-        throw error;
-    }
-}
-
-
-
-export const startMatching = async () => {
-    try {
-      const response = await axios.post('/api/matching');
-      return response.data;
-    } catch (error) {
-      console.error('Error starting matching:', error);
-      throw error;
-    }
-  };
-
-
-// System Settings
-export const getSystemSettings = async () => {
+export const markCommentNotificationAsRead = async (notificationId) => {
   try {
-    const response = await axios.get('/api/admin/settings');
+    const response = await axios.put(`${API_BASE_URL}/notifications/${notificationId}/read`);
     return response.data;
   } catch (error) {
-    console.error('Error getting system settings:', error);
+    console.error('Error marking comment notification as read:', error);
     throw error;
   }
 };
 
-export const updateSystemSettings = async (settingsData) => {
-  try {
-    const response = await axios.put('/api/admin/settings', settingsData);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating system settings:', error);
-    throw error;
-  }
-};
+
+// ... (Other functions remain unchanged)
 
 ```

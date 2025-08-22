@@ -1,47 +1,109 @@
 ```css
-/* Admin Dashboard Styles */
-.admin-dashboard {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  padding: 20px;
-  background-color: #f8f9fa; /* Light gray background */
-}
-
-.admin-dashboard h1 {
-  color: #007bff; /* Blue heading */
-  margin-bottom: 20px;
-}
-
-.admin-dashboard nav ul {
+/* Comment styles */
+.comment-list {
   list-style: none;
-  padding: 0;
-  margin: 0;
+  padding-left: 20px; /* Indent comments */
+  margin-top: 20px; /* Separate comments from post content */
 }
 
-.admin-dashboard nav li {
+.comment-item {
+  border-bottom: 1px solid #eee;
   margin-bottom: 10px;
+  padding-bottom: 10px;
 }
 
-.admin-dashboard nav a {
-  display: block;
+.comment-author {
+  font-weight: bold;
+}
+
+.comment-content {
+    margin-top: 5px;
+}
+
+.comment-date {
+  font-size: 0.8em;
+  color: #999;
+}
+
+.comment-actions {
+  margin-top: 5px;
+  display: flex;
+  gap: 5px; /* Add some space between buttons */
+  align-items: center; /* Vertically align action buttons */
+}
+
+/* Comment Form Styling */
+.comment-form {
+  border: 1px solid #ccc;
   padding: 10px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  text-decoration: none;
-  color: #333;
+  margin-bottom: 20px; /* Separate from comment threads */
 }
 
-.admin-dashboard nav a:hover {
-  background-color: #f0f0f0;
+.comment-textarea {
+  width: calc(100% - 22px); /* Account for padding and border */
+  height: 80px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  resize: vertical; /* Allow vertical resizing */
+}
+
+.comment-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.comment-buttons button{
+    margin-left: 5px;
+    padding: 5px 10px;
 }
 
 
-/* Responsive Styles for Admin Dashboard */
+
 @media (max-width: 768px) {
-  .admin-dashboard {
-    padding: 10px;
+    .comment-form {
+        margin-bottom: 10px;
+    }
+    .comment-textarea {
+        height: 60px;
+    }
+    .comment-list {
+        padding-left: 0; /* Further reduce indent on smaller screens */
+    }   
+    .comment-buttons {
+        flex-direction: column; /* Stack buttons vertically */
+        align-items: flex-start; /* Align to the start */
+    }
+  .post-meta {
+    font-size: 0.7em;
   }
+  .post-content {
+    font-size: 0.8em;
+  }
+  .comment-author{
+    font-size: 0.9em;
+  }
+  .comment-content{
+    font-size: 0.8em
+  }
+  .comment-actions button { /* Make buttons smaller on very small screens */
+    padding: 3px 6px;
+    font-size: 0.8em;
+  }
+  form textarea { /* Adjust textarea size on smaller screens */
+    font-size: 0.9em;
+  }
+  .comment-actions {
+      flex-direction: column; /* Stack actions vertically on smaller screens */
+      align-items: flex-start; /* Align to the left on smaller screens */
+  }
+
+}
+
+@media (max-width: 500px) {
+    .comment-actions button {
+        padding: 2px 4px; /* Further reduce padding on smaller screens */
+        font-size: 0.7em;
+    }
 }
 ```
