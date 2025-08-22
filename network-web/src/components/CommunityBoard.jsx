@@ -1,14 +1,19 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
 import PostList from './PostList';
+import PostDetails from './PostDetails'; // Import PostDetails
 import PostForm from './PostForm';
+import CommentForm from './CommentForm'; // Import CommentForm
+import CommentList from './CommentList'; // Import CommentList
 import LoadingIndicator from './LoadingIndicator';
 import Filters from './Filters';
-import CommentList from './CommentList';
-import { getComments } from '../utils/api';
+import { getComments } from '../utils/api'; // Import getComments
 
 const CommunityBoard = () => {
   const [posts, setPosts] = useState([]);
+  const [comments, setComments] = useState([]); // State for comments
+  const [currentPost, setCurrentPost] = useState(null); // State for the selected post
+  const [currentPostId, setCurrentPostId] = useState(null); // State for the ID of the selected post for comments
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ category: '', tags: [] });
 
@@ -37,10 +42,7 @@ const CommunityBoard = () => {
     setPosts([newPost, ...posts]);
   };
 
-  const [comments, setComments] = useState([]);
-  const [currentPostId, setCurrentPostId] = useState(null);
-
-  const fetchComments = async (postId) => {
+  const fetchComments = async (postId) => { // Function to fetch comments for a post
     try {
       const fetchedComments = await getComments(postId);
       setComments(fetchedComments);
@@ -48,6 +50,11 @@ const CommunityBoard = () => {
     } catch (error) {
       console.error('Error fetching comments:', error);
     }
+  };
+
+  const handlePostSelect = (post) => { // Handler for selecting a post
+    setCurrentPost(post);
+    fetchComments(post.id); // Fetch comments when a post is selected
   };
 
 
@@ -60,7 +67,13 @@ const CommunityBoard = () => {
       ) : (
         <>
           <Filters onFilterChange={handleFilterChange} />
-          <PostList posts={posts} onPostSelect={fetchComments} /> {/* Pass the fetchComments function */}
+          <PostList posts={posts} onPostSelect={handlePostSelect} />
+          {currentPost && ( // Conditionally render PostDetails and CommentForm
+            <>
+              <PostDetails post={currentPost} />
+              <CommentForm postId={currentPost.id} /> {/* Pass postId to CommentForm */}
+            </>
+          )}
           {currentPostId && <CommentList comments={comments} postId={currentPostId} />} {/* Conditionally render CommentList */}
 
         </>
