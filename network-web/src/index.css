@@ -1,79 +1,53 @@
 ```css
-/* Post Styles */
-.post-list {
+/* Comment styles */
+.comment-list {
   list-style: none;
-  padding: 0;
-}
-
-.post-item {
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-  padding: 15px;
+  padding-left: 20px; /* Indent comments */
+  margin-top: 20px; /* Separate comments from post content */
+  background-color: #f8f8f8; /* Light background for comment display area */
   border-radius: 5px;
-  background-color: #f8f8f8; /* Light background color */
+  padding: 10px;
 }
 
-.post-title a {
-  text-decoration: none;
-  color: #333;
-  font-weight: bold;
-}
-
-.post-meta {
-  color: #999;
-  font-size: 0.9em;
-  margin-top: 5px;
-}
-
-.post-content {
-  margin-top: 10px;
-}
-
-/* Post Details Styles */
-.post-details-container {
-  padding: 20px;
-}
-.post-details-title{
-  font-size: 1.5em;
+.comment {
+  border: 1px solid #ddd; /* Add a border to each comment */
+  padding: 10px;
   margin-bottom: 10px;
-}
-
-/* Post Form Styles */
-.post-form {
-  width: 80%; /* Adjust width as needed */
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
+  background-color: #fff; /* White background for individual comments */
   border-radius: 5px;
 }
 
-.post-form label {
-  display: block;
-  margin-bottom: 5px;
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 }
 
-.post-form input[type="text"],
-.post-form textarea {
-  width: 100%;
-  padding: 8px;
+
+.comment.reply {
+  margin-left: 20px; /* Indent replies */
+  border-left: 2px solid #ccc; /* Visual indicator for reply */
+}
+
+
+.comment-form {
   border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  margin-bottom: 10px;
-}
-
-
-.post-form button {
-  background-color: #4CAF50; /* Green */
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
+  padding: 10px;
+  margin-bottom: 20px; /* Separate from comment threads */
+  background-color: #fff; /* White background for input area */
   border-radius: 5px;
 }
+
+@media (max-width: 768px) {
+  .comment {
+    padding: 5px;
+  }
+  .comment-list {
+    padding-left: 10px;
+  }
+  .comment.reply {
+    margin-left: 10px;
+  }
+}
+
 ```
