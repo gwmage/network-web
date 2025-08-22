@@ -1,7 +1,6 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
 import * as api from '../utils/api'; // Import the API functions
-import { Link } from 'react-router-dom'; // Import Link
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -30,8 +29,19 @@ const Notifications = () => {
       setNotifications(notifications.map((n) => (n.id === notificationId ? { ...n, read: true } : n)));
     } catch (err) {
       console.error('Error marking notification as read:', err);
+      // Handle error, e.g., show a message to the user
     }
   };
+
+  const dismissNotification = async (notificationId) => {
+    try {
+      await api.deleteNotification(notificationId); // Assuming an API endpoint for deleting notifications
+      setNotifications(notifications.filter((n) => n.id !== notificationId));
+    } catch (err) {
+      console.error('Error dismissing notification:', err);
+       // Handle error, e.g., show a message to the user
+    }
+  }
 
 
   if (loading) {
@@ -50,16 +60,18 @@ const Notifications = () => {
       ) : (
         <ul>
           {notifications.map((notification) => (
-            <li key={notification.id} className={notification.read ? 'read' : 'unread'} onClick={() => markAsRead(notification.id)}>
+            <li key={notification.id} className={notification.read ? 'read' : 'unread'}>
+              {/* Display notification content based on type */}
               {notification.type === 'comment' && (
                 <span>
-                  New comment on your post: {notification.data.commentContent.substring(0,50)}... by {notification.data.authorId}{' '}
-                  <Link to={`/posts/${notification.data.postId}`}>View Post</Link>
+                  New comment on your post: {notification.message}
                 </span>
               )}
               {notification.type === 'other' && (
                 <span>{notification.message}</span>
               )}
+              <button onClick={() => markAsRead(notification.id)} disabled={notification.read}>Mark as Read</button>
+              <button onClick={() => dismissNotification(notification.id)}>Dismiss</button>
             </li>
           ))}
         </ul>
