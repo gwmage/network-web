@@ -22,10 +22,10 @@ const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) =>
         await updateComment(postId, comment.id, { content });
       } else {
         // Create new comment
-        await createComment(postId, { content, parentCommentId, postId: postId }); //postId: postId 중복
+        await createComment(postId, { content, parentCommentId });
       }
       onSubmit();
-      setContent('');
+      setContent(''); // Clear the textarea after submitting
       onClose();
     } catch (error) {
       console.error('Error updating/creating comment:', error);
