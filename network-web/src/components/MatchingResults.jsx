@@ -13,7 +13,7 @@ const MatchingResults: React.FC = () => {
     const fetchMatchingResults = async () => {
       try {
         const groupResponse = await axios.get('/api/matching/groups');
-        const userResponse = await axios.get('/api/users/me'); // Assuming an endpoint to get current user details
+        const userResponse = await axios.get('/api/users/me');
         setMatchingResults({ group: groupResponse.data, user: userResponse.data });
         toast.success("Matching successful!");
       } catch (err) {
@@ -46,10 +46,26 @@ const MatchingResults: React.FC = () => {
     return <div>No matching results found.</div>;
   }
 
+  const { group, user } = matchingResults;
+
   return (
     <div>
       <h2>Your Matched Group</h2>
-      {/* Display matching results here */}
+      <h3>Members:</h3>
+      <ul>
+        {group.members.map((member) => (
+          <li key={member.id}>{member.name} ({member.email})</li>
+        ))}
+      </ul>
+      <h3>Matching Criteria:</h3>
+      <p>You were matched with this group based on the following criteria:</p>
+      <ul>
+        {group.criteria.map((criterion) => (
+          <li key={criterion.name}>
+            <b>{criterion.name}:</b> {criterion.value} (Your {criterion.name}: {user[criterion.name]})
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
