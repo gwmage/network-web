@@ -1,12 +1,10 @@
 ```javascript
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate, useParams } from 'react-router-dom';
 import ForgotPassword from './components/ForgotPassword';
 import ProfileManagement from './components/ProfileManagement';
 import AppInformation from './components/AppInformation';
 import MatchingResults from './components/MatchingResults';
-import MatchingForm from './components/MatchingForm';
-import MatchingProgress from './components/MatchingProgress';
 import ReservationSearch from './components/ReservationSearch';
 import ReservationProcess from './components/ReservationProcess';
 import ReservationConfirmation from './components/ReservationConfirmation';
@@ -15,30 +13,59 @@ import ErrorDisplay from './components/ErrorDisplay';
 import NotificationSettings from './components/NotificationSettings';
 import CommunityBoard from './components/CommunityBoard';
 import PostDetails from './components/PostDetails';
-import SearchResults from './components/SearchResults';
 import axios from 'axios';
 import Main from './components/Main';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
-import MatchingGroups from './components/MatchingGroups'; // Import the new component
 
 const App = () => {
-  // ... existing code
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const adminToken = localStorage.getItem('adminToken');
+    setIsLoggedIn(!!token);
+    setIsAdminLoggedIn(!!adminToken);
+  }, []);
+
+  const ProtectedRoute = ({ children }) => {
+    if (!isLoggedIn) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  };
+
+  const AdminProtectedRoute = ({ children }) => {
+    if (!isAdminLoggedIn) {
+      return <Navigate to="/admin/login" />;
+    }
+    return children;
+  };
+
+  const PostDetailsWrapper = () => {
+    const { postId } = useParams();
+    return <PostDetails postId={postId} />;
+  };
+
 
   return (
     <Router>
       <Routes>
-        {/* ... other routes */}
-        <Route path="/matching" element={<MatchingForm />} />
-        <Route path="/matching/progress" element={<MatchingProgress />} />
-        <Route path="/matching/results" element={<MatchingResults />} />
-        <Route path="/admin/matching/groups" element={<MatchingGroups />} /> {/* Add new route */}
+        {/* ... other routes ... */}
         <Route path="/community" element={<CommunityBoard />} />
-        <Route path="/community/search" element={<SearchResults />} />
-        <Route path="/community/:postId" element={<PostDetails />} />
-        {/* ... other routes */}
+        <Route path="/community/:postId" element={<PostDetailsWrapper />} /> {/* Updated Route */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboard />
+            </AdminProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

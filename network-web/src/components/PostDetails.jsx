@@ -4,6 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import * as api from '../utils/api';
 import Comment from './Comment';
 import CommentForm from './CommentForm';
+import { format } from 'date-fns';
+
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -30,21 +32,19 @@ const PostDetails = () => {
 
   const handleCommentCreate = async (newComment) => {
     try {
-      const createdComment = await api.createComment({ ...newComment, postId: parseInt(postId, 10) }); // Ensure postId is a number
+      const createdComment = await api.createComment({ ...newComment, postId: parseInt(postId, 10) });
       setPost((prevPost) => ({
         ...prevPost,
         comments: [...prevPost.comments, createdComment],
       }));
     } catch (error) {
-      // Handle error, e.g., display error message
       console.error("Error creating comment:", error);
     }
   };
 
-
   const handleCommentUpdate = async (updatedComment) => {
     try {
-      await api.updateComment(parseInt(postId, 10), updatedComment.id, updatedComment); // Ensure postId is a number
+      await api.updateComment(parseInt(postId, 10), updatedComment.id, updatedComment);
       setPost((prevPost) => ({
         ...prevPost,
         comments: prevPost.comments.map((comment) =>
@@ -58,7 +58,7 @@ const PostDetails = () => {
 
   const handleCommentDelete = async (commentId) => {
     try {
-      await api.deleteComment(parseInt(postId, 10), commentId); // Ensure postId is a number
+      await api.deleteComment(parseInt(postId, 10), commentId);
       setPost((prevPost) => ({
         ...prevPost,
         comments: prevPost.comments.filter((comment) => comment.id !== commentId),
@@ -80,9 +80,14 @@ const PostDetails = () => {
     return <div>Post not found.</div>;
   }
 
+  const formattedDate = format(new Date(post.created_at), 'yyyy-MM-dd HH:mm:ss');
+
+
   return (
     <div>
       <h2>{post.title}</h2>
+      <p>By: {post.author?.username || 'Unknown'}</p> {/* Display author if available */}
+      <p>Created at: {formattedDate}</p>
       <p>{post.content}</p>
 
       <CommentForm onSubmit={handleCommentCreate} postId={parseInt(postId, 10)} />

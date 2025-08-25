@@ -16,11 +16,14 @@ const CommunityBoard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // State for error handling
   const [filters, setFilters] = useState({ category: '', tags: [] });
+  const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const [perPage] = useState(10); // Number of posts per page
+
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const data = await getPosts(filters); // Use getPosts with filters
+        const data = await getPosts(filters, currentPage, perPage); // Pass pagination params to getPosts
         setPosts(data.items || []); // Handle potential undefined 'items'
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -31,7 +34,7 @@ const CommunityBoard = () => {
     };
 
     fetchPosts();
-  }, [filters]); // Add filters as a dependency
+  }, [filters, currentPage]); // Add currentPage as a dependency
 
   const fetchComments = async (postId) => {
     try {
@@ -51,6 +54,7 @@ const CommunityBoard = () => {
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
+    setCurrentPage(1); // Reset to first page when filters change
     setLoading(true); // Show loading indicator when filters change
   };
 
@@ -58,6 +62,10 @@ const CommunityBoard = () => {
       setPosts([newPost, ...posts]);
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    setLoading(true);
+  };
 
   return (
     <div>
@@ -78,6 +86,12 @@ const CommunityBoard = () => {
               <CommentList comments={comments} postId={currentPost.id} />
             </>
           )}
+          <Pagination 
+            currentPage={currentPage} 
+            onPageChange={handlePageChange} 
+            totalCount={posts.length} // You'll need to get the total count from the API
+            perPage={perPage} 
+          />
         </>
       )}
     </div>

@@ -50,8 +50,8 @@ const PostForm = ({ post, onSubmit, onUpdate }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" name="title" placeholder="Title" value={formData.title} onChange={handleChange} />
-      <textarea name="content" placeholder="Content" value={formData.content} onChange={handleChange} />
+      <input type="text" name="title" placeholder="Title" value={formData.title} onChange={handleChange} required />
+      <textarea name="content" placeholder="Content" value={formData.content} onChange={handleChange} required />
       <input type="text" name="category" placeholder="Category" value={formData.category} onChange={handleChange} />
       <input type="text" name="tags" placeholder="Tags (comma-separated)" value={formData.tags} onChange={handleChange} />
 
