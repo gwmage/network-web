@@ -22,6 +22,7 @@ import SignUp from './components/SignUp';
 import Login from './components/Login';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
+import MatchingGroups from './components/MatchingGroups'; // Import the new component
 
 const App = () => {
   // ... existing code
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/matching" element={<MatchingForm />} />
         <Route path="/matching/progress" element={<MatchingProgress />} />
         <Route path="/matching/results" element={<MatchingResults />} />
+        <Route path="/admin/matching/groups" element={<MatchingGroups />} /> {/* Add new route */}
         <Route path="/community" element={<CommunityBoard />} />
         <Route path="/community/search" element={<SearchResults />} />
         <Route path="/community/:postId" element={<PostDetails />} />
