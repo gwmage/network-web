@@ -6,6 +6,8 @@ export const ReservationConfirmation = ({ reservation }) => {
     return null; // Or a loading indicator
   }
 
+  const formattedDateTime = new Date(reservation.dateTime).toLocaleString();
+
   return (
     <div>
       <h3>Reservation Confirmed!</h3>
@@ -13,7 +15,7 @@ export const ReservationConfirmation = ({ reservation }) => {
       <ul>
         <li>Restaurant ID: {reservation.restaurantId}</li>
         <li>User ID: {reservation.userId}</li>
-        <li>Date and Time: {reservation.dateTime}</li>
+        <li>Date and Time: {formattedDateTime}</li>
         <li>Number of People: {reservation.numberOfPeople}</li>
       </ul>
     </div>
