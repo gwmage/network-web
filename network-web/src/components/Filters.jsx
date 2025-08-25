@@ -1,76 +1,89 @@
 ```typescript
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import Filters from './Filters';
 
-const Filters = ({ onFilterChange }) => {
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [availableTags, setAvailableTags] = useState([]);
+describe('Filters Component', () => {
+  const mockCategories = [
+    { id: '1', name: 'Category 1' },
+    { id: '2', name: 'Category 2' },
+  ];
 
-  useEffect(() => {
-    const fetchCategoriesAndTags = async () => {
-      try {
-        const categoriesData = await fetch('/api/categories').then(res => res.json());
-        const tagsData = await fetch('/api/tags').then(res => res.json());
+  const mockTags = [
+    { id: '1', name: 'Tag 1' },
+    { id: '2', name: 'Tag 2' },
+  ];
 
-        setCategories(categoriesData);
-        setAvailableTags(tagsData);
-      } catch (error) {
-        console.error("Error fetching categories and tags:", error);
-      }
-    };
+  const mockOnFilterChange = jest.fn();
 
-    fetchCategoriesAndTags();
-  }, []);
+  beforeEach(() => {
+    global.fetch = jest.fn()
+      .mockResolvedValueOnce({ json: () => Promise.resolve(mockCategories) })
+      .mockResolvedValueOnce({ json: () => Promise.resolve(mockTags) });
 
-  useEffect(() => {
-    onFilterChange({ category: selectedCategory, tags: selectedTags });
-  }, [selectedCategory, selectedTags, onFilterChange]);
+    mockOnFilterChange.mockClear();
+  });
 
-  const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
-  };
+  it('renders filter options correctly', async () => {
+    render(<Filters onFilterChange={mockOnFilterChange} />);
+    expect(screen.getByText('Category:')).toBeInTheDocument();
+    expect(screen.getByText('All')).toBeInTheDocument();
 
-  const handleTagChange = (event) => {
-    const tag = event.target.value;
-    const isChecked = event.target.checked;
-
-    setSelectedTags(prevTags => {
-      return isChecked
-        ? [...prevTags, tag]
-        : prevTags.filter(t => t !== tag);
-    });
-  };
+    expect(await screen.findByText('Category 1')).toBeInTheDocument();
+    expect(await screen.findByText('Category 2')).toBeInTheDocument();
 
 
-  return (
-    <div>
-      <label htmlFor="categorySelect">Category:</label>
-      <select id="categorySelect" value={selectedCategory} onChange={handleCategoryChange}>
-        <option value="">All</option>
-        {categories.map(category => (
-          <option key={category.id} value={category.id}>{category.name}</option>
-        ))}
-      </select>
+    expect(screen.getByText('Tags:')).toBeInTheDocument();
+    expect(await screen.findByText('Tag 1')).toBeInTheDocument();
+    expect(await screen.findByText('Tag 2')).toBeInTheDocument();
 
-      <div>
-        <label>Tags:</label>
-        {availableTags.map(tag => (
-          <label key={tag.id}>
-            <input
-              type="checkbox"
-              value={tag.id}
-              checked={selectedTags.includes(tag.id)}
-              onChange={handleTagChange}
-            />
-            {tag.name}
-          </label>
-        ))}
-      </div>
-    </div>
-  );
-};
+  });
 
-export default Filters;
+
+
+  it('updates filters on selection change', async () => {
+    render(<Filters onFilterChange={mockOnFilterChange} />);
+
+    // select a category
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: '1' } });
+    expect(mockOnFilterChange).toHaveBeenCalledWith({ category: '1', tags: [] });
+
+    // select a tag
+    fireEvent.click(await screen.findByLabelText('Tag 1'));
+    expect(mockOnFilterChange).toHaveBeenCalledWith({ category: '1', tags: ['1'] });
+
+
+    fireEvent.click(await screen.findByLabelText('Tag 2'));
+    expect(mockOnFilterChange).toHaveBeenCalledWith({ category: '1', tags: ['1', '2'] });
+
+    // deselect a tag
+    fireEvent.click(await screen.findByLabelText('Tag 1'));
+    expect(mockOnFilterChange).toHaveBeenCalledWith({ category: '1', tags: ['2'] });
+
+
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: '2' } });
+    expect(mockOnFilterChange).toHaveBeenCalledWith({ category: '2', tags: ['2'] });
+
+
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: '' } });
+    expect(mockOnFilterChange).toHaveBeenCalledWith({ category: '', tags: ['2'] });
+  });
+
+
+
+
+  it('handles fetch errors gracefully', async () => {
+    global.fetch = jest.fn(() => Promise.reject('API Error')); // Simulate an API error
+    render(<Filters onFilterChange={mockOnFilterChange} />);
+
+    // Expect that no options are rendered since fetch failed
+    expect(screen.queryByText('Category 1')).not.toBeInTheDocument();
+    expect(screen.queryByText('Tag 1')).not.toBeInTheDocument();
+  });
+
+
+
+
+});
 
 ```
