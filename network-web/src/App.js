@@ -34,6 +34,7 @@ const App = () => {
     <Router>
       <Routes>
         {/* ... other routes ... */}
+        <Route path="/profile" element={<ProfileManagement />} /> {/* New Route */}
         <Route path="/community" element={<CommunityBoard />} />
         <Route path="/community/:postId" element={<PostDetails />} />
         <Route path="/admin/login" element={<AdminLogin />} /> {/* New Route */}
@@ -50,5 +51,4 @@ const App = () => {
 };
 
 export default App;
-
 ```
