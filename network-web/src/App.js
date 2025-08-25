@@ -13,6 +13,7 @@ import ErrorDisplay from './components/ErrorDisplay';
 import NotificationSettings from './components/NotificationSettings';
 import CommunityBoard from './components/CommunityBoard';
 import PostDetails from './components/PostDetails';
+import SearchResults from './components/SearchResults'; // Import SearchResults component
 import axios from 'axios';
 import Main from './components/Main';
 import SignUp from './components/SignUp';
@@ -21,65 +22,16 @@ import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const adminToken = localStorage.getItem('adminToken');
-    setIsLoggedIn(!!token);
-    setIsAdminLoggedIn(!!adminToken);
-  }, []);
-
-  const ProtectedRoute = ({ children }) => {
-    if (!isLoggedIn) {
-      return <Navigate to="/login" />;
-    }
-    return children;
-  };
-
-  const AdminProtectedRoute = ({ children }) => {
-    if (!isAdminLoggedIn) {
-      return <Navigate to="/admin/login" />;
-    }
-    return children;
-  };
-
+  // ... existing code
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <ProfileManagement />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/app-information" element={<AppInformation />} />
-        <Route path="/matching" element={<MatchingResults />} />
-        <Route path="/reservation/search" element={<ReservationSearch />} />
-        <Route path="/reservation/process" element={<ReservationProcess />} />
-        <Route path="/reservation/confirm" element={<ReservationConfirmation />} />
-        <Route path="/reservation/manage" element={<ReservationManagement />} /> {/* Added */}
+        {/* ... other routes */}
         <Route path="/community" element={<CommunityBoard />} />
+        <Route path="/community/search" element={<SearchResults />} /> {/* New route for search results */}
         <Route path="/community/:postId" element={<PostDetails />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route
-          path="/admin"
-          element={
-            <AdminProtectedRoute>
-              <AdminDashboard />
-            </AdminProtectedRoute>
-          }
-        />
-        <Route path="/notifications" element={<NotificationSettings />} />
-        <Route path="/error" element={<ErrorDisplay />} />
+        {/* ... other routes */}
       </Routes>
     </Router>
   );
