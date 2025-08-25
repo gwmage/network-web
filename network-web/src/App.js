@@ -50,6 +50,7 @@ const App = () => {
     <Router>
       <Routes>
         {/* ... other routes ... */}
+        <Route path="/matching" element={<MatchingResults />} /> {/* New Route */}
         <Route path="/community" element={<CommunityBoard />} />
         <Route path="/community/:postId" element={<PostDetails />} />
         <Route path="/admin/login" element={<AdminLogin />} />
