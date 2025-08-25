@@ -1,63 +1,76 @@
 ```css
-/* Post List Styles */
-.post-list {
-  list-style: none;
-  padding: 0;
+/* Admin section styles */
+.admin-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f8f9fa; /* Light gray background */
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.post-item {
-  border-bottom: 1px solid #eee;
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
-  padding-bottom: 20px;
+  border-bottom: 1px solid #dee2e6; /* Add a separator line */
+  padding-bottom: 10px;
 }
 
-.post-title {
-  font-size: 1.2em;
-  margin-bottom: 10px;
+.admin-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #343a40; /* Darker text color */
 }
 
-.post-meta {
-  font-size: 0.9em;
-  color: #999;
-  margin-bottom: 10px;
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.post-content {
-  line-height: 1.6;
+.admin-table th,
+.admin-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6; /* Use a lighter border color */
 }
 
-/* Category/Tag Styles */
-.post-categories,
-.post-tags {
-  margin-bottom: 10px;
+.admin-table th {
+  background-color: #e9ecef; /* Slightly darker background for headers */
+  font-weight: bold;
+  color: #495057; /* Slightly darker text for headers */
 }
 
-.category,
-.tag {
-  display: inline-block;
-  padding: 5px 10px;
-  margin-right: 5px;
-  border-radius: 3px;
-  background-color: #eee;
-  color: #333;
-  text-decoration: none;
-}
-
-.category:hover,
-.tag:hover {
-  background-color: #ddd;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .post-title {
-    font-size: 1.1em;
+/* Responsive design for smaller screens */
+@media screen and (max-width: 768px) {
+  .admin-container {
+    width: 95%;
+    padding: 15px;
   }
-  .post-meta {
-    font-size: 0.8em;
+
+  .admin-title {
+    font-size: 20px;
   }
-  .post-content {
-    font-size: 0.9em;
+
+  .admin-table {
+    font-size: 14px;
   }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 10px;
+  }
+}
+
+/* Add some basic styling for links */
+a {
+  text-decoration: none; /* Remove underlines */
+  color: #007bff; /* Use a standard blue color for links */
+}
+
+a:hover {
+  text-decoration: underline; /* Add underline on hover */
 }
 ```

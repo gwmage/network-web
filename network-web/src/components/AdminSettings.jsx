@@ -49,7 +49,7 @@ const AdminSettings = () => {
       }
       const data = await response.json();
       console.log('Settings updated:', data);
-      // Optionally, display a success message
+      // Optionally, display a success message or update the UI
     } catch (error) {
       console.error('Error updating settings:', error);
       // Handle error, e.g., display an error message

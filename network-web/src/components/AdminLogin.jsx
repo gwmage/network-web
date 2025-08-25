@@ -4,14 +4,13 @@ import { useNavigate } from 'react-router-dom';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ username: '', password: '' });
+  const [formData, setFormData] = useState({ email: '', password: '' }); // Use email instead of username
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: '' });
-    setGeneralError(''); // Clear general error on input change
   };
 
   const handleSubmit = async (e) => {
@@ -35,7 +34,7 @@ const AdminLogin = () => {
         }
       } else {
         const data = await response.json();
-        localStorage.setItem('adminToken', data.accessToken);
+        localStorage.setItem('adminToken', data.accessToken); // Store accessToken
         console.log('Login successful:', data);
         navigate('/admin');
       }
@@ -47,9 +46,9 @@ const AdminLogin = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="username">Username:</label>
-      <input type="text" id="username" name="username" onChange={handleChange} value={formData.username} />
-      {errors.username && <p style={{ color: 'red' }}>{errors.username}</p>}
+      <label htmlFor="email">Email:</label>
+      <input type="email" id="email" name="email" onChange={handleChange} value={formData.email} />
+      {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
 
       <label htmlFor="password">Password:</label>
       <input type="password" id="password" name="password" onChange={handleChange} value={formData.password} />

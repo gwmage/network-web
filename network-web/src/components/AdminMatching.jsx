@@ -1,45 +1,51 @@
 ```jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import MatchingResults from './MatchingResults';
-import MatchingProgress from './MatchingProgress';
+import MatchingProgress from './MatchingProgress'; // Assuming this component exists
 
 const AdminMatching = () => {
   const [matchingStatus, setMatchingStatus] = useState(null);
-  const [matchingError, setMatchingError] = useState(null);
   const [matchingResults, setMatchingResults] = useState(null);
-
-  const triggerMatching = async () => {
-    try {
-      const response = await axios.post('/matching');
-      setMatchingStatus(response.data);
-      setMatchingError(null);
-    } catch (error) {
-      setMatchingStatus(null);
-      setMatchingError(error.message);
-    }
-  };
+  const [matchingError, setMatchingError] = useState(null);
 
   const fetchMatchingStatus = async () => {
     try {
-      const response = await axios.get('/matching/status');
-      setMatchingStatus(response.data);
-      setMatchingError(null);
+      const response = await fetch('/matching/status');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setMatchingStatus(data);
     } catch (error) {
-      setMatchingStatus(null);
       setMatchingError(error.message);
     }
   };
 
   const fetchMatchingResults = async () => {
     try {
-      const response = await axios.get('/api/admin/matches/groups'); // Assuming this endpoint for fetching results
-      setMatchingResults(response.data);
+      const response = await fetch('/matching/groups'); // Updated endpoint
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setMatchingResults(data);
     } catch (error) {
-      console.error("Error fetching matching results:", error);
-      // Handle error, maybe display a message to the user
+      setMatchingError(error.message);
     }
-  }
+  };
+
+
+  const triggerMatching = async () => {
+    try {
+      const response = await fetch('/matching', { method: 'POST' });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      // Optionally update matching status immediately or wait for next refresh
+      fetchMatchingStatus();
+    } catch (error) {
+      setMatchingError(error.message);
+    }
+  };
 
   useEffect(() => {
     fetchMatchingStatus();
@@ -59,17 +65,17 @@ const AdminMatching = () => {
         </div>
       )}
 
+      {matchingResults && (
+        <div>
+          <h3>Matching Results:</h3>
+          <pre>{JSON.stringify(matchingResults, null, 2)}</pre>
+        </div>
+      )}
+
       {matchingError && (
         <div>
           <h3>Error:</h3>
           <p>{matchingError}</p>
-        </div>
-      )}
-
-      {matchingResults && (
-        <div>
-          <h3>Matching Results:</h3>
-          <MatchingResults results={matchingResults} />
         </div>
       )}
     </div>
