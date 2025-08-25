@@ -1,61 +1,79 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
-import * as api from '../utils/api';
-import ErrorDisplay from './ErrorDisplay';
+import axios from 'axios';
+import UserEdit from './UserEdit';
 
 const AdminMembers = () => {
-  const [members, setMembers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    const fetchMembers = async () => {
+    const fetchUsers = async () => {
       try {
-        const data = await api.getMembers();
-        setMembers(data);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
+        const response = await axios.get('/admin/users'); // Use API endpoint
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        // Implement appropriate error handling, e.g., display error message
       }
     };
 
-    fetchMembers();
+    fetchUsers();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleEdit = (user) => {
+    setSelectedUser(user);
+    setIsEditing(true);
+  };
+
+  const handleDelete = async (userId) => {
     try {
-      await api.deleteMember(id);
-      setMembers(members.filter((member) => member.id !== id));
-    } catch (err) {
-      setError(err);
+      await axios.delete(`/admin/users/${userId}`);
+      setUsers(users.filter(user => user.id !== userId));
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      // Implement appropriate error handling
     }
   };
 
+  const handleCloseEdit = () => {
+    setSelectedUser(null);
+    setIsEditing(false);
+    // Refresh user list after editing
+    axios.get('/admin/users').then(response => setUsers(response.data));
+    
+  };
 
-  if (loading) {
-    return <div>Loading members...</div>;
-  }
-
-  if (error) {
-    return <ErrorDisplay error={error} />;
-  }
 
   return (
     <div>
       <h2>Member Management</h2>
-      {members.length > 0 ? (
-        <ul>
-          {members.map((member) => (
-            <li key={member.id}>
-              {member.name} ({member.email}) 
-              <button onClick={() => handleDelete(member.id)}>Delete</button>
-              {/* Add Edit functionality here */}
-            </li>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map(user => (
+            <tr key={user.id}>
+              <td>{user.id}</td>
+              <td>{user.username}</td>
+              <td>{user.email}</td>
+              <td>
+                <button onClick={() => handleEdit(user)}>Edit</button>
+                <button onClick={() => handleDelete(user.id)}>Delete</button>
+              </td>
+            </tr>
           ))}
-        </ul>
-      ) : (
-        <p>No members found.</p>
+        </tbody>
+      </table>
+      {isEditing && (
+        <UserEdit user={selectedUser} onClose={handleCloseEdit} />
       )}
     </div>
   );

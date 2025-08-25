@@ -1,6 +1,6 @@
 ```javascript
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import ForgotPassword from './components/ForgotPassword';
 import ProfileManagement from './components/ProfileManagement';
 import AppInformation from './components/AppInformation';
@@ -17,59 +17,38 @@ import axios from 'axios';
 import Main from './components/Main';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
-import AdminLogin from './components/AdminLogin';
+import AdminMembers from './components/AdminMembers';
+import AdminMatching from './components/AdminMatching';
+import AdminSettings from './components/AdminSettings';
+import AdminPermissions from './components/AdminPermissions';
 import AdminDashboard from './components/AdminDashboard';
+import AdminNavigation from './components/AdminNavigation';
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminLogin from './components/AdminLogin'; // Import AdminLogin component
+
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const adminToken = localStorage.getItem('adminToken');
-    setIsLoggedIn(!!token);
-    setIsAdminLoggedIn(!!adminToken);
-  }, []);
-
-  const ProtectedRoute = ({ children }) => {
-    if (!isLoggedIn) {
-      return <Navigate to="/login" />;
-    }
-    return children;
-  };
-
-  const AdminProtectedRoute = ({ children }) => {
-    if (!isAdminLoggedIn) {
-      return <Navigate to="/admin/login" />;
-    }
-    return children;
-  };
-
-  const PostDetailsWrapper = () => {
-    const { postId } = useParams();
-    return <PostDetails postId={postId} />;
-  };
-
+  // ... existing code ...
 
   return (
     <Router>
       <Routes>
         {/* ... other routes ... */}
         <Route path="/community" element={<CommunityBoard />} />
-        <Route path="/community/:postId" element={<PostDetailsWrapper />} /> {/* Updated Route */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route
-          path="/admin"
-          element={
-            <AdminProtectedRoute>
-              <AdminDashboard />
-            </AdminProtectedRoute>
-          }
-        />
+        <Route path="/community/:postId" element={<PostDetails />} />
+        <Route path="/admin/login" element={<AdminLogin />} /> {/* New Route */}
+        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>}>
+          <Route path="members" element={<AdminMembers />} />
+          <Route path="matching" element={<AdminMatching />} />
+          <Route path="settings" element={<AdminSettings />} />
+          <Route path="permissions" element={<AdminPermissions />} />
+        </Route>
+
       </Routes>
     </Router>
   );
 };
 
 export default App;
+
 ```

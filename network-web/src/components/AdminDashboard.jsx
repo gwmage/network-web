@@ -1,7 +1,7 @@
 ```typescript
 import React from 'react';
-import { Link } from 'react-router-dom';
-import './AdminDashboard.css'; // Import CSS for styling
+import { Link, Outlet } from 'react-router-dom';
+import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   return (
@@ -23,10 +23,7 @@ const AdminDashboard = () => {
           </li>
         </ul>
       </nav>
-      {/* Outlet for rendering child components */}
-      <div className="admin-content">
-        {/* React Router Outlet will be placed here */}
-      </div>
+      <Outlet />
     </div>
   );
 };
