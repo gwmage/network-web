@@ -1,109 +1,62 @@
 ```css
-/* Comment styles */
-.comment-list {
-  list-style: none;
-  padding-left: 20px; /* Indent comments */
-  margin-top: 20px; /* Separate comments from post content */
-}
-
-.comment-item {
-  border-bottom: 1px solid #eee;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-}
-
-.comment-author {
-  font-weight: bold;
-}
-
-.comment-content {
-    margin-top: 5px;
-}
-
-.comment-date {
-  font-size: 0.8em;
-  color: #999;
-}
-
-.comment-actions {
-  margin-top: 5px;
+/* Search Bar Styles */
+.search-bar {
   display: flex;
-  gap: 5px; /* Add some space between buttons */
-  align-items: center; /* Vertically align action buttons */
-}
-
-/* Comment Form Styling */
-.comment-form {
-  border: 1px solid #ccc;
+  align-items: center;
   padding: 10px;
-  margin-bottom: 20px; /* Separate from comment threads */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px; /* Space below search bar */
 }
 
-.comment-textarea {
-  width: calc(100% - 22px); /* Account for padding and border */
-  height: 80px;
+.search-bar input[type="text"] {
+  flex-grow: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 3px;
+}
+
+.search-bar button {
+  padding: 8px 12px;
+  background-color: #007bff; /* Example color */
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+
+/* Search Results Styles */
+.search-results {
+  list-style: none;
+  padding: 0;
+}
+
+.search-result-item {
+  border-bottom: 1px solid #eee;
+  padding: 10px;
   margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  resize: vertical; /* Allow vertical resizing */
+  display: flex;             /* Use flexbox for layout */
+  flex-direction: column;  /* Stack elements vertically */
 }
 
-.comment-buttons {
-    display: flex;
-    justify-content: flex-end;
+.search-result-item h3 {    /* Style for result titles */
+  margin-top: 0;            /* Remove default top margin */
 }
-
-.comment-buttons button{
-    margin-left: 5px;
-    padding: 5px 10px;
-}
-
 
 
 @media (max-width: 768px) {
-    .comment-form {
-        margin-bottom: 10px;
-    }
-    .comment-textarea {
-        height: 60px;
-    }
-    .comment-list {
-        padding-left: 0; /* Further reduce indent on smaller screens */
-    }   
-    .comment-buttons {
-        flex-direction: column; /* Stack buttons vertically */
-        align-items: flex-start; /* Align to the start */
-    }
-  .post-meta {
-    font-size: 0.7em;
+  .search-bar {
+    flex-direction: column; /* Stack search bar elements vertically */
   }
-  .post-content {
-    font-size: 0.8em;
+  .search-bar input[type="text"] {
+    width: 100%; /* Full width input on smaller screens */
+    margin-bottom: 10px; /* Add spacing between input and button */
   }
-  .comment-author{
-    font-size: 0.9em;
+  .search-result-item { /* Adjust layout for smaller screens */
+    flex-direction: column;
   }
-  .comment-content{
-    font-size: 0.8em
-  }
-  .comment-actions button { /* Make buttons smaller on very small screens */
-    padding: 3px 6px;
-    font-size: 0.8em;
-  }
-  form textarea { /* Adjust textarea size on smaller screens */
-    font-size: 0.9em;
-  }
-  .comment-actions {
-      flex-direction: column; /* Stack actions vertically on smaller screens */
-      align-items: flex-start; /* Align to the left on smaller screens */
-  }
+  /* Add other responsive adjustments as needed */
 
-}
-
-@media (max-width: 500px) {
-    .comment-actions button {
-        padding: 2px 4px; /* Further reduce padding on smaller screens */
-        font-size: 0.7em;
-    }
 }
 ```
