@@ -8,6 +8,7 @@ const MatchingResults: React.FC = () => {
   const [matchingResults, setMatchingResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [explanation, setExplanation] = useState('');
 
   useEffect(() => {
     const fetchMatchingResults = async () => {
@@ -16,6 +17,17 @@ const MatchingResults: React.FC = () => {
         const userResponse = await axios.get('/api/users/me');
         setMatchingResults({ group: groupResponse.data, user: userResponse.data });
         toast.success("Matching successful!");
+
+        // Fetch explanation after successful matching
+        try {
+          const explanationResponse = await axios.get(`/api/matching/groups/${groupResponse.data.id}/explanation`);
+          setExplanation(explanationResponse.data);
+        } catch (explanationError) {
+          console.error("Error fetching explanation:", explanationError);
+          // Optionally display a toast error for explanation fetching failure
+          toast.error("Failed to fetch explanation.");
+        }
+
       } catch (err) {
         console.error("Error fetching matching results:", err);
         setError(err);
@@ -66,6 +78,9 @@ const MatchingResults: React.FC = () => {
           </li>
         ))}
       </ul>
+      {/* Display the explanation */}
+      <h3>Explanation:</h3>
+      <p>{explanation}</p>
     </div>
   );
 };
