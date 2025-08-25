@@ -10,67 +10,25 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.admin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Profile Styles */
+.profile-container {
+  width: 90%;
+  max-width: 800px; /* Adjust as needed */
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.profile-image {
+  border-radius: 50%; /* Make it circular */
+  width: 150px; /* Adjust size as needed */
+  height: 150px;
+  object-fit: cover; /* Maintain aspect ratio and cover the area */
   margin-bottom: 20px;
-  border-bottom: 1px solid #dee2e6; /* Add a separator line */
-  padding-bottom: 10px;
 }
 
-.admin-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #343a40; /* Darker text color */
-}
 
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.admin-table th,
-.admin-table td {
-  padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid #dee2e6; /* Use a lighter border color */
-}
-
-.admin-table th {
-  background-color: #e9ecef; /* Slightly darker background for headers */
-  font-weight: bold;
-  color: #495057; /* Slightly darker text for headers */
-}
-
-/* Responsive design for smaller screens */
-@media screen and (max-width: 768px) {
-  .admin-container {
-    width: 95%;
-    padding: 15px;
-  }
-
-  .admin-title {
-    font-size: 20px;
-  }
-
-  .admin-table {
-    font-size: 14px;
-  }
-
-  .admin-table th,
-  .admin-table td {
-    padding: 10px;
-  }
-}
-
-/* Add some basic styling for links */
-a {
-  text-decoration: none; /* Remove underlines */
-  color: #007bff; /* Use a standard blue color for links */
-}
-
-a:hover {
-  text-decoration: underline; /* Add underline on hover */
-}
+/* ... (rest of the CSS) */
 ```

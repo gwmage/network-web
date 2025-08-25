@@ -2,108 +2,36 @@
 import axios from 'axios';
 
 const API_BASE_URL = '/api/board'; // Updated base URL
+const PROFILE_API_BASE_URL = '/api/profile'; // New base URL for profile API
 
 // ... (Existing code remains unchanged)
 
-export const createPost = async (postData) => {
+export const createProfile = async (profileData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/posts`, postData);
+    const response = await axios.post(`${PROFILE_API_BASE_URL}`, profileData);
     return response.data;
   } catch (error) {
-    console.error('Error creating post:', error);
+    console.error('Error creating profile:', error);
     throw error;
   }
 };
 
-export const getPost = async (postId) => {
+export const getProfile = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/posts/${postId}`);
+    const response = await axios.get(`${PROFILE_API_BASE_URL}`);
     return response.data;
   } catch (error) {
-    console.error('Error getting post:', error);
+    console.error('Error getting profile:', error);
     throw error;
   }
 };
 
-export const updatePost = async (postId, postData) => {
+export const updateProfile = async (profileData) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/posts/${postId}`, postData);
+    const response = await axios.put(`${PROFILE_API_BASE_URL}`, profileData);
     return response.data;
   } catch (error) {
-    console.error('Error updating post:', error);
-    throw error;
-  }
-};
-
-export const deletePost = async (postId) => {
-  try {
-    const response = await axios.delete(`${API_BASE_URL}/posts/${postId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting post:', error);
-    throw error;
-  }
-};
-
-
-export const getPosts = async (filters = { page: 1, limit: 10, category: null, tags: [] }) => {
-  try {
-    const { page, limit, category, tags } = filters;
-    const params = new URLSearchParams({
-      page: page.toString(),
-      per_page: limit.toString(),
-      category,
-      tags: tags.join(','), // Convert array to comma-separated string
-    });
-
-    const response = await axios.get(`${API_BASE_URL}/posts?${params.toString()}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error getting posts:', error);
-    throw error;
-  }
-};
-
-export const createComment = async (postId, commentData) => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/posts/${postId}/comments`, commentData);
-    return response.data;
-  } catch (error) {
-    console.error('Error creating comment:', error);
-    throw error;
-  }
-};
-
-export const getComments = async (postId, page = 1, limit = 10) => {
-  try {
-      const params = new URLSearchParams({
-          page: page.toString(),
-          per_page: limit.toString(),
-      });
-    const response = await axios.get(`${API_BASE_URL}/posts/${postId}/comments?${params.toString()}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error getting comments:', error);
-    throw error;
-  }
-};
-
-export const updateComment = async (postId, commentId, commentData) => {
-  try {
-    const response = await axios.put(`${API_BASE_URL}/posts/${postId}/comments/${commentId}`, commentData);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating comment:', error);
-    throw error;
-  }
-};
-
-export const deleteComment = async (postId, commentId) => {
-  try {
-    const response = await axios.delete(`${API_BASE_URL}/posts/${postId}/comments/${commentId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting comment:', error);
+    console.error('Error updating profile:', error);
     throw error;
   }
 };
