@@ -1,69 +1,58 @@
 ```typescript
-import React, { useState, useEffect } from 'react';
-import './MatchingResults.css';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import MatchingResults from './MatchingResults';
 import axios from 'axios';
-import { ShareSocial } from 'react-share-social'
-import ErrorDisplay from './ErrorDisplay';
-import { toast } from 'react-toastify'; // Import toast for notifications
+import { toast } from 'react-toastify';
+jest.mock('axios');
+jest.mock('react-toastify');
 
-const MatchingResults = () => {
-  const [group, setGroup] = useState(null);
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true); // Add loading state
 
-  useEffect(() => {
-    const fetchMatchingResults = async () => {
-      try {
-        const groupResponse = await axios.get('/api/groups/my-group');
-        setGroup(groupResponse.data);
+describe('MatchingResults', () => {
+  it('renders loading message while fetching data', () => {
+    render(<MatchingResults />);
+    expect(screen.getByText('Loading matching results...')).toBeInTheDocument();
+  });
 
-        const userResponse = await axios.get('/api/users/me');
-        setUser(userResponse.data);
+  it('renders error message if fetching fails', async () => {
+    (axios.get as jest.Mock).mockRejectedValue(new Error('Network error'));
+    render(<MatchingResults />);
+    await screen.findByText('Failed to fetch matching results. Please try again later.'); // Wait for the error message
+     expect(toast.error).toHaveBeenCalledWith("Matching failed. Please try again later.");
+  });
 
-        toast.success("Matching successful!"); // Display success toast
-      } catch (error) {
-        console.error("Error fetching matching results:", error);
-        setError("Failed to fetch matching results. Please try again later.");
-        toast.error("Matching failed. Please try again later."); // Display error toast
-      } finally {
-        setLoading(false); // Set loading to false after data fetching
-      }
+
+  it('renders no results message if no group or user is found', async () => {
+    (axios.get as jest.Mock).mockResolvedValueOnce({ data: null }); // Mock group response
+    (axios.get as jest.Mock).mockResolvedValueOnce({ data: null }); // Mock user response
+
+    render(<MatchingResults />);
+    await screen.findByText('No matching results found.'); // Wait for the "no results" message
+  });
+
+  it('renders matching results correctly', async () => {
+    const mockGroup = {
+      participants: [
+        { id: 1, interests: ['reading', 'hiking'] },
+        { id: 2, interests: ['coding', 'hiking'] },
+      ],
     };
+    const mockUser = { id: 1, interests: ['reading', 'coding'] };
 
-    fetchMatchingResults();
-  }, []);
+    (axios.get as jest.Mock)
+      .mockResolvedValueOnce({ data: mockGroup })
+      .mockResolvedValueOnce({ data: mockUser });
 
+    render(<MatchingResults />);
 
+    await screen.findByText('Your Matched Group'); // Wait for the results to render
 
-  if (error) {
-    return <ErrorDisplay message={error} />;
-  }
+    // Check if shared interests are displayed correctly (example)
 
-  if (loading) {
-    return <div>Loading matching results...</div>; // Display loading message
-  }
-
-
-  if (!group || !user) {
-    return <div>No matching results found.</div>;
-  }
-
-  const sharedInterests = group.participants.filter(participant => participant.id !== user.id)
-    .flatMap(participant => participant.interests)
-    .filter(interest => user.interests.includes(interest));
-
-  const socialMediaUrl = window.location.href;
+    expect(toast.success).toHaveBeenCalledWith("Matching successful!");
 
 
-  return (
-    <div className="matching-results">
-      <h2>Your Matched Group</h2>
-      {/* ... rest of the component JSX */}
-    </div>
-  );
-};
-
-export default MatchingResults;
+  });
+});
 
 ```
