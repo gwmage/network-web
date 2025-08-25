@@ -1,70 +1,60 @@
 ```typescript
 import React, { useState } from 'react';
 import { makeReservation } from '../utils/api';
+import ReservationForm from './ReservationForm'; // Import the ReservationForm component
 
 const ReservationProcess = () => {
-  const [dateTime, setDateTime] = useState('');
-  const [numberOfPeople, setNumberOfPeople] = useState(1);
-  const [restaurantId, setRestaurantId] = useState(''); // Make sure to set this value
-  const [userId, setUserId] = useState(''); // Make sure to set this value, perhaps through a login process
   const [reservationStatus, setReservationStatus] = useState('idle'); // idle, processing, success, error
+  const [reservationData, setReservationData] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
 
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleReservationSubmit = async (data) => {
     setReservationStatus('processing');
     setErrorMessage('');
 
     try {
-      const reservation = await makeReservation({
-        restaurantId,
-        userId,
-        dateTime: dateTime.toString(), // Ensure dateTime is a string
-        numberOfPeople,
-      });
+      const reservation = await makeReservation(data);
       console.log('Reservation successful:', reservation);
       setReservationStatus('success');
-
-
+      setReservationData(reservation);
     } catch (error) {
       console.error('Error making reservation:', error);
       setReservationStatus('error');
-      setErrorMessage(error.message);
+      setErrorMessage(error.message || 'An unknown error occurred.');
     }
   };
-
 
   return (
     <div>
       <h2>Make a Reservation</h2>
-      {reservationStatus === 'processing' && <p>Processing reservation...</p>}
-      {reservationStatus === 'success' && <p>Reservation successful!</p>}
-      {reservationStatus === 'error' && <p style={{ color: 'red' }}>Error: {errorMessage}</p>}
 
+      {/* Visual feedback based on reservation status */}
+      {reservationStatus === 'processing' && (
+        <div>
+          <p>Processing reservation...</p>
+          {/* Add a loading indicator or progress bar here */}
+          <progress value="50" max="100"></progress> {/* Example progress bar */}
+        </div>
+      )}
+      {reservationStatus === 'success' && (
+        <div>
+          <p>Reservation successful!</p>
+          {/* Display reservation details */}
+          <pre>{JSON.stringify(reservationData, null, 2)}</pre>
+        </div>
+      )}
+      {reservationStatus === 'error' && (
+        <p style={{ color: 'red' }}>Error: {errorMessage}</p>
+      )}
 
-      {reservationStatus !== 'success' && (
-        <form onSubmit={handleSubmit}>
-          <input
-            type="datetime-local"
-            value={dateTime}
-            onChange={(e) => setDateTime(e.target.value)}
-            required
-          />
-          <input
-            type="number"
-            min="1"
-            value={numberOfPeople}
-            onChange={(e) => setNumberOfPeople(parseInt(e.target.value, 10))}
-            required
-          />
-          <button type="submit">Make Reservation</button>
-        </form>
+      {/* Show the form if not successful or processing */}
+      {(reservationStatus === 'idle' || reservationStatus === 'error') && (
+        <ReservationForm onSubmit={handleReservationSubmit} />
       )}
     </div>
   );
 };
 
-
 export default ReservationProcess;
+
 ```

@@ -49,8 +49,24 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        {/* ... other routes ... */}
-        <Route path="/matching" element={<MatchingResults />} /> {/* New Route */}
+        <Route path="/" element={<Main />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfileManagement />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/app-information" element={<AppInformation />} />
+        <Route path="/matching" element={<MatchingResults />} />
+        <Route path="/reservation/search" element={<ReservationSearch />} />
+        <Route path="/reservation/process" element={<ReservationProcess />} />
+        <Route path="/reservation/confirm" element={<ReservationConfirmation />} />
+        <Route path="/reservation/manage" element={<ReservationManagement />} /> {/* Added */}
         <Route path="/community" element={<CommunityBoard />} />
         <Route path="/community/:postId" element={<PostDetails />} />
         <Route path="/admin/login" element={<AdminLogin />} />
@@ -62,6 +78,8 @@ const App = () => {
             </AdminProtectedRoute>
           }
         />
+        <Route path="/notifications" element={<NotificationSettings />} />
+        <Route path="/error" element={<ErrorDisplay />} />
       </Routes>
     </Router>
   );

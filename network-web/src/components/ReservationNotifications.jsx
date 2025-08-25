@@ -5,26 +5,40 @@ const ReservationNotifications = () => {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    // TODO: Fetch reservation notifications from backend API
-    // Example:
-    // fetch('/api/reservations/notifications')
-    //   .then(res => res.json())
-    //   .then(data => setNotifications(data));
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch('/api/reservations/notifications'); // Replace with your actual API endpoint
+        if (response.ok) {
+          const data = await response.json();
+          setNotifications(data);
+        } else {
+          console.error('Failed to fetch notifications:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
 
-    // Mock notifications for now
-    const mockNotifications = [
-      { id: 1, message: 'Your reservation at Restaurant A has been confirmed.', status: 'success' },
-      { id: 2, message: 'Your reservation request at Restaurant B is pending.', status: 'pending' },
-      { id: 3, message: 'Your reservation at Restaurant C has been declined.', status: 'error' },
-    ];
-    setNotifications(mockNotifications);
+    fetchNotifications();
+
+    // Optional: Implement WebSocket for real-time updates
+    // const socket = new WebSocket('ws://your-websocket-server'); // Replace with your WebSocket server URL
+
+    // socket.onmessage = (event) => {
+    //   const newNotification = JSON.parse(event.data);
+    //   setNotifications((prevNotifications) => [...prevNotifications, newNotification]);
+    // };
+
+    // return () => {
+    //   socket.close();
+    // };
   }, []);
 
   return (
     <div>
       <h2>Reservation Notifications</h2>
       {notifications.map(notification => (
-        <div key={notification.id} className={`notification notification-${notification.status}`}>
+        <div key={notification.id} className={`notification notification-${notification.status || 'info'}`}>
           {notification.message}
         </div>
       ))}
@@ -33,4 +47,5 @@ const ReservationNotifications = () => {
 };
 
 export default ReservationNotifications;
+
 ```
