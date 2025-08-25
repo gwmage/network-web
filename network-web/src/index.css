@@ -1,62 +1,63 @@
 ```css
-/* Search Bar Styles */
-.search-bar {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-bottom: 20px; /* Space below search bar */
-}
-
-.search-bar input[type="text"] {
-  flex-grow: 1;
-  padding: 8px;
-  border: none;
-  border-radius: 3px;
-}
-
-.search-bar button {
-  padding: 8px 12px;
-  background-color: #007bff; /* Example color */
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-
-/* Search Results Styles */
-.search-results {
+/* Post List Styles */
+.post-list {
   list-style: none;
   padding: 0;
 }
 
-.search-result-item {
+.post-item {
   border-bottom: 1px solid #eee;
-  padding: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+}
+
+.post-title {
+  font-size: 1.2em;
   margin-bottom: 10px;
-  display: flex;             /* Use flexbox for layout */
-  flex-direction: column;  /* Stack elements vertically */
 }
 
-.search-result-item h3 {    /* Style for result titles */
-  margin-top: 0;            /* Remove default top margin */
+.post-meta {
+  font-size: 0.9em;
+  color: #999;
+  margin-bottom: 10px;
 }
 
+.post-content {
+  line-height: 1.6;
+}
 
+/* Category/Tag Styles */
+.post-categories,
+.post-tags {
+  margin-bottom: 10px;
+}
+
+.category,
+.tag {
+  display: inline-block;
+  padding: 5px 10px;
+  margin-right: 5px;
+  border-radius: 3px;
+  background-color: #eee;
+  color: #333;
+  text-decoration: none;
+}
+
+.category:hover,
+.tag:hover {
+  background-color: #ddd;
+}
+
+/* Responsive Adjustments */
 @media (max-width: 768px) {
-  .search-bar {
-    flex-direction: column; /* Stack search bar elements vertically */
+  .post-title {
+    font-size: 1.1em;
   }
-  .search-bar input[type="text"] {
-    width: 100%; /* Full width input on smaller screens */
-    margin-bottom: 10px; /* Add spacing between input and button */
+  .post-meta {
+    font-size: 0.8em;
   }
-  .search-result-item { /* Adjust layout for smaller screens */
-    flex-direction: column;
+  .post-content {
+    font-size: 0.9em;
   }
-  /* Add other responsive adjustments as needed */
-
 }
 ```

@@ -1,38 +1,113 @@
 ```typescript
 import axios from 'axios';
 
-const API_BASE_URL = '/api'; // Or your API base URL
+const API_BASE_URL = '/api/board'; // Updated base URL
 
 // ... (Existing code remains unchanged)
 
-export const getMatchingResults = async () => {
+export const createPost = async (postData) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/matching/results`);
+    const response = await axios.post(`${API_BASE_URL}/posts`, postData);
     return response.data;
   } catch (error) {
-    console.error('Error fetching matching results:', error);
+    console.error('Error creating post:', error);
     throw error;
   }
 };
 
-export const getMatchingExplanation = async () => {
+export const getPost = async (postId) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/matching/explanation`);
+    const response = await axios.get(`${API_BASE_URL}/posts/${postId}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching matching explanation:', error);
+    console.error('Error getting post:', error);
     throw error;
   }
 };
 
-export const getMatchingVisualizationData = async () => {
+export const updatePost = async (postId, postData) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/matching/visualization`);
+    const response = await axios.put(`${API_BASE_URL}/posts/${postId}`, postData);
     return response.data;
   } catch (error) {
-    console.error('Error fetching matching visualization data:', error);
+    console.error('Error updating post:', error);
     throw error;
   }
 };
+
+export const deletePost = async (postId) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/posts/${postId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    throw error;
+  }
+};
+
+
+export const getPosts = async (filters = { page: 1, limit: 10, category: null, tags: [] }) => {
+  try {
+    const { page, limit, category, tags } = filters;
+    const params = new URLSearchParams({
+      page: page.toString(),
+      per_page: limit.toString(),
+      category,
+      tags: tags.join(','), // Convert array to comma-separated string
+    });
+
+    const response = await axios.get(`${API_BASE_URL}/posts?${params.toString()}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting posts:', error);
+    throw error;
+  }
+};
+
+export const createComment = async (postId, commentData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/posts/${postId}/comments`, commentData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating comment:', error);
+    throw error;
+  }
+};
+
+export const getComments = async (postId, page = 1, limit = 10) => {
+  try {
+      const params = new URLSearchParams({
+          page: page.toString(),
+          per_page: limit.toString(),
+      });
+    const response = await axios.get(`${API_BASE_URL}/posts/${postId}/comments?${params.toString()}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting comments:', error);
+    throw error;
+  }
+};
+
+export const updateComment = async (postId, commentId, commentData) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/posts/${postId}/comments/${commentId}`, commentData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating comment:', error);
+    throw error;
+  }
+};
+
+export const deleteComment = async (postId, commentId) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/posts/${postId}/comments/${commentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    throw error;
+  }
+};
+
+// ... (Other functions remain unchanged)
 
 ```
