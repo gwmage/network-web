@@ -5,49 +5,37 @@ const API_BASE_URL = 'http://localhost:3000/api'; // Replace with your API base 
 
 // ... other existing functions
 
-export const getApplications = async (page = 1, pageSize = 10, sortField = 'createdAt', sortOrder = 'DESC', filter = {}, keyword = '') => {
+export const getRestaurantInfo = async (restaurantId) => {
   try {
-    const params = {
-      page,
-      pageSize,
-      sortField,
-      sortOrder,
-      keyword,
-      ...filter,
-    };
-    const response = await axios.get(`${API_BASE_URL}/applications`, { params });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching applications:", error);
-    throw error;
-  }
-};
-
-export const getFilteredUsers = async (regions, interests) => {
-  try {
-    const params = {};
-    if (regions && regions.length > 0) {
-      params.regions = regions;
-    }
-    if (interests && interests.length > 0) {
-      params.interests = interests;
+    const apiKey = process.env.RESTAURANT_API_KEY; // Assuming API key is stored in environment variables
+    if (!apiKey) {
+      throw new Error('Restaurant API key is missing.');
     }
 
-    const response = await axios.get(`${API_BASE_URL}/users`, { params });
+    const response = await axios.get(`/reservation/restaurant/${restaurantId}`, {
+      headers: {
+        'X-Api-Key': apiKey, // Or any other header name expected by the API
+      },
+    });
     return response.data;
   } catch (error) {
-    console.error("Error fetching filtered users:", error);
-    throw error;
-  }
-};
-
-export const triggerMatching = async () => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/matching`);
-    return response.data;
-  } catch (error) {
-    console.error("Error triggering matching:", error);
-    throw error;
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      if (error.response.status === 401) {
+        throw new Error('Invalid API key');
+      } else {
+        throw new Error(`Error fetching restaurant information: ${error.response.status} ${error.response.data.message}`);
+      }
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in Node.js
+      throw new Error('Network Error');
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      throw new Error(`Error fetching restaurant information: ${error.message}`);
+    }
   }
 };
 ```
