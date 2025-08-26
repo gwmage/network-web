@@ -5,6 +5,26 @@ const API_BASE_URL = 'http://localhost:3000/api'; // Replace with your API base 
 
 // ... other existing functions
 
+export const getNotificationPreferences = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/notifications/preferences`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching notification preferences:', error);
+    throw new Error('Failed to fetch notification preferences');
+  }
+};
+
+export const updateNotificationPreferences = async (preferences) => {
+  try {
+    await axios.put(`${API_BASE_URL}/notifications/preferences`, preferences);
+  } catch (error) {
+    console.error('Error updating notification preferences:', error);
+    throw new Error('Failed to update notification preferences');
+  }
+};
+
+
 export const getRestaurantInfo = async (restaurantId) => {
   try {
     const apiKey = process.env.RESTAURANT_API_KEY; // Assuming API key is stored in environment variables
