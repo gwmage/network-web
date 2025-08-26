@@ -1,55 +1,48 @@
 ```css
-/* Filters Component Styles */
-.filters {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px; /* Space between filters and results */
-}
-
-.filters label {
-  display: block;
-  margin-bottom: 10px;
-}
-
-.filters select,
-.filters input[type="text"] {
+/* Table Styles */
+.matching-results table {
   width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px; /* Add some space above the table */
+}
+
+.matching-results th,
+.matching-results td {
   padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
+  text-align: left;
 }
 
-/* Matching Results Styles */
-.matching-results {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.matching-results th {
+  background-color: #f0f0f0; /* Light gray background for header */
+  font-weight: bold;
 }
 
-.matching-results ul {
-  list-style: none;
-  padding: 0;
+/* Pagination Styles */
+.pagination {
+  margin-top: 20px;
+  text-align: center;
 }
 
-.matching-results li {
-  margin-bottom: 15px;
-  padding: 10px;
+.pagination button {
+  padding: 8px 12px;
+  margin: 0 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
 }
 
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
 
-/* Media Queries for Responsiveness - Filters and Results */
+/* Responsive Table Styles */
 @media (max-width: 768px) {
-  .filters,
-  .matching-results {
-    width: 95%;
-    margin: 10px auto; /* Center on smaller screens */
-    padding: 15px;
+  .matching-results table {
+    display: block; /* Make table scrollable on small screens */
+    overflow-x: auto;
   }
 }
 ```
