@@ -12,7 +12,9 @@ const SearchResults = ({ results }) => {
     <ul className="search-results">
       {results.map((result) => (
         <li key={result.id} className="search-result-item">
-          {/* ... other content rendering ... */}
+          <h3>{result.name}</h3>
+          <p>{result.address}</p>
+          {/* Display other relevant information */}
           <div className="comment-section">
             <CommentForm postId={result.id} />
           </div>
@@ -24,35 +26,4 @@ const SearchResults = ({ results }) => {
 
 export default SearchResults;
 
-```
-
-```css
-/* SearchResults.css */
-.search-results {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.search-result-item {
-  margin-bottom: 20px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.comment-section {
-  margin-top: 10px;
-  padding: 10px;
-  border-top: 1px solid #eee;
-}
-
-@media (max-width: 768px) {
-  .search-result-item {
-    padding: 5px;
-  }
-  .comment-section {
-    padding: 5px;
-  }
-}
 ```

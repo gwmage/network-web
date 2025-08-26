@@ -5,7 +5,8 @@ import MatchingForm from './components/MatchingForm';
 import MatchingProgress from './components/MatchingProgress';
 import MatchingResults from './components/MatchingResults';
 import Filters from './components/Filters';
-import Applications from './components/Applications'; // Import the Applications component
+import Applications from './components/Applications';
+import RestaurantDetails from './components/RestaurantDetails'; // Import the RestaurantDetails component
 
 const App = () => {
   // ... existing code ...
@@ -14,7 +15,8 @@ const App = () => {
     <Router>
       <Routes>
         {/* ... other routes ... */}
-        <Route path="/applications" element={<Applications />} /> {/* Add the route for Applications */}
+        <Route path="/restaurant/:id" element={<RestaurantDetails />} /> {/* Add the route for RestaurantDetails */}
+        <Route path="/applications" element={<Applications />} /> 
       </Routes>
     </Router>
   );
