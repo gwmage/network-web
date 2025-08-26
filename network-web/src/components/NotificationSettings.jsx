@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import * as api from '../utils/api';
 
 const NotificationSettings = () => {
-  const [pushNotifications, setPushNotifications] = useState(false);
-  const [emailNotifications, setEmailNotifications] = useState(false);
+  const [notificationMethod, setNotificationMethod] = useState('none'); // 'none', 'push', 'email'
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -12,8 +12,12 @@ const NotificationSettings = () => {
     const fetchNotificationSettings = async () => {
       try {
         const settings = await api.getNotificationPreferences();
-        setEmailNotifications(settings.email);
-        setPushNotifications(settings.push);
+        setNotificationsEnabled(settings.push || settings.email);
+        if (settings.push) {
+          setNotificationMethod('push');
+        } else if (settings.email) {
+          setNotificationMethod('email');
+        }
       } catch (err) {
         console.error("Error fetching notification settings:", err);
         setError("Failed to load notification settings.");
@@ -30,10 +34,9 @@ const NotificationSettings = () => {
       setLoading(true);
       setError(null);
       await api.updateNotificationPreferences({
-        push: pushNotifications,
-        email: emailNotifications,
+        push: notificationMethod === 'push' && notificationsEnabled,
+        email: notificationMethod === 'email' && notificationsEnabled,
       });
-      // Update UI state immediately after successful save
       alert('Notification settings saved!');
     } catch (err) {
       console.error("Error saving notification settings:", err);
@@ -42,7 +45,6 @@ const NotificationSettings = () => {
       setLoading(false);
     }
   };
-
 
   if (loading) {
     return <div>Loading settings...</div>;
@@ -58,20 +60,17 @@ const NotificationSettings = () => {
       <label>
         <input
           type="checkbox"
-          checked={emailNotifications}
-          onChange={(e) => setEmailNotifications(e.target.checked)}
+          checked={notificationsEnabled}
+          onChange={(e) => setNotificationsEnabled(e.target.checked)}
         />
-        Email Notifications
+        Enable Notifications
       </label>
       <br />
-      <label>
-        <input
-          type="checkbox"
-          checked={pushNotifications}
-          onChange={(e) => setPushNotifications(e.target.checked)}
-        />
-        Push Notifications
-      </label>
+      <select value={notificationMethod} onChange={(e) => setNotificationMethod(e.target.value)} disabled={!notificationsEnabled}>
+        <option value="none">None</option>
+        <option value="push">Push Notifications</option>
+        <option value="email">Email Notifications</option>
+      </select>
       <br />
       <button onClick={handleSaveSettings} disabled={loading}>
         Save Settings

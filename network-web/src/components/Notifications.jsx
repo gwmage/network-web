@@ -62,6 +62,24 @@ const Notifications = () => {
           {notifications.map((notification) => (
             <li key={notification.id} className={notification.read ? 'read' : 'unread'}>
               {/* Display notification content based on type */}
+              {notification.type === 'match_result' && (
+                <div>
+                  <h3>Match Found!</h3>
+                  <p>You have been matched with a new group!</p>
+                  {/* Display other match details (e.g., group ID, members) */}
+                  {notification.data && (
+                    <div>
+                      <p>Group ID: {notification.data.groupId}</p>
+                      <p>Members:</p>
+                      <ul>
+                        {notification.data.members && notification.data.members.map((member) => (
+                          <li key={member.id}>{member.name}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
               {notification.type === 'comment' && (
                 <span>
                   New comment on your post: {notification.message}
