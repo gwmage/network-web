@@ -3,19 +3,16 @@ import React, { useState, useEffect } from 'react';
 import * as api from '../utils/api';
 import Comment from './Comment';
 import './CommentList.css';
-import Pagination from './Pagination'; // Import Pagination component
 
 const CommentList = ({ postId, onCommentUpdate }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [commentsPerPage] = useState(10); // Define comments per page
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const fetchedComments = await api.getComments(postId, currentPage, commentsPerPage);
+        const fetchedComments = await api.getComments(postId);
         setComments(fetchedComments);
       } catch (err) {
         setError(err);
@@ -25,15 +22,7 @@ const CommentList = ({ postId, onCommentUpdate }) => {
     };
 
     fetchComments();
-  }, [postId, onCommentUpdate, currentPage]);
-
-  // Get current comments
-  const indexOfLastComment = currentPage * commentsPerPage;
-  const indexOfFirstComment = indexOfLastComment - commentsPerPage;
-  const currentComments = comments.slice(indexOfFirstComment, indexOfLastComment);
-
-  // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  }, [postId, onCommentUpdate]);
 
   if (loading) {
     return <p>Loading comments...</p>;
@@ -51,7 +40,7 @@ const CommentList = ({ postId, onCommentUpdate }) => {
     <div className="comment-list-container">
       <h3>Comments</h3>
       <ul className="comment-list">
-        {currentComments.map((comment) => (
+        {comments.map((comment) => (
           <li key={comment.id} className="comment-item">
             <Comment
               comment={comment}
@@ -62,16 +51,16 @@ const CommentList = ({ postId, onCommentUpdate }) => {
                   onCommentUpdate();
                 }
               }}
+              onCommentUpdate={(updatedComment) => {
+                setComments(comments.map((c) => (c.id === updatedComment.id ? updatedComment : c)));
+                if (onCommentUpdate) {
+                  onCommentUpdate();
+                }
+              }}
             />
           </li>
         ))}
       </ul>
-      <Pagination
-        commentsPerPage={commentsPerPage}
-        totalComments={comments.length}
-        paginate={paginate}
-        currentPage={currentPage}
-      />
     </div>
   );
 };

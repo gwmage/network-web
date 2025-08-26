@@ -14,49 +14,40 @@ const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) =>
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!content.trim()) {
+      setError('Comment cannot be empty.');
+      return;
+    }
+
+    if (content.length > 255) {
+      setError('Comment is too long (max 255 characters).');
+      return;
+    }
+
+    setError('');
     setIsUpdating(true);
-    setError(''); // Clear any previous errors
+
     try {
       if (comment) {
         // Update existing comment
         await updateComment(postId, comment.id, { content });
       } else {
         // Create new comment
-        await createComment(postId, { content, parentCommentId });
+        await createComment({ postId, content, parentCommentId }); // Pass object to createComment
       }
       onSubmit();
       setContent('');
       onClose();
     } catch (error) {
       console.error('Error updating/creating comment:', error);
-      setError('Failed to create/update comment. Please try again.'); // Set error message
+      setError('Failed to submit comment. Please try again later.');
     } finally {
       setIsUpdating(false);
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="comment-form">
-      <textarea
-        value={content}
-        onChange={handleChange}
-        placeholder="Write your comment..."
-        className="comment-textarea"
-        maxLength={255} // Enforce character limit in UI
-      />
-      {error && <div className="comment-error">{error}</div>} {/* Display error message */}
-      <div className="comment-buttons">
-        <button type="submit" disabled={isUpdating || !content.trim()} className="comment-submit">
-          {comment ? 'Update Comment' : 'Add Comment'}
-        </button>
-        {onClose && (
-          <button type="button" onClick={onClose} disabled={isUpdating} className="comment-cancel">
-            Cancel
-          </button>
-        )}
-      </div>
-    </form>
-  );
+  // ... rest of the component code
 };
 
 export default CommentForm;

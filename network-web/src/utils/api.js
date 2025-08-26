@@ -1,28 +1,51 @@
 ```typescript
 import axios from 'axios';
 
-const API_BASE_URL = '/api/board'; // Updated base URL
+const API_BASE_URL = '/api'; // Or your API base URL
 
 // ... (Existing code remains unchanged)
 
-export const getNotificationPreferences = async () => {
+export const fetchComments = async (postId) => {
   try {
-    const response = await axios.get('/api/notifications/preferences');
+    const response = await axios.get(`${API_BASE_URL}/comments/${postId}`); // Updated endpoint
     return response.data;
   } catch (error) {
-    console.error('Error getting notification preferences:', error);
+    console.error('Error fetching comments:', error);
     throw error;
   }
 };
 
-export const saveNotificationPreferences = async (preferences) => {
+export const createComment = async (commentData) => {
   try {
-    const response = await axios.put('/api/notifications/preferences', preferences);
+    const response = await axios.post(`${API_BASE_URL}/comments`, commentData); // Updated endpoint
     return response.data;
   } catch (error) {
-    console.error('Error saving notification preferences:', error);
+    console.error('Error creating comment:', error);
     throw error;
   }
 };
+
+export const updateComment = async (commentId, commentData) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/comments/${commentId}`, commentData); // Updated endpoint
+    return response.data;
+  } catch (error) {
+    console.error('Error updating comment:', error);
+    throw error;
+  }
+};
+
+export const deleteComment = async (commentId) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/comments/${commentId}`); // Updated endpoint
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    throw error;
+  }
+};
+
+
+// ... (Other functions remain unchanged)
 
 ```
