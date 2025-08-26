@@ -7,6 +7,7 @@ const NotificationSettings = () => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const fetchNotificationSettings = async () => {
@@ -33,11 +34,12 @@ const NotificationSettings = () => {
     try {
       setLoading(true);
       setError(null);
+      setSuccessMessage('');
       await api.updateNotificationPreferences({
         push: notificationMethod === 'push' && notificationsEnabled,
         email: notificationMethod === 'email' && notificationsEnabled,
       });
-      alert('Notification settings saved!');
+      setSuccessMessage('Notification settings saved successfully!');
     } catch (err) {
       console.error("Error saving notification settings:", err);
       setError("Failed to save notification settings.");
@@ -57,6 +59,7 @@ const NotificationSettings = () => {
   return (
     <div>
       <h2>Notification Settings</h2>
+      {successMessage && <div style={{ color: 'green' }}>{successMessage}</div>}
       <label>
         <input
           type="checkbox"
