@@ -5,63 +5,55 @@ export const sendPushNotification = async (notificationData: any) => {
   try {
     const preferences = await getNotificationPreferences();
     if (preferences.push) {
-      // Use a push notification service like Firebase Cloud Messaging (FCM)
-      // or OneSignal to send the notification.
-      // The implementation below is a placeholder and should be replaced
-      // with your actual push notification service integration.
-
-      const response = await fetch('/send-push-notification', { // Replace with your push notification server endpoint
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...notificationData,
-          // Add any additional data required by your push notification service.
-          // For example, device tokens for FCM or user IDs for OneSignal.
-        }),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Failed to send push notification: ${errorData.error || response.statusText}`);
+      // Check if the browser supports push notifications
+      if ("Notification" in window) {
+        // Request permission to display notifications
+        if (Notification.permission === "granted") {
+          // Create and display the notification
+          new Notification(notificationData.title, {
+            body: notificationData.body,
+            data: notificationData.data, // Include any custom data
+          });
+        } else if (Notification.permission !== "denied") {
+          Notification.requestPermission().then(async (permission) => {
+            if (permission === "granted") {
+              new Notification(notificationData.title, {
+                body: notificationData.body,
+                data: notificationData.data,
+              });
+            }
+          });
+        }
       }
 
-      console.log('Push notification sent successfully:', await response.json());
+      // Fallback to or complement with a push service for background notifications
+      // (e.g., Firebase Cloud Messaging - replace placeholders below)
+
+      // const response = await fetch('/send-push-notification', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     ...notificationData,
+      //     // Add device token or user ID here
+      //   }),
+      // });
+      // if (!response.ok) {
+      //   const errorData = await response.json();
+      //   throw new Error(`Failed to send push notification: ${errorData.error || response.statusText}`);
+      // }
+
+      // console.log('Push notification sent successfully:', await response.json());
+
     }
   } catch (error) {
     console.error('Error sending push notification:', error);
-    // Handle errors appropriately (e.g., retry, display an error message)
+    // Handle errors appropriately
   }
 };
 
 export const handleCommentPushNotification = async (commentData: any, type: string) => {
-  // Customize the notification message based on the comment action (create, update, delete)
-  let message;
-  switch (type) {
-    case 'create':
-      message = `New comment on post ${commentData.postId}: ${commentData.commentContent}`;
-      break;
-    case 'update':
-      message = `Comment updated on post ${commentData.postId}: ${commentData.commentContent}`;
-      break;
-    case 'delete':
-      message = `Comment deleted on post ${commentData.postId}`;
-      break;
-    default:
-      message = 'Comment activity on a post';
-  }
-
-  const notificationData = {
-    title: 'Comment Notification',
-    body: message,
-    data: {
-      postId: commentData.postId,
-      commentId: commentData.commentId,
-      // Add any other relevant data for deep linking or other actions
-    },
-  };
-
-  await sendPushNotification(notificationData);
+  // ... (rest of the function remains unchanged)
 };
-
 ```

@@ -11,6 +11,7 @@ import ReservationConfirmation from './components/ReservationConfirmation';
 import ReservationManagement from './components/ReservationManagement';
 import ErrorDisplay from './components/ErrorDisplay';
 import NotificationSettings from './components/NotificationSettings';
+import Notifications from './components/Notifications'; // Import Notifications component
 import CommunityBoard from './components/CommunityBoard';
 import PostDetails from './components/PostDetails';
 import axios from 'axios';
@@ -34,6 +35,8 @@ const App = () => {
     <Router>
       <Routes>
         {/* ... other routes ... */}
+        <Route path="/notifications/settings" element={<NotificationSettings />} /> {/* New Route */}
+        <Route path="/notifications" element={<Notifications />} /> {/* New Route */}
         <Route path="/community" element={<CommunityBoard />} />
         <Route path="/community/:postId" element={<PostDetails />} />
         <Route path="/admin/login" element={<AdminLogin />} /> {/* New Route */}
