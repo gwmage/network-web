@@ -8,22 +8,21 @@ const MatchingResults: React.FC = () => {
   const [matchingResults, setMatchingResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [explanation, setExplanation] = useState<string | null>(null); // Allow null for no explanation
+  const [explanation, setExplanation] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMatchingResults = async () => {
       try {
         const groupResponse = await axios.get('/api/matching/groups');
         const userResponse = await axios.get('/api/users/me');
-        setMatchingResults({ group: groupResponse.data.groups[0], user: userResponse.data }); // Access the first group
+        setMatchingResults({ group: groupResponse.data.groups[0], user: userResponse.data, count: groupResponse.data.count });
         toast.success("Matching successful!");
 
-        // Fetch explanation after successful matching, only if available in API response.
         if (groupResponse.data.groups[0].explanation) {
           setExplanation(groupResponse.data.groups[0].explanation);
         } else {
           console.warn("Explanation data is not available in the API response.");
-          setExplanation(null); // Or a default message like "No explanation available."
+          setExplanation(null);
         }
       } catch (err) {
         console.error("Error fetching matching results:", err);
@@ -55,21 +54,19 @@ const MatchingResults: React.FC = () => {
     return <div>No matching results found.</div>;
   }
 
-  const { group, user } = matchingResults;
+  const { group, user, count } = matchingResults;
 
   return (
     <div>
-      <h2>Your Matched Group</h2>
+      <h2>Your Matched Group ({count} results)</h2>
       <h3>Members:</h3>
       <ul>
         {group.participants.map((member) => (
           <li key={member.userId}>{member.name}</li>
         ))}
       </ul>
-      {/* Display user's criteria */}
       <h3>Your Criteria:</h3>
       <pre>{JSON.stringify(user, null, 2)}</pre>
-      {/* Display the explanation if available */}
       {explanation && (
         <>
           <h3>Explanation:</h3>

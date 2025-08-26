@@ -4,11 +4,12 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import MatchingForm from './components/MatchingForm';
 import MatchingProgress from './components/MatchingProgress';
 import MatchingResults from './components/MatchingResults';
-
+import Filters from './components/Filters';
 
 const App = () => {
   const [matchingStatus, setMatchingStatus] = useState(null);
   const [matchingResults, setMatchingResults] = useState(null);
+  const [filterCriteria, setFilterCriteria] = useState({ category: '', tags: [] }); // Store filter criteria
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +27,6 @@ const App = () => {
   }, []);
 
   const handleFormSubmit = async (formData) => {
-    // Send formData to backend to initiate matching
     try {
       const response = await fetch('/matching', {
         method: 'POST',
@@ -40,28 +40,45 @@ const App = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       navigate('/matching/progress');
-
-
     } catch (error) {
       console.error("Error submitting form:", error);
-      // Handle error, e.g., display an error message
     }
   };
 
-
-
   const fetchResults = async () => {
-    const response = await fetch('/matching/groups');
-    const data = await response.json();
-    setMatchingResults(data);
-  }
+    try {
+      const response = await fetch(`/matching/groups?category=${filterCriteria.category}&tags=${filterCriteria.tags.join(',')}`); // Include filter criteria in API call
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setMatchingResults(data);
+    } catch (error) {
+      console.error("Error fetching results:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch results whenever filterCriteria changes
+    fetchResults();
+  }, [filterCriteria]);
+
+
+  const handleFilterChange = (criteria) => {
+    setFilterCriteria(criteria);
+  };
 
   return (
     <Router>
       <Routes>
         <Route path="/" element={<MatchingForm onSubmit={handleFormSubmit} />} />
         <Route path="/matching/progress" element={<MatchingProgress status={matchingStatus} />} />
-        <Route path="/matching/results" element={<MatchingResults results={matchingResults} fetchResults={fetchResults} />} />
+        <Route path="/matching/results" element={
+          <>
+            <Filters onFilterChange={handleFilterChange} /> {/* Include Filters component */}
+            <MatchingResults results={matchingResults} fetchResults={fetchResults} />
+          </>
+        } />
       </Routes>
     </Router>
   );
