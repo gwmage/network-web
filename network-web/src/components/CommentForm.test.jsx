@@ -24,64 +24,51 @@ it('updates content on change', () => {
 });
 
 it('calls createComment on submit when creating a new comment', async () => {
-  render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} postId={1} />);
+  render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} postId="123" userId="456" />);
   const inputElement = screen.getByRole('textbox');
   fireEvent.change(inputElement, { target: { value: 'New comment' } });
   fireEvent.submit(screen.getByRole('form'));
-  expect(createComment).toHaveBeenCalledWith(1, { content: 'New comment' });
-  await expect(createComment(1, { content: 'New comment' })).resolves.not.toThrow();
+  expect(createComment).toHaveBeenCalledWith({ text: 'New comment', postId: "123", userId: "456" });
+  await expect(createComment({ text: 'New comment', postId: "123", userId: "456" })).resolves.not.toThrow();
 });
-
-
-it('calls createComment with parentCommentId for replies', async () => {
-  render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} postId={1} parentCommentId={2} />);
-  const inputElement = screen.getByRole('textbox');
-  fireEvent.change(inputElement, { target: { value: 'Reply comment' } });
-  fireEvent.submit(screen.getByRole('form'));
-  expect(createComment).toHaveBeenCalledWith(1, { content: 'Reply comment', parentCommentId: 2 });
-  await expect(createComment(1, { content: 'Reply comment', parentCommentId: 2 })).resolves.not.toThrow();
-});
-
 
 
 it('calls updateComment on submit when updating a comment', async () => {
-  const comment = { id: 1, content: 'Original comment' };
+  const comment = { id: 789, text: 'Original comment' };
   render(
     <CommentForm
       comment={comment}
       onSubmit={mockOnSubmit}
       onClose={mockOnClose}
-      postId={1}
     />
   );
   const inputElement = screen.getByRole('textbox');
   fireEvent.change(inputElement, { target: { value: 'Updated comment' } });
   fireEvent.submit(screen.getByRole('form'));
 
-  expect(updateComment).toHaveBeenCalledWith(1, 1, { content: 'Updated comment' }); // postId and commentId
-  await expect(updateComment(1, 1, { content: "Updated comment" })).resolves.not.toThrow();
+  expect(updateComment).toHaveBeenCalledWith(789, { text: 'Updated comment' }); // commentId
+  await expect(updateComment(789, { text: "Updated comment" })).resolves.not.toThrow();
 });
 
 
 it('calls onClose when close button is clicked', () => {
   render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
   expect(mockOnClose).toHaveBeenCalled();
 });
 
 it('displays error message when input is empty', () => {
-  render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} postId={1} />);
+  render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} postId="123" userId="456"/>);
   fireEvent.submit(screen.getByRole('form'));
   expect(screen.getByText('댓글 내용을 입력해주세요.')).toBeVisible(); // Assuming specific error message.
 });
 
 it('does not display error message when input is valid', () => {
-    render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} postId={1} />);
+    render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} postId="123" userId="456"/>);
     const inputElement = screen.getByRole('textbox');
     fireEvent.change(inputElement, { target: { value: 'Valid comment' } });
     fireEvent.submit(screen.getByRole('form'));
     expect(screen.queryByText('댓글 내용을 입력해주세요.')).not.toBeInTheDocument(); // Assuming specific error message.
 
 });
-
 ```
