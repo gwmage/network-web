@@ -1,51 +1,32 @@
 ```typescript
 import axios from 'axios';
 
-const API_BASE_URL = '/api'; // Or your API base URL
+const API_BASE_URL = 'http://localhost:3000/api'; // Replace with your API base URL
 
-// ... (Existing code remains unchanged)
-
-export const fetchComments = async (postId) => {
+export const registerUser = async (userData) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/comments/${postId}`); // Updated endpoint
+    const response = await axios.post(`${API_BASE_URL}/auth/register`, userData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     return response.data;
   } catch (error) {
-    console.error('Error fetching comments:', error);
-    throw error;
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      throw error.response; // Re-throw the error response for the caller to handle
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.error('No response received from server:', error.request);
+      throw new Error('No response received from server'); 
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error('Error setting up request:', error.message);
+      throw error; // Re-throw the original error
+    }
   }
 };
-
-export const createComment = async (commentData) => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/comments`, commentData); // Updated endpoint
-    return response.data;
-  } catch (error) {
-    console.error('Error creating comment:', error);
-    throw error;
-  }
-};
-
-export const updateComment = async (commentId, commentData) => {
-  try {
-    const response = await axios.put(`${API_BASE_URL}/comments/${commentId}`, commentData); // Updated endpoint
-    return response.data;
-  } catch (error) {
-    console.error('Error updating comment:', error);
-    throw error;
-  }
-};
-
-export const deleteComment = async (commentId) => {
-  try {
-    const response = await axios.delete(`${API_BASE_URL}/comments/${commentId}`); // Updated endpoint
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting comment:', error);
-    throw error;
-  }
-};
-
-
-// ... (Other functions remain unchanged)
-
 ```

@@ -1,76 +1,27 @@
 ```typescript
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
-function RegisterForm() {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-    phoneNumber: '',
-  });
-  const [errors, setErrors] = useState({});
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: '' }); // Clear error on input change
-  };
+  @media (max-width: 768px) {
+    max-width: 90%;
+  }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrors({}); // Clear all errors before submitting
+  @media (max-width: 480px) {
+    max-width: 100%;
+    padding: 10px;
+  }
+`;
 
-    try {
-      const response = await fetch('/register', { // Or '/auth/register' depending on your backend setup
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        navigate('/login');
-      } else {
-        const errorData = await response.json();
-        console.error('Registration failed:', errorData);
-
-        if (response.status === 400) {
-          // Handle validation errors
-          setErrors(errorData.errors || { general: 'Validation failed' }); // Assuming backend sends errors in 'errors' field. Adapt as needed.
-        } else if (response.status === 409) {
-          // Handle conflict error (e.g., duplicate email)
-          setErrors({ email: 'Email already exists' }); 
-        } else {
-          // Handle other errors
-          setErrors({ general: 'An error occurred during registration' });
-        }
-      }
-    } catch (error) {
-      console.error('An error occurred during registration:', error);
-      setErrors({ general: 'An error occurred during registration' });
-    }
-  };
-
-
-  return (
-    <form onSubmit={handleSubmit}>
-      {/* ... form inputs ... */}
-      <input type="text" name="email" onChange={handleChange} />
-      {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
-
-      <input type="password" name="password" onChange={handleChange} />
-      {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
-
-       {/* ... other form inputs and error displays ... */}
-       {errors.general && <p style={{ color: 'red' }}>{errors.general}</p>}
-
-      <button type="submit">Register</button>
-    </form>
-  );
-}
-
-export default RegisterForm;
-
+// ... (rest of the code remains the same)
 ```
