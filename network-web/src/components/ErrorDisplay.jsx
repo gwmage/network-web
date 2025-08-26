@@ -11,10 +11,16 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ error }) => {
   }
 
   let errorMessage = 'An unexpected error occurred. Please try again later.';
+  let errorDetails = null;
 
-  if (error.response && error.response.data && error.response.data.message) {
-    errorMessage = error.response.data.message;
-  } else if (typeof error === 'string') {
+  if (error.response && error.response.data) {
+    if (error.response.data.message) {
+      errorMessage = error.response.data.message;
+    }
+    if (error.response.status) {
+      errorDetails = `Status Code: ${error.response.status}`;
+    }
+   } else if (typeof error === 'string') {
     errorMessage = error;
   } else if (error instanceof Error) {
     errorMessage = error.message;
@@ -22,8 +28,12 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ error }) => {
     errorMessage = error.message;
   }
 
-
-  return <p style={{ color: 'red' }}>{errorMessage}</p>;
+  return (
+    <div style={{ color: 'red' }}>
+      <p>{errorMessage}</p>
+      {errorDetails && <p>{errorDetails}</p>}
+    </div>
+  );
 };
 
 export default ErrorDisplay;

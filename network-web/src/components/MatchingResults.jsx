@@ -8,26 +8,23 @@ const MatchingResults: React.FC = () => {
   const [matchingResults, setMatchingResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [explanation, setExplanation] = useState('');
+  const [explanation, setExplanation] = useState<string | null>(null); // Allow null for no explanation
 
   useEffect(() => {
     const fetchMatchingResults = async () => {
       try {
         const groupResponse = await axios.get('/api/matching/groups');
         const userResponse = await axios.get('/api/users/me');
-        setMatchingResults({ group: groupResponse.data, user: userResponse.data });
+        setMatchingResults({ group: groupResponse.data.groups[0], user: userResponse.data }); // Access the first group
         toast.success("Matching successful!");
 
-        // Fetch explanation after successful matching
-        try {
-          const explanationResponse = await axios.get(`/api/matching/groups/${groupResponse.data.id}/explanation`);
-          setExplanation(explanationResponse.data);
-        } catch (explanationError) {
-          console.error("Error fetching explanation:", explanationError);
-          // Optionally display a toast error for explanation fetching failure
-          toast.error("Failed to fetch explanation.");
+        // Fetch explanation after successful matching, only if available in API response.
+        if (groupResponse.data.groups[0].explanation) {
+          setExplanation(groupResponse.data.groups[0].explanation);
+        } else {
+          console.warn("Explanation data is not available in the API response.");
+          setExplanation(null); // Or a default message like "No explanation available."
         }
-
       } catch (err) {
         console.error("Error fetching matching results:", err);
         setError(err);
@@ -65,22 +62,20 @@ const MatchingResults: React.FC = () => {
       <h2>Your Matched Group</h2>
       <h3>Members:</h3>
       <ul>
-        {group.members.map((member) => (
-          <li key={member.id}>{member.name} ({member.email})</li>
+        {group.participants.map((member) => (
+          <li key={member.userId}>{member.name}</li>
         ))}
       </ul>
-      <h3>Matching Criteria:</h3>
-      <p>You were matched with this group based on the following criteria:</p>
-      <ul>
-        {group.criteria.map((criterion) => (
-          <li key={criterion.name}>
-            <b>{criterion.name}:</b> {criterion.value} (Your {criterion.name}: {user[criterion.name]})
-          </li>
-        ))}
-      </ul>
-      {/* Display the explanation */}
-      <h3>Explanation:</h3>
-      <p>{explanation}</p>
+      {/* Display user's criteria */}
+      <h3>Your Criteria:</h3>
+      <pre>{JSON.stringify(user, null, 2)}</pre>
+      {/* Display the explanation if available */}
+      {explanation && (
+        <>
+          <h3>Explanation:</h3>
+          <p>{explanation}</p>
+        </>
+      )}
     </div>
   );
 };
