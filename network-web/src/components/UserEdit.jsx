@@ -11,6 +11,7 @@ const UserEdit = () => {
     email: '',
     // ... other user fields
   });
+  const [error, setError] = useState(''); // State for error messages
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -19,7 +20,7 @@ const UserEdit = () => {
         setUser(fetchedUser);
       } catch (error) {
         console.error("Error fetching user:", error);
-        // Handle error, e.g., redirect to error page
+        setError("Failed to fetch user details."); // Set error message
       }
     };
 
@@ -36,12 +37,13 @@ const UserEdit = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setError(''); // Clear any previous error messages
     try {
       await updateUser(parseInt(id as string, 10), user);
       navigate('/users'); // Redirect to user list after successful update
     } catch (error) {
       console.error("Error updating user:", error);
-      // Handle error, e.g., display error message
+      setError("Failed to update user details."); // Set error message
     }
   };
 
@@ -49,6 +51,7 @@ const UserEdit = () => {
     <div className="form-container">
       <h2 className="form-title">Edit User</h2>
       <form onSubmit={handleSubmit}>
+        {error && <div className="error-message">{error}</div>} {/* Display error message */}
         <label htmlFor="name">Name:</label>
         <input
           type="text"
@@ -73,4 +76,5 @@ const UserEdit = () => {
 };
 
 export default UserEdit;
+
 ```

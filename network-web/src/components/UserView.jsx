@@ -14,7 +14,7 @@ const UserView = () => {
     const fetchData = async () => {
       try {
         const userData = await api.getUser(userId);
-        const activityData = await api.getUserActivity(userId); // Assuming api.getUserActivity exists
+        const activityData = await api.getUserActivity(userId);
         setUser(userData);
         setActivity(activityData);
         setLoading(false);
@@ -41,14 +41,14 @@ const UserView = () => {
 
   return (
     <div>
-      <h2>{user.name}</h2> {/* Assuming user object has a name property */}
-      {/* Display other user details */}
+      <h2>{user.name}</h2>
+      {/* Display other user details as needed */}
       <h3>Activity History</h3>
       <ul>
         {activity.map((item) => (
-          <li key={item.id}>{/* Assuming activity items have an id */}
-            {/* Display activity details */}
-            {JSON.stringify(item)} {/* Placeholder for now */}
+          <li key={item.timestamp}>
+            {item.timestamp} - {item.action} 
+            {/* Display other activity details as needed */}
           </li>
         ))}
       </ul>
