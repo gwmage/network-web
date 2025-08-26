@@ -21,11 +21,11 @@ export const registerUser = async (userData) => {
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
       // http.ClientRequest in node.js
       console.error('No response received from server:', error.request);
-      throw new Error('No response received from server'); 
+      throw new Error('Network error. Please check your connection.'); 
     } else {
       // Something happened in setting up the request that triggered an Error
       console.error('Error setting up request:', error.message);
-      throw error; // Re-throw the original error
+      throw new Error('An unexpected error occurred. Please try again later.');
     }
   }
 };
