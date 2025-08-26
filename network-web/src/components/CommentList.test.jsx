@@ -37,7 +37,9 @@ describe('CommentList', () => {
     render(<CommentList comments={mockComments} isLoading={false} error={null} />);
     mockComments.forEach((comment) => {
       // Adjust date format as needed
-      expect(screen.getByText(new Date(comment.createdAt).toLocaleString())).toBeInTheDocument();
+      const date = new Date(comment.createdAt);
+      expect(screen.getByText(date.toLocaleDateString())).toBeInTheDocument();
+      expect(screen.getByText(date.toLocaleTimeString())).toBeInTheDocument();
     });
   });
 
@@ -49,7 +51,7 @@ describe('CommentList', () => {
   it('handles empty comments array', () => {
     render(<CommentList comments={[]} isLoading={false} error={null} />);
     // Check for a message or placeholder, for example
-    // expect(screen.getByText('No comments yet')).toBeInTheDocument();
+    expect(screen.getByText('No comments yet')).toBeInTheDocument();
   });
 
   it('handles comments with no replies', () => {
