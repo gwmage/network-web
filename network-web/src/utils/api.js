@@ -5,6 +5,24 @@ const API_BASE_URL = 'http://localhost:3000/api'; // Replace with your API base 
 
 // ... other existing functions
 
+export const getApplications = async (page = 1, pageSize = 10, sortField = 'createdAt', sortOrder = 'DESC', filter = {}, keyword = '') => {
+  try {
+    const params = {
+      page,
+      pageSize,
+      sortField,
+      sortOrder,
+      keyword,
+      ...filter,
+    };
+    const response = await axios.get(`${API_BASE_URL}/applications`, { params });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching applications:", error);
+    throw error;
+  }
+};
+
 export const getFilteredUsers = async (regions, interests) => {
   try {
     const params = {};

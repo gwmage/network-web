@@ -30,7 +30,7 @@ const SearchBar = ({ onSearch }) => {
         <option value="all">All</option>
         <option value="title">Title</option>
         <option value="content">Content</option>
-        <option value="author">Author</option> {/* Placeholder for future implementation */}
+        <option value="author">Author</option> 
       </select>
       <button onClick={handleSearch}>Search</button>
     </div>
@@ -38,4 +38,5 @@ const SearchBar = ({ onSearch }) => {
 };
 
 export default SearchBar;
+
 ```
