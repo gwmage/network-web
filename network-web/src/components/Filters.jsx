@@ -1,7 +1,7 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
 
-const Filters = ({ onFilterChange }) => {
+const Filters = ({ onFilterChange, resultCount }) => { // Add resultCount prop
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
@@ -45,6 +45,9 @@ const Filters = ({ onFilterChange }) => {
 
   return (
     <div>
+      <div>
+        Matching Results: {resultCount} {/* Display result count */}
+      </div>
       <label htmlFor="categorySelect">Category:</label>
       <select id="categorySelect" value={selectedCategory} onChange={handleCategoryChange}>
         <option value="">All</option>

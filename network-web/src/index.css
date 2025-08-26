@@ -1,82 +1,55 @@
 ```css
-body {
-  font-family: sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f4;
+/* Filters Component Styles */
+.filters {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; /* Space between filters and results */
 }
 
-/* User Management UI Styles */
-.user-management {
-  width: 90%;
-  max-width: 800px; /* Increased max-width for better table display */
-  margin: 20px auto;
+.filters label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.filters select,
+.filters input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+/* Matching Results Styles */
+.matching-results {
   background-color: #fff;
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.user-management h2 {
+.matching-results ul {
+  list-style: none;
+  padding: 0;
+}
+
+.matching-results li {
   margin-bottom: 15px;
-  color: #333; /* Darker heading color */
-}
-
-.user-management table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-
-.user-management th,
-.user-management td {
   padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid #ccc;
-}
-
-.user-management th {
-  background-color: #f0f0f0; /* Light gray background for table header */
-  font-weight: bold;
-}
-
-.user-management button {
-  background-color: #007bff;
-  color: white;
-  padding: 8px 12px;
-  border: none;
+  border: 1px solid #ccc;
   border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-right: 5px; /* Add some space between buttons */
-}
-
-.user-management button:hover {
-  background-color: #0056b3;
-}
-
-.user-management button.delete {
-  background-color: #dc3545; /* Red background for delete button */
 }
 
 
-.user-management button.delete:hover {
-  background-color: #bd2130;
-}
-
-
-
-/* Media Queries for Responsiveness */
+/* Media Queries for Responsiveness - Filters and Results */
 @media (max-width: 768px) {
-  .user-management {
+  .filters,
+  .matching-results {
     width: 95%;
+    margin: 10px auto; /* Center on smaller screens */
     padding: 15px;
   }
-
-  .user-management table {
-    display: block; /* Make table scrollable on smaller screens */
-    overflow-x: auto;
-  }
 }
-
 ```
