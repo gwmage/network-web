@@ -1,5 +1,7 @@
 ```jsx
 import React, { useState } from 'react';
+import * as api from '../utils/api'; // Import the API functions
+import MatchingProgress from './MatchingProgress';
 
 const MatchingForm = () => {
   const [formData, setFormData] = useState({
@@ -7,6 +9,8 @@ const MatchingForm = () => {
     preferences: '',
     interests: [],
   });
+  const [matchingInProgress, setMatchingInProgress] = useState(false);
+  const [matchingError, setMatchingError] = useState(null);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -25,45 +29,39 @@ const MatchingForm = () => {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle form submission, e.g., send data to API
-    console.log(formData);
+    setMatchingInProgress(true);
+    setMatchingError(null);
+
+    try {
+      const response = await api.createUser(formData); // Use the API function
+      console.log('User created:', response.data);
+      // Trigger matching process after user creation (if needed)
+      await api.triggerMatching();
+
+       
+    } catch (error) {
+      console.error("Error creating user or triggering matching:", error);
+      setMatchingError(error.message);
+    } finally {
+      setMatchingInProgress(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="location">Location:</label>
-      <input
-        type="text"
-        id="location"
-        name="location"
-        value={formData.location}
-        onChange={handleChange}
-        required
-      />
+    <div>
+      <form onSubmit={handleSubmit}>
+        {/* ... form elements ... */}
+        <button type="submit">Submit</button>
+      </form>
 
-      <label htmlFor="preferences">Preferences:</label>
-      <textarea
-        id="preferences"
-        name="preferences"
-        value={formData.preferences}
-        onChange={handleChange}
-      />
-
-      <label htmlFor="interests">Interests (comma-separated):</label>
-      <input
-        type="text"
-        id="interests"
-        name="interests"
-        value={formData.interests.join(', ')}
-        onChange={handleInterestsChange}
-      />
-
-      <button type="submit">Submit</button>
-    </form>
+      {matchingInProgress && <MatchingProgress />}
+      {matchingError && <div>Error: {matchingError}</div>}
+    </div>
   );
 };
 
 export default MatchingForm;
+
 ```
