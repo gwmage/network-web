@@ -34,9 +34,9 @@ const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) =>
         await updateComment(postId, comment.id, { content });
       } else {
         // Create new comment
-        await createComment({ postId, content, parentCommentId }); // Pass object to createComment
+        await createComment({ postId, content, parentCommentId });
       }
-      onSubmit();
+      onSubmit(); // Trigger re-render of comment list in parent
       setContent('');
       onClose();
     } catch (error) {
@@ -47,7 +47,21 @@ const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) =>
     }
   };
 
-  // ... rest of the component code
+  return (
+    <form onSubmit={handleSubmit} className="comment-form">
+      <textarea
+        value={content}
+        onChange={handleChange}
+        placeholder="Write your comment..."
+        disabled={isUpdating}
+      />
+      {error && <div className="error-message">{error}</div>}
+      <button type="submit" disabled={isUpdating}>
+        {isUpdating ? 'Submitting...' : comment ? 'Update' : 'Submit'}
+      </button>
+      {comment && <button type="button" onClick={onClose} disabled={isUpdating}>Cancel</button>}
+    </form>
+  );
 };
 
 export default CommentForm;

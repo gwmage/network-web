@@ -46,7 +46,7 @@ it('calls updateComment on submit when updating a comment', async () => {
   fireEvent.change(inputElement, { target: { value: 'Updated comment' } });
   fireEvent.submit(screen.getByRole('form'));
 
-  expect(updateComment).toHaveBeenCalledWith(789, { text: 'Updated comment' }); // commentId
+  expect(updateComment).toHaveBeenCalledWith(789, { text: 'Updated comment' });
   await expect(updateComment(789, { text: "Updated comment" })).resolves.not.toThrow();
 });
 
@@ -60,7 +60,7 @@ it('calls onClose when close button is clicked', () => {
 it('displays error message when input is empty', () => {
   render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} postId="123" userId="456"/>);
   fireEvent.submit(screen.getByRole('form'));
-  expect(screen.getByText('댓글 내용을 입력해주세요.')).toBeVisible(); // Assuming specific error message.
+  expect(screen.getByText('댓글 내용을 입력해주세요.')).toBeVisible();
 });
 
 it('does not display error message when input is valid', () => {
@@ -68,7 +68,6 @@ it('does not display error message when input is valid', () => {
     const inputElement = screen.getByRole('textbox');
     fireEvent.change(inputElement, { target: { value: 'Valid comment' } });
     fireEvent.submit(screen.getByRole('form'));
-    expect(screen.queryByText('댓글 내용을 입력해주세요.')).not.toBeInTheDocument(); // Assuming specific error message.
-
+    expect(screen.queryByText('댓글 내용을 입력해주세요.')).not.toBeInTheDocument();
 });
 ```

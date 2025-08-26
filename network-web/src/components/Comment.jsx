@@ -17,7 +17,7 @@ const Comment: React.FC<CommentProps> = ({ comment, currentUser, onCommentDelete
       try {
         setIsDeleting(true);
         await deleteComment(comment.postId, comment.id);
-        onCommentDelete(comment.id); // Remove the comment from the UI
+        onCommentDelete(comment.id);
       } catch (error) {
         console.error("Error deleting comment:", error);
         // Handle error, e.g., display error message

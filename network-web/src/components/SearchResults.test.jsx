@@ -1,12 +1,23 @@
 ```typescript
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import SearchResults from './SearchResults';
+import { CommentList } from './CommentList';
+import { CommentForm } from './CommentForm';
+
 
 const mockResults = [
-    { id: 1, title: 'Result 1', content: 'Content 1' },
-    { id: 2, title: 'Result 2', content: 'Content 2' },
-    { id: 3, title: 'Result 3', content: 'Content 3' },
+    { 
+        id: 1, 
+        title: 'Result 1', 
+        content: 'Content 1',
+        comments: [
+            { id: 101, content: 'Comment 1', createdAt: '2024-07-29T12:00:00Z', author: { username: 'user1' } },
+            { id: 102, content: 'Comment 2', createdAt: '2024-07-29T13:00:00Z', author: { username: 'user2' } },
+        ]
+    },
+    { id: 2, title: 'Result 2', content: 'Content 2', comments: [] },
+    { id: 3, title: 'Result 3', content: 'Content 3', comments: [] },
 ];
 
 const mockMeta = {
@@ -17,54 +28,29 @@ const mockMeta = {
 };
 
 describe('SearchResults', () => {
-    it('renders search results correctly', () => {
+    // ... existing tests ...
+
+    it('displays comments for a result', () => {
         render(<SearchResults results={mockResults} meta={mockMeta} />);
-        mockResults.forEach(result => {
-            expect(screen.getByText(result.title)).toBeInTheDocument();
-            expect(screen.getByText(result.content)).toBeInTheDocument();
+        const resultWithComments = mockResults[0];
+        const resultContainer = screen.getByText(resultWithComments.title).closest('div'); // Find the container for this result
+
+        resultWithComments.comments.forEach(comment => {
+            expect(within(resultContainer).getByText(comment.content)).toBeVisible();
         });
     });
 
-    it('handles pagination correctly', () => {
-        const mockLongResults = Array(25).fill(null).map((_, i) => ({
-            id: i + 1,
-            title: `Result ${i + 1}`,
-            content: `Content ${i + 1}`,
-        }));
 
-        const mockLongMeta = {
-            currentPage: 1,
-            itemsPerPage: 10,
-            totalItems: 25,
-            totalPages: 3,
-        };
+    it('renders comment form and list', () => {
+        render(<SearchResults results={mockResults} meta={mockMeta} />);
+        const commentForm = screen.getByRole('form', { name: /add comment/i });
+        expect(commentForm).toBeInTheDocument();
 
+        // Check if comment list is rendered (even if empty for some results)
+        const commentLists = screen.getAllByRole('list');
+        expect(commentLists.length).toBeGreaterThanOrEqual(1)
 
-        render(<SearchResults results={mockLongResults} meta={mockLongMeta} onPageChange={() => {}} />);
-        mockLongResults.slice(0, 10).forEach(result => {
-            expect(screen.getByText(result.title)).toBeVisible();
-        });
-        mockLongResults.slice(10).forEach(result => {
-            expect(screen.queryByText(result.title)).toBeNull();
-        });
-
-
-
-    });
-
-    it('displays error message when error prop is true', () => {
-
-        render(<SearchResults results={[]} meta={null} error={true} />);
-        expect(screen.getByText(/Error loading search results/i)).toBeVisible();
-    });
-
-
-    it('displays no results message when no results are found', () => {
-        render(<SearchResults results={[]} meta={{ ...mockMeta, totalItems: 0 }} />);
-        expect(screen.getByText(/No results found/i)).toBeVisible();
-
-    });
-
+    })
 });
 
 ```

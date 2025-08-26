@@ -13,20 +13,54 @@ export const registerUser = async (userData) => {
     return response.data;
   } catch (error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      throw error.response; // Re-throw the error response for the caller to handle
+      throw error.response;
     } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
       console.error('No response received from server:', error.request);
       throw new Error('Network error. Please check your connection.'); 
     } else {
-      // Something happened in setting up the request that triggered an Error
       console.error('Error setting up request:', error.message);
       throw new Error('An unexpected error occurred. Please try again later.');
     }
+  }
+};
+
+export const createComment = async (commentData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/comments`, commentData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    throw error; // Re-throw the error for the caller to handle
+  }
+};
+
+export const getComments = async (postId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/comments/${postId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting comments:", error);
+    throw error;
+  }
+};
+
+export const updateComment = async (postId, commentId, commentData) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/comments/${commentId}`, commentData);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    throw error;
+  }
+};
+
+export const deleteComment = async (postId, commentId) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/comments/${commentId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    throw error;
   }
 };
 ```
