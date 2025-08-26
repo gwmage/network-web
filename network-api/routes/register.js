@@ -1,38 +1,50 @@
 ```typescript
-import { Router } from 'express';
-import { body, validationResult } from 'express-validator';
-import { createUser } from '../services/user.service';
+import { Controller, Post, Body, HttpStatus, HttpException } from '@nestjs/common';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { AuthService } from '../services/auth.service';
 
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
 
-const router = Router();
-
-router.post(
-  '/',
-  body('email').isEmail().withMessage('Invalid email format'),
-  body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
-  body('name').notEmpty().withMessage('Name is required'),
-  body('phoneNumber').notEmpty().withMessage('Phone number is required'),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
+  @Post('register')
+  async register(@Body() createUserDto: CreateUserDto) {
     try {
-      const { email, password, name, phoneNumber } = req.body;
-      const user = await createUser({ email, password, name, phoneNumber });
-      res.status(201).json({ message: 'User registered successfully', user });
-
+      const userId = await this.authService.register(createUserDto);
+      return {
+        status: 'success',
+        message: 'User registered successfully',
+        userId: userId, // Include userId in the response
+      };
     } catch (error) {
-      if (error.code === 11000) { // Duplicate key error (email)
-        return res.status(409).json({ message: 'Email already exists' });
+      if (error.code === '23505') {
+        // Duplicate email error
+        throw new HttpException(
+          {
+            status: 'error',
+            message: 'Email already exists',
+            errors: { email: 'This email is already registered.' }, // Specific error for email field
+          },
+          HttpStatus.CONFLICT,
+        );
+      } else if (error instanceof HttpException) {
+        // Re-throw other HTTP exceptions
+        throw error; 
+      } else {
+        // Handle other errors (e.g., validation errors from the service)
+        throw new HttpException(
+          {
+            status: 'error',
+            message: error.message,
+            errors: error.errors || {}, // Include validation errors if available
+          },
+          HttpStatus.BAD_REQUEST, // Or another appropriate status code
+        );
       }
-      console.error('Error during registration:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
     }
   }
-);
 
-export default router;
+
+}
 
 ```
