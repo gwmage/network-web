@@ -1,6 +1,6 @@
 ```javascript
 import React, { useState, useEffect, createContext, useContext, useReducer } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, Link, Outlet } from 'react-router-dom';
 import MatchingForm from './components/MatchingForm';
 import MatchingProgress from './components/MatchingProgress';
 import MatchingResults from './components/MatchingResults';
@@ -51,8 +51,9 @@ const App = () => {
           <Route path="/reservation" element={<ReservationProcess />} />
           <Route path="/restaurant/:id" element={<RestaurantDetails />} />
           <Route path="/applications" element={<Applications />} />
-          <Route path="/profile" element={<ProfileManagement />} />
-          <Route path="/notification-settings" element={<NotificationSettings />} />
+          <Route path="/profile" element={<ProfileManagement />}>
+            <Route path="notifications" element={<NotificationSettings />} /> {/* Nested route */}
+          </Route>
         </Routes>
       </Router>
     </AppContext.Provider>
