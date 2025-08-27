@@ -58,11 +58,19 @@ Users can configure their notification preferences through the following API end
 
 * **GET /notifications:** Retrieves all notifications for the logged-in user.
 
+## Reservation Cancellation
+
+Users can cancel their reservations through the following API endpoint:
+
+* **DELETE /reservations/:id:** Cancels the reservation with the specified ID.  Requires authentication.  A 400 error will be returned if cancellation is attempted within the cancellation window (defined by `CANCELLATION_WINDOW_HOURS` environment variable, defaults to 24 hours).
+
+
 
 ## Key Features:
 
 * **User Registration:** Allows users to create new accounts with email, password, first name, and last name. Input validation is performed to ensure data integrity, including email format, password complexity, and uniqueness checks.  A confirmation email is sent upon successful registration.
 * **Notification Settings:** Allows users to customize their notification preferences for various events, such as receiving match results and reservation updates via push notifications or email.
+* **Reservation Cancellation:** Allows users to cancel existing reservations, subject to time restrictions.  A cancellation reason can optionally be provided.
 * **(Other features can be listed here as they are developed)**
 
 
