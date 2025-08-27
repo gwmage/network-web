@@ -1,48 +1,74 @@
 ```css
-/* Table Styles */
-.matching-results table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px; /* Add some space above the table */
+/* Comment Styles */
+.comment-list-container {
+  margin-top: 20px;
 }
 
-.matching-results th,
-.matching-results td {
+.comment-list {
+  list-style: none;
+  padding: 0;
+}
+
+.comment-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.comment {
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-content { /* Added for styling comment content */
+  margin-bottom: 5px; /* Space between content and buttons */
+}
+
+.comment-meta {
+  font-size: smaller;
+  color: gray;
+  margin-top: 5px; /* Add some space above comment meta info */
+}
+
+
+/* Input Area Styles */
+.comment-form {
+  margin-top: 20px;
+  width: 100%; /* Ensure input spans the full width on small screens */
+}
+
+.comment-form textarea {
+  width: calc(100% - 16px); /* Adjust width based on padding */
   padding: 8px;
   border: 1px solid #ccc;
-  text-align: left;
+  resize: vertical; /* Allow vertical resizing of the textarea */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
-.matching-results th {
-  background-color: #f0f0f0; /* Light gray background for header */
-  font-weight: bold;
-}
-
-/* Pagination Styles */
-.pagination {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.pagination button {
+.comment-form button {
+  margin-top: 5px;
   padding: 8px 12px;
-  margin: 0 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #fff;
   cursor: pointer;
 }
 
-.pagination button:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
-/* Responsive Table Styles */
+/* Responsive Design */
 @media (max-width: 768px) {
-  .matching-results table {
-    display: block; /* Make table scrollable on small screens */
-    overflow-x: auto;
+  .comment-list-container {
+    margin-top: 10px; /* Reduce top margin on mobile */
+  }
+
+  .comment-item {
+    padding: 5px; /* Reduce padding on mobile */
+    margin-bottom: 5px; /* Reduce margin on mobile */
+  }
+
+  .comment-form textarea,
+  .comment-form button {
+    font-size: 14px; /* Reduce font size of input and button on mobile */
   }
 }
 ```

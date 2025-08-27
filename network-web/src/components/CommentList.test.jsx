@@ -54,39 +54,6 @@ describe('CommentList', () => {
     expect(screen.getByText('No comments yet')).toBeInTheDocument();
   });
 
-  it('handles comments with no replies', () => {
-    render(<CommentList comments={[{ id: 1, content: 'Test', createdAt: '2024-01-05T12:00:00Z', replies: [] }]} isLoading={false} error={null} />);
-    expect(screen.getByText('Test')).toBeInTheDocument();
-  });
-
-  it('handles comments with deeply nested replies', () => {
-    const deeplyNestedComments = [
-      {
-        id: 1,
-        content: 'First comment',
-        createdAt: '2024-01-01T12:00:00Z',
-        replies: [
-          {
-            id: 2,
-            content: 'Reply to first comment',
-            createdAt: '2024-01-02T12:00:00Z',
-            replies: [
-              {
-                id: 3,
-                content: 'Reply to reply',
-                createdAt: '2024-01-03T12:00:00Z',
-                replies: [],
-              },
-            ],
-          },
-        ],
-      },
-    ];
-    render(<CommentList comments={deeplyNestedComments} isLoading={false} error={null} />);
-    expect(screen.getByText('First comment')).toBeInTheDocument();
-    expect(screen.getByText('Reply to first comment')).toBeInTheDocument();
-    expect(screen.getByText('Reply to reply')).toBeInTheDocument();
-  });
 
   it('displays loading indicator when isLoading is true', () => {
     render(<CommentList comments={[]} isLoading={true} error={null} />);

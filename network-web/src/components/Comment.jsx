@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { deleteComment, updateComment } from '../utils/api';
 import CommentForm from './CommentForm';
+import { format } from 'date-fns';
+import './Comment.css';
 
 // ... (Other imports and types remain unchanged)
 
@@ -13,24 +15,30 @@ const Comment: React.FC<CommentProps> = ({ comment, currentUser, onCommentDelete
   };
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this comment?")) {
-      try {
-        setIsDeleting(true);
-        await deleteComment(comment.postId, comment.id);
-        onCommentDelete(comment.id);
-      } catch (error) {
-        console.error("Error deleting comment:", error);
-        // Handle error, e.g., display error message
-      } finally {
-        setIsDeleting(false);
-      }
-    }
+    // ... (This function remains unchanged)
   };
 
   // ... (Other functions remain unchanged)
 
   return (
-    // ... (JSX remains unchanged)
+    <div className="comment-container">
+      <div className="comment-header">
+        {/* ... (other elements in header remain unchanged) */}
+        <span className="comment-timestamp">
+          {format(new Date(comment.createdAt), 'yyyy-MM-dd HH:mm')}
+        </span>
+      </div>
+      {/* ... (Other JSX remains unchanged) */}
+
+      {isEditing ? (
+        <CommentForm
+          initialContent={comment.content}
+          onSubmit={handleEdit}
+          onCancel={() => setIsEditing(false)}
+          submitButtonText="Update"
+        />
+      )}
+    </div>
   );
 };
 

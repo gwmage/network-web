@@ -54,12 +54,13 @@ const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) =>
         onChange={handleChange}
         placeholder="Write your comment..."
         disabled={isUpdating}
+        className="comment-form-textarea" // Add class for styling
       />
       {error && <div className="error-message">{error}</div>}
-      <button type="submit" disabled={isUpdating}>
+      <button type="submit" disabled={isUpdating} className="comment-form-button">
         {isUpdating ? 'Submitting...' : comment ? 'Update' : 'Submit'}
       </button>
-      {comment && <button type="button" onClick={onClose} disabled={isUpdating}>Cancel</button>}
+      {comment && <button type="button" onClick={onClose} disabled={isUpdating}  className="comment-form-button">Cancel</button>}
     </form>
   );
 };

@@ -70,4 +70,21 @@ it('does not display error message when input is valid', () => {
     fireEvent.submit(screen.getByRole('form'));
     expect(screen.queryByText('댓글 내용을 입력해주세요.')).not.toBeInTheDocument();
 });
+
+it('disables submit button when input is empty', () => {
+  render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} postId="123" userId="456"/>);
+  const submitButton = screen.getByRole('button', { name: 'Submit' });
+  expect(submitButton).toBeDisabled();
+});
+
+
+it('enables submit button when input is valid', () => {
+  render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} postId="123" userId="456"/>);
+  const inputElement = screen.getByRole('textbox');
+  fireEvent.change(inputElement, { target: { value: 'Valid comment' } });
+
+  const submitButton = screen.getByRole('button', { name: 'Submit' });
+  expect(submitButton).toBeEnabled();
+
+});
 ```
