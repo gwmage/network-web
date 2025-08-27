@@ -1,54 +1,79 @@
 ```typescript
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import RegisterForm from '../components/RegisterForm'; // Adjust path as needed
 
-const FormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 90%; /* Occupy most of the container width */
-  max-width: 500px; /* Set a maximum width for larger screens */
-  margin: 20px auto; /* Center the form */
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  gap: 10px; /* Add some spacing between form elements */
 
-  @media (max-width: 768px) {
-    width: 100%; /* Full width on smaller screens */
-    padding: 15px; /* Adjust padding for smaller screens */
-  }
 
-  @media (max-width: 480px) {
-    padding: 10px; /* Further adjust padding for very small screens */
-  }
+describe('RegisterForm', () => {
+  it('renders the form correctly', () => {
+    render(<RegisterForm />);
+    expect(screen.getByLabelText('Email')).toBeInTheDocument();
+    expect(screen.getByLabelText('Password')).toBeInTheDocument();
+    expect(screen.getByLabelText('Name')).toBeInTheDocument();
+    expect(screen.getByLabelText('Phone Number')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Register' })).toBeInTheDocument();
+  });
 
-  input, button {  /* Style form inputs and buttons */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box; /* Include padding and border in element's total width and height */
-  }
 
-  button {
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    border: none; /* Remove default button border */
-  }
+  it('validates email format', async () => {
+    render(<RegisterForm />);
+    const emailInput = screen.getByLabelText('Email');
+    await userEvent.type(emailInput, 'invalid-email');
+    fireEvent.blur(emailInput); // Trigger validation
+    expect(screen.getByText('Invalid email format')).toBeVisible();
+  });
 
-  button:hover {
-    background-color: #0056b3;
-  }
 
-  .error { /* Style error messages */
-    color: red;
-    font-size: 0.8rem;
-    margin-top: -5px;
-    margin-bottom: 5px;
-  }
+  it('validates password length', async () => {
+    render(<RegisterForm />);
+    const passwordInput = screen.getByLabelText('Password');
+    await userEvent.type(passwordInput, 'short');
+    fireEvent.blur(passwordInput);
+    expect(screen.getByText('Password must be at least 8 characters')).toBeVisible();
 
-  /* Add styles for labels or other form elements as needed */
-`;
+  });
 
-// ... (rest of the code remains the same)
+  it('validates required fields', async () => {
+    render(<RegisterForm />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Register' }));
+
+    expect(screen.getByText('Email is required')).toBeVisible();
+    expect(screen.getByText('Password is required')).toBeVisible();
+    expect(screen.getByText('Name is required')).toBeVisible();
+    expect(screen.getByText('Phone Number is required')).toBeVisible();
+  });
+
+  it('calls onSubmit with correct data', async () => {
+    const handleSubmit = jest.fn();
+    render(<RegisterForm onSubmit={handleSubmit} />);
+
+    const emailInput = screen.getByLabelText('Email');
+    const passwordInput = screen.getByLabelText('Password');
+    const nameInput = screen.getByLabelText('Name');
+    const phoneInput = screen.getByLabelText('Phone Number');
+
+
+    await userEvent.type(emailInput, 'test@test.com');
+    await userEvent.type(passwordInput, 'Test1234');
+    await userEvent.type(nameInput, 'Test User');
+    await userEvent.type(phoneInput, '123-456-7890');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Register' }));
+
+
+    expect(handleSubmit).toHaveBeenCalledWith({
+      email: 'test@test.com',
+      password: 'Test1234',
+      name: 'Test User',
+      phoneNumber: '123-456-7890',
+    });
+
+  });
+
+
+});
 ```

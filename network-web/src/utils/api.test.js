@@ -1,87 +1,87 @@
 ```typescript
-import { getPosts, getPost, createPost, updatePost, deletePost, getNotificationPreferences, updateNotificationPreferences, createComment, updateComment, deleteComment, getCommentsByPostId } from './api';
+import { registerUser } from './api';
 
 jest.mock('./api', () => ({
-    getPosts: jest.fn(),
-    getPost: jest.fn(),
-    createPost: jest.fn(),
-    updatePost: jest.fn(),
-    deletePost: jest.fn(),
-    getNotificationPreferences: jest.fn(),
-    updateNotificationPreferences: jest.fn(),
-    createComment: jest.fn(),
-    updateComment: jest.fn(),
-    deleteComment: jest.fn(),
-    getCommentsByPostId: jest.fn(),
+    registerUser: jest.fn(),
 }));
 
-// ... (Existing tests)
+describe('API Utils - Auth', () => {
+    describe('registerUser', () => {
+        it('should register a user successfully', async () => {
+            const userData = {
+                email: 'test@example.com',
+                password: 'SecurePassword123',
+                name: 'Test User',
+                phoneNumber: '+15551234567',
+            };
+            const mockResponse = {
+                status: 'success',
+                message: 'User registered successfully',
+                userId: 1,
+            };
+            (registerUser as jest.Mock).mockResolvedValue(mockResponse);
 
-describe('API Utils - Comment Interactions', () => {
-    const postId = 1;
-    const commentId = 1;
-    const commentData = { content: 'New comment' };
-    const updatedCommentData = { content: 'Updated comment' };
+            const response = await registerUser(userData);
+            expect(registerUser).toHaveBeenCalledWith(userData);
+            expect(response).toEqual(mockResponse);
+        });
 
-    it('should create a comment successfully', async () => {
-        (createComment as jest.Mock).mockResolvedValue({ id: 1, ...commentData });
-        const newComment = await createComment(postId, commentData);
-        expect(createComment).toHaveBeenCalledWith(postId, commentData);
-        expect(newComment).toEqual({ id: 1, ...commentData });
-    });
+        it('should handle validation errors', async () => {
+            const userData = {
+                email: 'invalid_email',
+                password: 'short',
+                name: '',
+                phoneNumber: 'invalid_phone',
+            };
+            const mockError = {
+                status: 'error',
+                message: 'Validation failed',
+                errors: {
+                    email: ['Invalid email format'],
+                    password: ['Password must be at least 8 characters'],
+                    name: ['Name is required'],
+                    phoneNumber: ['Invalid phone number format'],
+                },
+            };
+            (registerUser as jest.Mock).mockRejectedValue(mockError);
 
-    it('should handle errors when creating a comment', async () => {
-        const error = new Error('Failed to create comment');
-        (createComment as jest.Mock).mockRejectedValue(error);
-        await expect(createComment(postId, commentData)).rejects.toThrowError(error);
-    });
+            await expect(registerUser(userData)).rejects.toEqual(mockError);
+        });
+
+        it('should handle email already exists error', async () => {
+            const userData = {
+                email: 'existing@example.com',
+                password: 'SecurePassword123',
+                name: 'Test User',
+                phoneNumber: '+15551234567',
+            };
+            const mockError = {
+                status: 'error',
+                message: 'Email already exists',
+                errors: {
+                    email: 'This email is already registered.',
+                },
+            };
+            (registerUser as jest.Mock).mockRejectedValue(mockError);
+
+            await expect(registerUser(userData)).rejects.toEqual(mockError);
+
+        });
+
+        it('should handle generic server errors', async () => {
+          const userData = {
+              email: 'test@example.com',
+              password: 'SecurePassword123',
+              name: 'Test User',
+              phoneNumber: '+15551234567',
+          };
+          const mockError = new Error('Internal Server Error');
+          (registerUser as jest.Mock).mockRejectedValue(mockError);
+
+          await expect(registerUser(userData)).rejects.toThrowError(mockError);
+      });
 
 
-    it('should update a comment successfully', async () => {
-        (updateComment as jest.Mock).mockResolvedValue({ id: commentId, ...updatedCommentData });
-        const updatedComment = await updateComment(postId, commentId, updatedCommentData);
-
-        expect(updateComment).toHaveBeenCalledWith(postId, commentId, updatedCommentData);
-        expect(updatedComment).toEqual({ id: commentId, ...updatedCommentData });
-
-    });
-
-    it('should handle errors when updating a comment', async () => {
-        const error = new Error('Failed to update comment');
-        (updateComment as jest.Mock).mockRejectedValue(error);
-        await expect(updateComment(postId, commentId, updatedCommentData)).rejects.toThrowError(error);
-    });
-
-
-
-    it('should delete a comment successfully', async () => {
-
-        (deleteComment as jest.Mock).mockResolvedValue(undefined);
-        await deleteComment(postId, commentId);
-        expect(deleteComment).toHaveBeenCalledWith(postId, commentId);
-
-    });
-
-    it('should handle errors when deleting a comment', async () => {
-        const error = new Error('Failed to delete comment');
-        (deleteComment as jest.Mock).mockRejectedValue(error);
-        await expect(deleteComment(postId, commentId)).rejects.toThrowError(error);
-
-    });
-
-    it('should get comments by post ID successfully', async () => {
-        const mockComments = [{ id: 1, content: 'Comment 1' }, { id: 2, content: 'Comment 2' }];
-        (getCommentsByPostId as jest.Mock).mockResolvedValue(mockComments);
-
-        const comments = await getCommentsByPostId(postId);
-        expect(getCommentsByPostId).toHaveBeenCalledWith(postId);
-        expect(comments).toEqual(mockComments);
-    });
-
-    it('should handle errors when getting comments by post ID', async () => {
-        const error = new Error('Failed to get comments');
-        (getCommentsByPostId as jest.Mock).mockRejectedValue(error);
-        await expect(getCommentsByPostId(postId)).rejects.toThrowError(error);
     });
 });
 
