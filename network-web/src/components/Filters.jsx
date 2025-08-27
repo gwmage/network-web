@@ -6,9 +6,6 @@ const Filters = ({ onFilterChange, resultCount }) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
   const [availableTags, setAvailableTags] = useState([]);
-  const [sortBy, setSortBy] = useState('createdAt'); // Add sortBy state
-  const [sortOrder, setSortOrder] = useState('ASC'); // Add sortOrder state
-
 
   useEffect(() => {
     const fetchCategoriesAndTags = async () => {
@@ -27,8 +24,8 @@ const Filters = ({ onFilterChange, resultCount }) => {
   }, []);
 
   useEffect(() => {
-    onFilterChange({ category: selectedCategory, tags: selectedTags, sortBy, sortOrder }); // Include sortBy and sortOrder
-  }, [selectedCategory, selectedTags, sortBy, sortOrder, onFilterChange]);
+    onFilterChange({ category: selectedCategory, tags: selectedTags });
+  }, [selectedCategory, selectedTags, onFilterChange]);
 
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
@@ -43,14 +40,6 @@ const Filters = ({ onFilterChange, resultCount }) => {
         ? [...prevTags, tag]
         : prevTags.filter(t => t !== tag);
     });
-  };
-
-  const handleSortByChange = (event) => {
-    setSortBy(event.target.value);
-  };
-
-  const handleSortOrderChange = (event) => {
-    setSortOrder(event.target.value);
   };
 
 
@@ -81,19 +70,6 @@ const Filters = ({ onFilterChange, resultCount }) => {
           </label>
         ))}
       </div>
-
-      <label htmlFor="sortBy">Sort By:</label>
-      <select id="sortBy" value={sortBy} onChange={handleSortByChange}>
-        <option value="createdAt">Created At</option>
-        {/* Add other sorting options as needed */}
-        <option value="name">Name</option>
-      </select>
-
-      <label htmlFor="sortOrder">Sort Order:</label>
-      <select id="sortOrder" value={sortOrder} onChange={handleSortOrderChange}>
-        <option value="ASC">Ascending</option>
-        <option value="DESC">Descending</option>
-      </select>
     </div>
   );
 };

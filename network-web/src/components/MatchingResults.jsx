@@ -18,10 +18,10 @@ const MatchingResults: React.FC = () => {
         setMatchingResults({ group: groupResponse.data.groups[0], user: userResponse.data, count: groupResponse.data.count });
         toast.success("Matching successful!");
 
-        if (groupResponse.data.groups[0] && groupResponse.data.groups[0].explanation) {
+        if (groupResponse.data.groups[0].explanation) {
           setExplanation(groupResponse.data.groups[0].explanation);
         } else {
-          console.warn("Explanation data is not available or the group is empty in the API response.");
+          console.warn("Explanation data is not available in the API response.");
           setExplanation(null);
         }
       } catch (err) {
@@ -50,23 +50,33 @@ const MatchingResults: React.FC = () => {
   }
 
 
-  if (!matchingResults || !matchingResults.group || !matchingResults.group.participants) {
+  if (!matchingResults || !matchingResults.group || !matchingResults.user) {
     return <div>No matching results found.</div>;
   }
 
   const { group, user, count } = matchingResults;
 
   return (
-    <div>
+    <div className="matching-results-container">
       <h2>Your Matched Group ({count} results)</h2>
-      <h3>Members:</h3>
-      <ul>
-        {group.participants.map((member) => (
-          <li key={member.userId}>{member.name} ({member.email})</li>
-        ))}
-      </ul>
+      <div className="table-responsive"> {/* Added responsive wrapper */}
+        <table>
+          <thead>
+            <tr>
+              <th>Members</th>
+            </tr>
+          </thead>
+          <tbody>
+            {group.participants.map((member) => (
+              <tr key={member.userId}>
+                <td>{member.name}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <h3>Your Criteria:</h3>
-      <pre>{JSON.stringify(user.matchingPreferences, null, 2)}</pre>
+      <pre>{JSON.stringify(user, null, 2)}</pre>
       {explanation && (
         <>
           <h3>Explanation:</h3>
@@ -78,5 +88,4 @@ const MatchingResults: React.FC = () => {
 };
 
 export default MatchingResults;
-
 ```
