@@ -3,54 +3,28 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:3000/api'; // Replace with your API base URL
 
-// ... other existing functions
-
-export const createComment = async (commentData) => {
+export const registerUser = async (userData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/comments/${commentData.postId}`, commentData);
+    const response = await axios.post(`${API_BASE_URL}/auth/register`, userData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     return response.data;
   } catch (error) {
-    console.error('Error creating comment:', error);
-    throw error;
-  }
-};
-
-export const getComments = async (postId) => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/comments/${postId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching comments:', error);
-    throw error;
-  }
-};
-
-export const updateComment = async (postId, commentId, commentData) => {
-  try {
-    const response = await axios.put(`${API_BASE_URL}/comments/${commentId}`, commentData);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating comment:', error);
-    throw error;
-  }
-};
-
-export const deleteComment = async (postId, commentId) => {
-  try {
-    await axios.delete(`${API_BASE_URL}/comments/${commentId}`);
-  } catch (error) {
-    console.error('Error deleting comment:', error);
-    throw error;
-  }
-};
-
-export const triggerMatch = async (userInput) => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/match`, userInput);
-    return response.data;
-  } catch (error) {
-    console.error('Error triggering match:', error);
-    throw new Error('Failed to trigger match');
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      throw error.response; // Re-throw the error response for the caller to handle
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.error('No response received from server:', error.request);
+      throw new Error('Network error. Please check your connection.');
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error('Error setting up request:', error.message);
+      throw new Error('An unexpected error occurred. Please try again later.');
+    }
   }
 };
 ```
