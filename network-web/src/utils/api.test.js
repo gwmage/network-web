@@ -1,88 +1,103 @@
 ```typescript
-import { registerUser } from './api';
+import { registerUser, createReservation, getReservation, cancelReservation } from './api';
 
 jest.mock('./api', () => ({
     registerUser: jest.fn(),
+    createReservation: jest.fn(),
+    getReservation: jest.fn(),
+    cancelReservation: jest.fn(),
 }));
 
-describe('API Utils - Auth', () => {
-    describe('registerUser', () => {
-        it('should register a user successfully', async () => {
-            const userData = {
-                email: 'test@example.com',
-                password: 'SecurePassword123',
-                name: 'Test User',
-                phoneNumber: '+15551234567',
+describe('API Utils - Reservations', () => {
+    describe('createReservation', () => {
+        it('should create a reservation successfully', async () => {
+            const reservationData = {
+                restaurantId: '1',
+                userId: '1',
+                dateTime: '2024-07-27T12:00:00Z',
+                numberOfGuests: 2,
             };
             const mockResponse = {
                 status: 'success',
-                message: 'User registered successfully',
-                userId: 1,
+                message: 'Reservation created successfully',
+                reservationId: 'reservation123',
             };
-            (registerUser as jest.Mock).mockResolvedValue(mockResponse);
+            (createReservation as jest.Mock).mockResolvedValue(mockResponse);
 
-            const response = await registerUser(userData);
-            expect(registerUser).toHaveBeenCalledWith(userData);
+            const response = await createReservation(reservationData);
+            expect(createReservation).toHaveBeenCalledWith(reservationData);
             expect(response).toEqual(mockResponse);
         });
 
-        it('should handle validation errors', async () => {
-            const userData = {
-                email: 'invalid_email',
-                password: 'short',
-                name: '',
-                phoneNumber: 'invalid_phone',
+        it('should handle errors when creating a reservation', async () => {
+            const reservationData = {
+                restaurantId: '1',
+                userId: '1',
+                dateTime: '2024-07-27T12:00:00Z',
+                numberOfGuests: 2,
             };
+
             const mockError = {
                 status: 'error',
-                message: 'Validation failed',
-                errors: {
-                    email: ['Invalid email format'],
-                    password: ['Password must be at least 8 characters'],
-                    name: ['Name is required'],
-                    phoneNumber: ['Invalid phone number format'],
+                message: 'Failed to create reservation',
+            };
+
+            (createReservation as jest.Mock).mockRejectedValue(mockError);
+            await expect(createReservation(reservationData)).rejects.toEqual(mockError);
+        });
+    });
+
+    describe('getReservation', () => {
+        it('should retrieve a reservation successfully', async () => {
+            const reservationId = 'reservation123';
+            const mockResponse = {
+                status: 'success',
+                reservation: {
+                    restaurantId: '1',
+                    userId: '1',
+                    dateTime: '2024-07-27T12:00:00Z',
+                    numberOfGuests: 2,
                 },
             };
-            (registerUser as jest.Mock).mockRejectedValue(mockError);
 
-            await expect(registerUser(userData)).rejects.toEqual(mockError);
-        });
+            (getReservation as jest.Mock).mockResolvedValue(mockResponse);
 
-        it('should handle email already exists error', async () => {
-            const userData = {
-                email: 'existing@example.com',
-                password: 'SecurePassword123',
-                name: 'Test User',
-                phoneNumber: '+15551234567',
-            };
-            const mockError = {
-                status: 'error',
-                message: 'Email already exists',
-                errors: {
-                    email: 'This email is already registered.',
-                },
-            };
-            (registerUser as jest.Mock).mockRejectedValue(mockError);
-
-            await expect(registerUser(userData)).rejects.toEqual(mockError);
+            const response = await getReservation(reservationId);
+            expect(getReservation).toHaveBeenCalledWith(reservationId);
+            expect(response).toEqual(mockResponse);
 
         });
+    });
 
-        it('should handle generic server errors', async () => {
-          const userData = {
-              email: 'test@example.com',
-              password: 'SecurePassword123',
-              name: 'Test User',
-              phoneNumber: '+15551234567',
-          };
-          const mockError = new Error('Internal Server Error');
-          (registerUser as jest.Mock).mockRejectedValue(mockError);
 
-          await expect(registerUser(userData)).rejects.toThrowError(mockError);
+    describe('cancelReservation', () => {
+      it('should cancel a reservation successfully', async () => {
+        const reservationId = 'reservation123';
+        const mockResponse = {
+          status: 'success',
+          message: 'Reservation cancelled successfully',
+        };
+        (cancelReservation as jest.Mock).mockResolvedValue(mockResponse);
+
+        const response = await cancelReservation(reservationId);
+        expect(cancelReservation).toHaveBeenCalledWith(reservationId);
+        expect(response).toEqual(mockResponse);
       });
 
+      it('should handle errors when cancelling a reservation', async () => {
+        const reservationId = 'reservation123';
+        const mockError = {
+          status: 'error',
+          message: 'Failed to cancel reservation',
+        };
+        (cancelReservation as jest.Mock).mockRejectedValue(mockError);
 
+        await expect(cancelReservation(reservationId)).rejects.toEqual(mockError);
+
+      });
     });
+
+
 });
 
 ```
