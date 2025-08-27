@@ -26,26 +26,7 @@ export const sendPushNotification = async (notificationData: any) => {
         }
       }
 
-      // Fallback to or complement with a push service for background notifications
-      // (e.g., Firebase Cloud Messaging - replace placeholders below)
-
-      // const response = await fetch('/send-push-notification', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     ...notificationData,
-      //     // Add device token or user ID here
-      //   }),
-      // });
-      // if (!response.ok) {
-      //   const errorData = await response.json();
-      //   throw new Error(`Failed to send push notification: ${errorData.error || response.statusText}`);
-      // }
-
-      // console.log('Push notification sent successfully:', await response.json());
-
+      // Existing push service logic (e.g., Firebase) can be added here.
     }
   } catch (error) {
     console.error('Error sending push notification:', error);
@@ -55,5 +36,15 @@ export const sendPushNotification = async (notificationData: any) => {
 
 export const handleCommentPushNotification = async (commentData: any, type: string) => {
   // ... (rest of the function remains unchanged)
+};
+
+export const handleReservationCancellationNotification = async (reservationId: string) => {
+  const notificationData = {
+    title: 'Reservation Cancelled',
+    body: `Your reservation (ID: ${reservationId}) has been successfully cancelled.`,
+    data: { reservationId },
+  };
+
+  await sendPushNotification(notificationData);
 };
 ```

@@ -85,6 +85,11 @@ const Notifications = () => {
                   New comment on your post: {notification.message}
                 </span>
               )}
+              {notification.type === 'reservation_cancelled' && (
+                <span>
+                  Your reservation has been cancelled. {notification.message && `Reason: ${notification.message}`}
+                </span>
+              )}
               {notification.type === 'other' && (
                 <span>{notification.message}</span>
               )}
