@@ -1,4 +1,4 @@
-```jsx
+```typescript
 import React, { useState, useEffect } from 'react';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
@@ -77,4 +77,72 @@ const MatchingProgress = () => {
 };
 
 export default MatchingProgress;
+```
+```javascript
+import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import MatchingProgress from '../components/MatchingProgress';
+import * as api from '../utils/api';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+
+jest.mock('../utils/api');
+
+describe('MatchingProgress Component', () => {
+  it('should display loading state while fetching data', async () => {
+    api.getMatchingVisualization.mockImplementation(() => new Promise(() => {})); // Mock API call to never resolve
+    render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
+    expect(screen.getByText('Matching in progress...')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+
+  });
+
+
+  it('should display error message if API call fails', async () => {
+    const errorMessage = 'Failed to fetch data';
+    api.getMatchingVisualization.mockRejectedValue(new Error(errorMessage));
+    render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
+
+    await waitFor(() => {
+      expect(screen.getByText(`Error: ${errorMessage}`)).toBeInTheDocument();
+    });
+  });
+
+  it('should render visualization data when API call succeeds', async () => {
+    const mockData = '<svg></svg>';
+    api.getMatchingVisualization.mockResolvedValue(mockData);
+    render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
+    await waitFor(() => {
+      expect(screen.getByText('Matching in progress...')).not.toBeInTheDocument();// check that the progress bar disappears
+    });
+    const element = screen.getByRole('presentation');
+    expect(element.innerHTML).toContain(mockData);
+
+
+
+  });
+
+  it('should render JSON data when API call succeeds with JSON', async () => {
+    const mockData = { data: 'test' };
+    api.getMatchingVisualization.mockResolvedValue(mockData);
+    render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
+
+    await waitFor(() => {
+      expect(screen.getByText('{"data":"test"}', { exact: false })).toBeInTheDocument();
+
+    });
+
+  });
+
+  it('should render message if visualization data format is not supported', async () => {
+    const mockData = 123;
+    api.getMatchingVisualization.mockResolvedValue(mockData);
+    render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
+
+    await waitFor(() => {
+      expect(screen.getByText('Visualization data format not supported.')).toBeInTheDocument();
+    });
+  });
+});
+
 ```
