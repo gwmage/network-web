@@ -1,100 +1,69 @@
 ```typescript
-import { registerUser, createReservation, getReservation, cancelReservation } from './api';
+import { initiateMatching, getMatchesForUser, getMatchingStatus } from './api';
 
 jest.mock('./api', () => ({
-    registerUser: jest.fn(),
-    createReservation: jest.fn(),
-    getReservation: jest.fn(),
-    cancelReservation: jest.fn(),
+    initiateMatching: jest.fn(),
+    getMatchesForUser: jest.fn(),
+    getMatchingStatus: jest.fn(),
 }));
 
-describe('API Utils - Reservations', () => {
-    describe('createReservation', () => {
-        it('should create a reservation successfully', async () => {
-            const reservationData = {
-                restaurantId: '1',
-                userId: '1',
-                dateTime: '2024-07-27T12:00:00Z',
-                numberOfGuests: 2,
-            };
-            const mockResponse = {
-                status: 'success',
-                message: 'Reservation created successfully',
-                reservationId: 'reservation123',
-            };
-            (createReservation as jest.Mock).mockResolvedValue(mockResponse);
+describe('API Utils - Matching', () => {
+    describe('initiateMatching', () => {
+        it('should initiate matching successfully', async () => {
+            const userData = { userId: '1' };
+            const mockResponse = { status: 'success', message: 'Matching initiated' };
+            (initiateMatching as jest.Mock).mockResolvedValue(mockResponse);
 
-            const response = await createReservation(reservationData);
-            expect(createReservation).toHaveBeenCalledWith(reservationData);
+            const response = await initiateMatching(userData);
+            expect(initiateMatching).toHaveBeenCalledWith(userData);
             expect(response).toEqual(mockResponse);
         });
 
-        it('should handle errors when creating a reservation', async () => {
-            const reservationData = {
-                restaurantId: '1',
-                userId: '1',
-                dateTime: '2024-07-27T12:00:00Z',
-                numberOfGuests: 2,
-            };
+        it('should handle errors when initiating matching', async () => {
+            const userData = { userId: '1' };
+            const mockError = { status: 'error', message: 'Failed to initiate matching' };
+            (initiateMatching as jest.Mock).mockRejectedValue(mockError);
 
-            const mockError = {
-                status: 'error',
-                message: 'Failed to create reservation',
-            };
-
-            (createReservation as jest.Mock).mockRejectedValue(mockError);
-            await expect(createReservation(reservationData)).rejects.toEqual(mockError);
+            await expect(initiateMatching(userData)).rejects.toEqual(mockError);
         });
     });
 
-    describe('getReservation', () => {
-        it('should retrieve a reservation successfully', async () => {
-            const reservationId = 'reservation123';
-            const mockResponse = {
-                status: 'success',
-                reservation: {
-                    restaurantId: '1',
-                    userId: '1',
-                    dateTime: '2024-07-27T12:00:00Z',
-                    numberOfGuests: 2,
-                },
-            };
+    describe('getMatchesForUser', () => {
+        it('should retrieve matches for a user successfully', async () => {
+            const userId = '1';
+            const mockResponse = { status: 'success', matches: [{ groupId: 'group123', members: ['user1', 'user2'] }] };
+            (getMatchesForUser as jest.Mock).mockResolvedValue(mockResponse);
 
-            (getReservation as jest.Mock).mockResolvedValue(mockResponse);
-
-            const response = await getReservation(reservationId);
-            expect(getReservation).toHaveBeenCalledWith(reservationId);
+            const response = await getMatchesForUser(userId);
+            expect(getMatchesForUser).toHaveBeenCalledWith(userId);
             expect(response).toEqual(mockResponse);
+        });
 
+        it('should handle errors when retrieving matches', async () => {
+            const userId = '1';
+            const mockError = { status: 'error', message: 'Failed to retrieve matches' };
+            (getMatchesForUser as jest.Mock).mockRejectedValue(mockError);
+
+            await expect(getMatchesForUser(userId)).rejects.toEqual(mockError);
         });
     });
 
 
-    describe('cancelReservation', () => {
-      it('should cancel a reservation successfully', async () => {
-        const reservationId = 'reservation123';
-        const mockResponse = {
-          status: 'success',
-          message: 'Reservation cancelled successfully',
-        };
-        (cancelReservation as jest.Mock).mockResolvedValue(mockResponse);
+    describe('getMatchingStatus', () => {
+        it('should retrieve matching status successfully', async () => {
+            const mockResponse = { status: 'in_progress', estimatedCompletionTime: '2024-07-28T12:00:00Z' };
 
-        const response = await cancelReservation(reservationId);
-        expect(cancelReservation).toHaveBeenCalledWith(reservationId);
-        expect(response).toEqual(mockResponse);
-      });
+            (getMatchingStatus as jest.Mock).mockResolvedValue(mockResponse);
+            const response = await getMatchingStatus();
+            expect(getMatchingStatus).toHaveBeenCalled();
+            expect(response).toEqual(mockResponse);
+        });
 
-      it('should handle errors when cancelling a reservation', async () => {
-        const reservationId = 'reservation123';
-        const mockError = {
-          status: 'error',
-          message: 'Failed to cancel reservation',
-        };
-        (cancelReservation as jest.Mock).mockRejectedValue(mockError);
-
-        await expect(cancelReservation(reservationId)).rejects.toEqual(mockError);
-
-      });
+        it('should handle errors when retrieving matching status', async () => {
+            const mockError = { status: 'error', message: 'Failed to retrieve matching status' };
+            (getMatchingStatus as jest.Mock).mockRejectedValue(mockError);
+            await expect(getMatchingStatus()).rejects.toEqual(mockError);
+        });
     });
 
 
