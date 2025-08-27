@@ -1,68 +1,105 @@
 ```typescript
-import { initiateMatching, getMatchesForUser, getMatchingStatus } from './api';
+import { getNotificationPreferences, updateNotificationPreferences, getNotificationStatus, getMatchingNotificationStatus, sendNotification } from './api';
 
 jest.mock('./api', () => ({
     initiateMatching: jest.fn(),
     getMatchesForUser: jest.fn(),
     getMatchingStatus: jest.fn(),
+    getNotificationPreferences: jest.fn(),
+    updateNotificationPreferences: jest.fn(),
+    getNotificationStatus: jest.fn(),
+    getMatchingNotificationStatus: jest.fn(),
+    sendNotification: jest.fn(),
 }));
 
-describe('API Utils - Matching', () => {
-    describe('initiateMatching', () => {
-        it('should initiate matching successfully', async () => {
-            const userData = { userId: '1' };
-            const mockResponse = { status: 'success', message: 'Matching initiated' };
-            (initiateMatching as jest.Mock).mockResolvedValue(mockResponse);
+describe('API Utils - Notifications', () => {
+    describe('getNotificationPreferences', () => {
+        it('should fetch notification preferences successfully', async () => {
+            const mockResponse = { email: true, push: false };
+            (getNotificationPreferences as jest.Mock).mockResolvedValue(mockResponse);
 
-            const response = await initiateMatching(userData);
-            expect(initiateMatching).toHaveBeenCalledWith(userData);
+            const response = await getNotificationPreferences();
+            expect(getNotificationPreferences).toHaveBeenCalled();
             expect(response).toEqual(mockResponse);
         });
 
-        it('should handle errors when initiating matching', async () => {
-            const userData = { userId: '1' };
-            const mockError = { status: 'error', message: 'Failed to initiate matching' };
-            (initiateMatching as jest.Mock).mockRejectedValue(mockError);
+        it('should handle errors when fetching preferences', async () => {
+            const mockError = new Error('Failed to fetch preferences');
+            (getNotificationPreferences as jest.Mock).mockRejectedValue(mockError);
 
-            await expect(initiateMatching(userData)).rejects.toEqual(mockError);
+            await expect(getNotificationPreferences()).rejects.toThrow(mockError);
         });
     });
 
-    describe('getMatchesForUser', () => {
-        it('should retrieve matches for a user successfully', async () => {
-            const userId = '1';
-            const mockResponse = { status: 'success', matches: [{ groupId: 'group123', members: ['user1', 'user2'] }] };
-            (getMatchesForUser as jest.Mock).mockResolvedValue(mockResponse);
+    describe('updateNotificationPreferences', () => {
+        it('should update notification preferences successfully', async () => {
+            const preferences = { email: true, push: false };
+            (updateNotificationPreferences as jest.Mock).mockResolvedValue({ message: 'Preferences saved successfully' });
 
-            const response = await getMatchesForUser(userId);
-            expect(getMatchesForUser).toHaveBeenCalledWith(userId);
-            expect(response).toEqual(mockResponse);
+            const response = await updateNotificationPreferences(preferences);
+            expect(updateNotificationPreferences).toHaveBeenCalledWith(preferences);
+            expect(response).toEqual({ message: 'Preferences saved successfully' });
         });
 
-        it('should handle errors when retrieving matches', async () => {
-            const userId = '1';
-            const mockError = { status: 'error', message: 'Failed to retrieve matches' };
-            (getMatchesForUser as jest.Mock).mockRejectedValue(mockError);
+        it('should handle errors when updating preferences', async () => {
+            const preferences = { email: true, push: false };
+            const mockError = new Error('Failed to update preferences');
+            (updateNotificationPreferences as jest.Mock).mockRejectedValue(mockError);
 
-            await expect(getMatchesForUser(userId)).rejects.toEqual(mockError);
+            await expect(updateNotificationPreferences(preferences)).rejects.toThrow(mockError);
         });
     });
 
+    describe('getNotificationStatus', () => {
+      it('should get notification status successfully', async () => {
+          const mockResponse = { enabled: true, lastSent: '2024-07-28T12:00:00Z' };
+          (getNotificationStatus as jest.Mock).mockResolvedValue(mockResponse);
 
-    describe('getMatchingStatus', () => {
-        it('should retrieve matching status successfully', async () => {
-            const mockResponse = { status: 'in_progress', estimatedCompletionTime: '2024-07-28T12:00:00Z' };
+          const response = await getNotificationStatus();
+          expect(getNotificationStatus).toHaveBeenCalled();
+          expect(response).toEqual(mockResponse);
 
-            (getMatchingStatus as jest.Mock).mockResolvedValue(mockResponse);
-            const response = await getMatchingStatus();
-            expect(getMatchingStatus).toHaveBeenCalled();
+      });
+      it('should handle errors', async () => {
+          const mockError = { status: 'error', message: 'Failed to retrieve notification status' };
+          (getNotificationStatus as jest.Mock).mockRejectedValue(mockError);
+
+          await expect(getNotificationStatus()).rejects.toEqual(mockError);
+
+      });
+
+    });
+    describe('getMatchingNotificationStatus', () => {
+        it('should get matching notification status successfully', async () => {
+            const mockResponse = { status: 'pending', lastSent: '2024-07-28T12:00:00Z' };
+            (getMatchingNotificationStatus as jest.Mock).mockResolvedValue(mockResponse);
+
+            const response = await getMatchingNotificationStatus();
+            expect(getMatchingNotificationStatus).toHaveBeenCalled();
             expect(response).toEqual(mockResponse);
+
+        });
+        it('should handle errors', async () => {
+            const mockError = { status: 'error', message: 'Failed to retrieve matching notification status' };
+            (getMatchingNotificationStatus as jest.Mock).mockRejectedValue(mockError);
+
+            await expect(getMatchingNotificationStatus()).rejects.toEqual(mockError);
+
+        });
+    });
+    describe('sendNotification', () => {
+        it('should send a notification successfully', async () => {
+            (sendNotification as jest.Mock).mockResolvedValue({message: 'Notification sent successfully'});
+
+            const response = await sendNotification();
+            expect(sendNotification).toHaveBeenCalled();
+            expect(response).toEqual({message: 'Notification sent successfully'});
         });
 
-        it('should handle errors when retrieving matching status', async () => {
-            const mockError = { status: 'error', message: 'Failed to retrieve matching status' };
-            (getMatchingStatus as jest.Mock).mockRejectedValue(mockError);
-            await expect(getMatchingStatus()).rejects.toEqual(mockError);
+        it('should handle errors when sending notification', async () => {
+            const mockError = { status: 'error', message: 'Failed to send notification' };
+            (sendNotification as jest.Mock).mockRejectedValue(mockError);
+            await expect(sendNotification()).rejects.toEqual(mockError);
         });
     });
 

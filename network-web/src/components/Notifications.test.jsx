@@ -10,6 +10,7 @@ const mockNotifications = [
 
 const mockMarkAsRead = jest.fn();
 const mockDismissNotification = jest.fn();
+const mockToggleSubscription = jest.fn();
 
 describe('Notifications Component', () => {
   it('renders notifications correctly', () => {
@@ -18,6 +19,7 @@ describe('Notifications Component', () => {
         notifications={mockNotifications}
         markAsRead={mockMarkAsRead}
         dismissNotification={mockDismissNotification}
+        toggleSubscription={mockToggleSubscription}
       />
     );
 
@@ -36,6 +38,7 @@ describe('Notifications Component', () => {
         notifications={mockNotifications}
         markAsRead={mockMarkAsRead}
         dismissNotification={mockDismissNotification}
+        toggleSubscription={mockToggleSubscription}
       />
     );
 
@@ -53,6 +56,7 @@ describe('Notifications Component', () => {
         notifications={mockNotifications}
         markAsRead={mockMarkAsRead}
         dismissNotification={mockDismissNotification}
+        toggleSubscription={mockToggleSubscription}
       />
     );
 
@@ -66,11 +70,32 @@ describe('Notifications Component', () => {
         notifications={[]}
         markAsRead={mockMarkAsRead}
         dismissNotification={mockDismissNotification}
+        toggleSubscription={mockToggleSubscription}
       />
     );
 
     expect(screen.getByText(/No notifications yet./)).toBeInTheDocument();
   });
+
+  it('toggles subscription', () => {
+    render(
+      <Notifications
+        notifications={mockNotifications}
+        markAsRead={mockMarkAsRead}
+        dismissNotification={mockDismissNotification}
+        toggleSubscription={mockToggleSubscription}
+      />
+    );
+
+    fireEvent.click(screen.getByText(/Push/i));
+    expect(mockToggleSubscription).toHaveBeenCalledWith('push');
+
+    fireEvent.click(screen.getByText(/Email/i));
+    expect(mockToggleSubscription).toHaveBeenCalledWith('email');
+
+
+  });
+
 });
 
 ```

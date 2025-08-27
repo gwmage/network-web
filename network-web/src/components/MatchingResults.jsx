@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import ErrorDisplay from './ErrorDisplay';
+import MatchingResultNotifications from './MatchingResultNotifications'; // Import the notification component
 
 const MatchingResults: React.FC = () => {
   const [matchingResults, setMatchingResults] = useState(null);
@@ -59,7 +60,11 @@ const MatchingResults: React.FC = () => {
   return (
     <div className="matching-results-container">
       <h2>Your Matched Group ({count} results)</h2>
-      <div className="table-responsive"> {/* Added responsive wrapper */}
+
+      {/* Include the MatchingResultNotifications component */}
+      <MatchingResultNotifications />
+
+      <div className="table-responsive">
         <table>
           <thead>
             <tr>

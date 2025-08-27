@@ -24,7 +24,6 @@ describe('NotificationSettings', () => {
     expect(await screen.findByLabelText('None')).not.toBeChecked();
   });
 
-
   it('handles errors when fetching settings', async () => {
     const errorMessage = 'Failed to load settings';
     api.getNotificationPreferences.mockRejectedValue(new Error(errorMessage));
@@ -34,16 +33,13 @@ describe('NotificationSettings', () => {
 
   it('saves settings correctly', async () => {
     api.updateNotificationPreferences.mockResolvedValue({});
-    api.getNotificationPreferences.mockResolvedValue({ email: false, push: false }); // Initial state
+    api.getNotificationPreferences.mockResolvedValue({ email: false, push: false });
     render(<NotificationSettings />);
 
     fireEvent.click(await screen.findByLabelText('Email'));
-
-
     fireEvent.click(await screen.findByRole('button', { name: /Save Settings/i }));
 
     expect(api.updateNotificationPreferences).toHaveBeenCalledWith({ email: true, push: false });
-
   });
 
   it('handles saving errors', async () => {
@@ -57,7 +53,6 @@ describe('NotificationSettings', () => {
     expect(await screen.findByText(errorMessage)).toBeVisible();
   });
 
-
   it('disables save button while loading', async () => {
     api.getNotificationPreferences.mockResolvedValue({ email: true, push: true });
     let resolvePromise;
@@ -67,22 +62,16 @@ describe('NotificationSettings', () => {
 
     api.updateNotificationPreferences.mockImplementation(() => promise);
 
-
-
     render(<NotificationSettings />);
     fireEvent.click(await screen.findByRole('button', { name: /Save Settings/i }));
     expect(await screen.findByRole('button', { name: /Save Settings/i })).toBeDisabled();
     resolvePromise({});
-    await act(async() => {
-      await promise
+    await act(async () => {
+      await promise;
     });
 
-    await screen.findByRole('button', { name: /Save Settings/i, disabled: false });
-
+    expect(await screen.findByRole('button', { name: /Save Settings/i })).toBeEnabled();
   });
-
-
-
 
   it('updates notification method state correctly', async () => {
     api.getNotificationPreferences.mockResolvedValue({ email: true, push: false });
@@ -92,23 +81,32 @@ describe('NotificationSettings', () => {
     });
     expect(await screen.findByLabelText('Push')).toBeChecked();
     expect(await screen.findByLabelText('Email')).not.toBeChecked();
+    expect(await screen.findByLabelText('None')).not.toBeChecked(); // Ensure None is not checked
   });
-  it('updates notifications enabled state correctly', async () => {
-      api.updateNotificationPreferences.mockResolvedValue({});
 
+  it('updates notifications enabled state correctly', async () => {
+    api.updateNotificationPreferences.mockResolvedValue({});
     api.getNotificationPreferences.mockResolvedValue({ email: true, push: false });
     render(<NotificationSettings />);
     await act(async () => {
-
       fireEvent.click(await screen.findByLabelText('None'));
-
     });
-
 
     fireEvent.click(await screen.findByRole('button', { name: /Save Settings/i }));
     expect(api.updateNotificationPreferences).toHaveBeenCalledWith({ email: false, push: false });
-
   });
 
+  it('updates email only state correctly', async () => {
+    api.updateNotificationPreferences.mockResolvedValue({});
+    api.getNotificationPreferences.mockResolvedValue({ email: false, push: true });
+    render(<NotificationSettings />);
+
+    await act(async() => {
+      fireEvent.click(await screen.findByLabelText('Email'));
+    });
+
+    fireEvent.click(await screen.findByRole('button', { name: /Save Settings/i }));
+    expect(api.updateNotificationPreferences).toHaveBeenCalledWith({ email: true, push: false });
+  })
 });
 ```
