@@ -10,38 +10,44 @@ const MatchingProgress = () => {
   const [visualizationData, setVisualizationData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [statusMessage, setStatusMessage] = useState('Fetching matching status...');
   const [error, setError] = useState(null);
 
   useEffect(() => {
     let intervalId;
+
+    const fetchMatchingStatus = async () => {
+      try {
+        const data = await api.getMatchingStatus(groupId);
+        setProgress(data.progress || 0); // Update progress from API
+        setStatusMessage(data.status || 'Matching in progress...');
+
+        if (data.completed) {
+          clearInterval(intervalId);
+          fetchVisualizationData(); // Fetch visualization data once matching is complete
+        }
+      } catch (err) {
+        setError(err);
+        setLoading(false);
+        clearInterval(intervalId);
+      }
+    }
+
 
     const fetchVisualizationData = async () => {
       try {
         const data = await api.getMatchingVisualization(groupId);
         setVisualizationData(data);
         setLoading(false);
-        clearInterval(intervalId); // Stop the progress update
       } catch (err) {
         setError(err);
         setLoading(false);
-        clearInterval(intervalId);
       }
     };
 
-    fetchVisualizationData();
-
-    // Simulated progress update – replace with actual progress from API if available
-    intervalId = setInterval(() => {
-      setProgress((prevProgress) => {
-        if (prevProgress >= 100) {
-          clearInterval(intervalId);
-          return 100;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(prevProgress + diff, 100);
-      });
-    }, 500);
-
+    // Poll matching status every 3 seconds
+    intervalId = setInterval(fetchMatchingStatus, 3000);
+    fetchMatchingStatus(); //also call the first time immediately
 
     return () => clearInterval(intervalId); // Clear interval on component unmount
   }, [groupId]);
@@ -50,7 +56,7 @@ const MatchingProgress = () => {
   if (loading) {
     return (
       <div>
-        <Typography variant="body1" gutterBottom>Matching in progress...</Typography>
+        <Typography variant="body1" gutterBottom>{statusMessage}</Typography>
         <LinearProgress variant="determinate" value={progress} />
         <Typography variant="body2" color="textSecondary">{`${Math.round(progress)}%`}</Typography>
       </div>
@@ -77,72 +83,5 @@ const MatchingProgress = () => {
 };
 
 export default MatchingProgress;
-```
-```javascript
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import MatchingProgress from '../components/MatchingProgress';
-import * as api from '../utils/api';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-
-
-jest.mock('../utils/api');
-
-describe('MatchingProgress Component', () => {
-  it('should display loading state while fetching data', async () => {
-    api.getMatchingVisualization.mockImplementation(() => new Promise(() => {})); // Mock API call to never resolve
-    render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
-    expect(screen.getByText('Matching in progress...')).toBeInTheDocument();
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
-
-  });
-
-
-  it('should display error message if API call fails', async () => {
-    const errorMessage = 'Failed to fetch data';
-    api.getMatchingVisualization.mockRejectedValue(new Error(errorMessage));
-    render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
-
-    await waitFor(() => {
-      expect(screen.getByText(`Error: ${errorMessage}`)).toBeInTheDocument();
-    });
-  });
-
-  it('should render visualization data when API call succeeds', async () => {
-    const mockData = '<svg></svg>';
-    api.getMatchingVisualization.mockResolvedValue(mockData);
-    render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
-    await waitFor(() => {
-      expect(screen.getByText('Matching in progress...')).not.toBeInTheDocument();// check that the progress bar disappears
-    });
-    const element = screen.getByRole('presentation');
-    expect(element.innerHTML).toContain(mockData);
-
-
-
-  });
-
-  it('should render JSON data when API call succeeds with JSON', async () => {
-    const mockData = { data: 'test' };
-    api.getMatchingVisualization.mockResolvedValue(mockData);
-    render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
-
-    await waitFor(() => {
-      expect(screen.getByText('{"data":"test"}', { exact: false })).toBeInTheDocument();
-
-    });
-
-  });
-
-  it('should render message if visualization data format is not supported', async () => {
-    const mockData = 123;
-    api.getMatchingVisualization.mockResolvedValue(mockData);
-    render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
-
-    await waitFor(() => {
-      expect(screen.getByText('Visualization data format not supported.')).toBeInTheDocument();
-    });
-  });
-});
 
 ```
