@@ -1,26 +1,54 @@
 ```typescript
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = 'http://localhost:3000/api'; // Replace with your API base URL
 
-export const cancelReservation = async (reservationId, cancellationReason) => {
+// ... other existing functions
+
+export const getFilteredMatches = async (regions, interests) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/reservations/${reservationId}`, {
-      data: { cancellationReason }, // Send cancellation reason in the request body
-    });
+    const params = {};
+    if (regions && regions.length > 0) {
+      params.regions = regions;
+    }
+    if (interests && interests.length > 0) {
+      params.interests = interests;
+    }
+
+    const response = await axios.get(`${API_BASE_URL}/matching/filtered-matches`, { params });
     return response.data;
   } catch (error) {
-    if (error.response) {
-      throw error.response;
-    } else if (error.request) {
-      console.error('No response received from server:', error.request);
-      throw new Error('Network error. Please check your connection.');
-    } else {
-      console.error('Error setting up request:', error.message);
-      throw new Error('An unexpected error occurred. Please try again later.');
-    }
+    console.error("Error fetching filtered matches:", error);
+    throw error;
   }
 };
 
-// ... other functions (submitUserInput, getMatches)
+
+export const getFilteredUsers = async (regions, interests) => {
+  try {
+    const params = {};
+    if (regions && regions.length > 0) {
+      params.regions = regions;
+    }
+    if (interests && interests.length > 0) {
+      params.interests = interests;
+    }
+
+    const response = await axios.get(`${API_BASE_URL}/users`, { params });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching filtered users:", error);
+    throw error;
+  }
+};
+
+export const triggerMatching = async () => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/matching`);
+    return response.data;
+  } catch (error) {
+    console.error("Error triggering matching:", error);
+    throw error;
+  }
+};
 ```
