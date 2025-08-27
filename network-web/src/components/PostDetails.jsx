@@ -32,7 +32,7 @@ const PostDetails = () => {
 
   const handleCommentCreate = async (newComment) => {
     try {
-      const createdComment = await api.createComment({ ...newComment, postId: parseInt(postId, 10) });
+      const createdComment = await api.createComment({ ...newComment, postId: parseInt(postId, 10), userId: currentUser });
       setPost((prevPost) => ({
         ...prevPost,
         comments: [...prevPost.comments, createdComment],
