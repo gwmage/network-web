@@ -1,8 +1,10 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
+import { usePushNotifications } from '../../utils/pushNotifications';
 
 const ReservationNotifications = () => {
   const [notifications, setNotifications] = useState([]);
+  const { isSupported, subscribe, unsubscribe } = usePushNotifications();
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -21,18 +23,19 @@ const ReservationNotifications = () => {
 
     fetchNotifications();
 
-    // Optional: Implement WebSocket for real-time updates
-    // const socket = new WebSocket('ws://your-websocket-server'); // Replace with your WebSocket server URL
+    if (isSupported) {
+      subscribe((newNotification) => {
+        setNotifications((prevNotifications) => [...prevNotifications, newNotification]);
+      });
+    }
 
-    // socket.onmessage = (event) => {
-    //   const newNotification = JSON.parse(event.data);
-    //   setNotifications((prevNotifications) => [...prevNotifications, newNotification]);
-    // };
 
-    // return () => {
-    //   socket.close();
-    // };
-  }, []);
+    return () => {
+      if (isSupported) {
+        unsubscribe();
+      }
+    };
+  }, [isSupported, subscribe, unsubscribe]);
 
   return (
     <div>

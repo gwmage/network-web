@@ -1,74 +1,55 @@
 ```css
-/* Comment Styles */
-.comment-list-container {
-  margin-top: 20px;
+/* Reservation Styles */
+
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px; /* Limit width on larger screens */
+  margin: 20px auto; /* Center the form */
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-.comment-list {
+.reservation-form label {
+  font-weight: bold;
+}
+
+.reservation-form input,
+.reservation-form select,
+.reservation-form button {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.reservation-form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+
+.reservation-confirmation {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.reservation-confirmation ul {
   list-style: none;
   padding: 0;
 }
 
-.comment-item {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
-
-.comment {
-  display: flex;
-  flex-direction: column;
-}
-
-.comment-content { /* Added for styling comment content */
-  margin-bottom: 5px; /* Space between content and buttons */
-}
-
-.comment-meta {
-  font-size: smaller;
-  color: gray;
-  margin-top: 5px; /* Add some space above comment meta info */
-}
 
 
-/* Input Area Styles */
-.comment-form {
-  margin-top: 20px;
-  width: 100%; /* Ensure input spans the full width on small screens */
-}
-
-.comment-form textarea {
-  width: calc(100% - 16px); /* Adjust width based on padding */
-  padding: 8px;
-  border: 1px solid #ccc;
-  resize: vertical; /* Allow vertical resizing of the textarea */
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
-}
-
-.comment-form button {
-  margin-top: 5px;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff;
-  cursor: pointer;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .comment-list-container {
-    margin-top: 10px; /* Reduce top margin on mobile */
-  }
-
-  .comment-item {
-    padding: 5px; /* Reduce padding on mobile */
-    margin-bottom: 5px; /* Reduce margin on mobile */
-  }
-
-  .comment-form textarea,
-  .comment-form button {
-    font-size: 14px; /* Reduce font size of input and button on mobile */
+@media (max-width: 500px) {
+  .reservation-form {
+    max-width: 90%; /* Take up most of the screen width on small screens */
   }
 }
+
 ```

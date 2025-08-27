@@ -13,15 +13,98 @@ export const registerUser = async (userData) => {
     return response.data;
   } catch (error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      throw error.response; // Re-throw the error response for the caller to handle
+      throw error.response;
     } else if (error.request) {
-      // The request was made but no response was received
       console.error('No response received from server:', error.request);
       throw new Error('Network error. Please check your connection.');
     } else {
-      // Something happened in setting up the request that triggered an Error
+      console.error('Error setting up request:', error.message);
+      throw new Error('An unexpected error occurred. Please try again later.');
+    }
+  }
+};
+
+export const createReservation = async (reservationData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/reservations`, reservationData);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response;
+    } else if (error.request) {
+      console.error('No response received from server:', error.request);
+      throw new Error('Network error. Please check your connection.');
+    } else {
+      console.error('Error setting up request:', error.message);
+      throw new Error('An unexpected error occurred. Please try again later.');
+    }
+  }
+};
+
+export const getReservations = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/reservations`);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response;
+    } else if (error.request) {
+      console.error('No response received from server:', error.request);
+      throw new Error('Network error. Please check your connection.');
+    } else {
+      console.error('Error setting up request:', error.message);
+      throw new Error('An unexpected error occurred. Please try again later.');
+    }
+  }
+};
+
+export const getReservation = async (reservationId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/reservations/${reservationId}`);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response;
+    } else if (error.request) {
+      console.error('No response received from server:', error.request);
+      throw new Error('Network error. Please check your connection.');
+    } else {
+      console.error('Error setting up request:', error.message);
+      throw new Error('An unexpected error occurred. Please try again later.');
+    }
+  }
+};
+
+
+export const updateReservation = async (reservationId, reservationData) => {
+  try {
+    const response = await axios.patch(`${API_BASE_URL}/reservations/${reservationId}`, reservationData);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response;
+    } else if (error.request) {
+      console.error('No response received from server:', error.request);
+      throw new Error('Network error. Please check your connection.');
+    } else {
+      console.error('Error setting up request:', error.message);
+      throw new Error('An unexpected error occurred. Please try again later.');
+    }
+  }
+};
+
+
+export const deleteReservation = async (reservationId) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/reservations/${reservationId}`);
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response;
+    } else if (error.request) {
+      console.error('No response received from server:', error.request);
+      throw new Error('Network error. Please check your connection.');
+    } else {
       console.error('Error setting up request:', error.message);
       throw new Error('An unexpected error occurred. Please try again later.');
     }
