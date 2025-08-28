@@ -4,6 +4,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import * as api from '../utils/api'; // Import the API functions
 import { useParams } from 'react-router-dom';
+import Box from '@mui/material/Box';
 
 const MatchingProgress = () => {
   const { groupId } = useParams();
@@ -31,8 +32,7 @@ const MatchingProgress = () => {
         setLoading(false);
         clearInterval(intervalId);
       }
-    }
-
+    };
 
     const fetchVisualizationData = async () => {
       try {
@@ -55,11 +55,11 @@ const MatchingProgress = () => {
 
   if (loading) {
     return (
-      <div>
-        <Typography variant="body1" gutterBottom>{statusMessage}</Typography>
-        <LinearProgress variant="determinate" value={progress} />
-        <Typography variant="body2" color="textSecondary">{`${Math.round(progress)}%`}</Typography>
-      </div>
+      <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}> {/* Center content */}
+        <Typography variant="body1" gutterBottom sx={{ fontWeight: 'bold' }}>{statusMessage}</Typography> {/* Bold status message */}
+        <LinearProgress variant="determinate" value={progress} sx={{ width: '80%', mt: 2 }} /> {/* Added styling and margin */}
+        <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>{`${Math.round(progress)}%`}</Typography>
+      </Box>
     );
   }
 

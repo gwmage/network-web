@@ -5,11 +5,11 @@ import MatchingProgress from './MatchingProgress';
 
 const MatchingForm = () => {
   const [formData, setFormData] = useState({
-    location: '',
+    region: '', // Added region field
     preferences: '',
     interests: [],
     weights: {
-      location: 1,
+      region: 1, // Added region weight
       preferences: 1,
       interests: 1,
     },
@@ -52,7 +52,7 @@ const MatchingForm = () => {
     setMatchingError(null);
 
     try {
-      const response = await api.createUser(formData); // Use the API function
+      const response = await api.createUser(formData); 
       console.log('User created:', response.data);
       // Trigger matching process after user creation (if needed)
       await api.triggerMatching();
@@ -69,13 +69,14 @@ const MatchingForm = () => {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="location">Location:</label>
+        <label htmlFor="region">Region:</label> {/* Added region input */}
         <input
           type="text"
-          id="location"
-          name="location"
-          value={formData.location}
+          id="region"
+          name="region"
+          value={formData.region}
           onChange={handleChange}
+          required  {/* Region is required */}
         />
 
         <label htmlFor="preferences">Preferences:</label>
@@ -97,12 +98,12 @@ const MatchingForm = () => {
         />
 
         <h3>Weights</h3>
-        <label htmlFor="locationWeight">Location Weight:</label>
+        <label htmlFor="regionWeight">Region Weight:</label> {/* Added region weight input */}
         <input
           type="number"
-          id="locationWeight"
-          name="location"
-          value={formData.weights.location}
+          id="regionWeight"
+          name="region"
+          value={formData.weights.region}
           onChange={handleWeightsChange}
           min="1"
           max="5"
