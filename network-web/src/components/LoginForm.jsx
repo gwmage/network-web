@@ -1,6 +1,6 @@
 ```typescript
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -67,6 +67,8 @@ const LoginForm = () => {
       {generalError && <p style={{ color: 'red' }}>{generalError}</p>}
 
       <button type="submit">Login</button>
+
+      <Link to="/register">Don't have an account? Register here</Link>
     </form>
   );
 };

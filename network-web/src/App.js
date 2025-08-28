@@ -1,44 +1,28 @@
 ```javascript
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
-import ForgotPassword from './components/ForgotPassword';
-import ProfileManagement from './components/ProfileManagement';
-import AppInformation from './components/AppInformation';
-import MatchingResults from './components/MatchingResults';
+import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from 'react-router-dom';
 import MatchingForm from './components/MatchingForm';
 import MatchingProgress from './components/MatchingProgress';
-import ReservationSearch from './components/ReservationSearch';
-import ReservationProcess from './components/ReservationProcess';
-import ReservationConfirmation from './components/ReservationConfirmation';
-import ReservationManagement from './components/ReservationManagement';
-import ErrorDisplay from './components/ErrorDisplay';
+import MatchingResults from './components/MatchingResults';
+import Filters from './components/Filters';
+import Applications from './components/Applications';
+import RestaurantDetails from './components/RestaurantDetails';
+import ProfileManagement from './components/ProfileManagement';
 import NotificationSettings from './components/NotificationSettings';
-import CommunityBoard from './components/CommunityBoard';
-import PostDetails from './components/PostDetails';
-import SearchResults from './components/SearchResults';
-import axios from 'axios';
-import Main from './components/Main';
-import SignUp from './components/SignUp';
-import Login from './components/Login';
-import AdminLogin from './components/AdminLogin';
-import AdminDashboard from './components/AdminDashboard';
-import MatchingGroups from './components/MatchingGroups';
+import RegistrationForm from './components/RegistrationForm'; // Import RegistrationForm
 
 const App = () => {
-  const [matchingResults, setMatchingResults] = useState(null);
+  // ... existing code ...
 
   return (
     <Router>
       <Routes>
-        {/* ... other routes */}
-        <Route path="/matching" element={<MatchingForm setMatchingResults={setMatchingResults} />} />
-        <Route path="/matching/progress" element={<MatchingProgress />} />
-        <Route path="/matching/results" element={<MatchingResults results={matchingResults} />} />
-        <Route path="/admin/matching/groups" element={<MatchingGroups />} />
-        <Route path="/community" element={<CommunityBoard />} />
-        <Route path="/community/search" element={<SearchResults />} />
-        <Route path="/community/:postId" element={<PostDetails />} />
-        {/* ... other routes */}
+        {/* ... other routes ... */}
+        <Route path="/register" element={<RegistrationForm />} /> {/* Add the route for RegistrationForm */}
+        <Route path="/restaurant/:id" element={<RestaurantDetails />} />
+        <Route path="/applications" element={<Applications />} />
+        <Route path="/profile" element={<ProfileManagement />} />
+        <Route path="/notification-settings" element={<NotificationSettings />} />
       </Routes>
     </Router>
   );
