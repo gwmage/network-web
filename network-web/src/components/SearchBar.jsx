@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import './SearchBar.css';
 import * as api from '../utils/api';
+import { Link } from 'react-router-dom';
 
 const SearchBar = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -61,10 +62,10 @@ const SearchBar = ({ onSearch }) => {
           </li>
         ))}
       </ul>
+      <Link to="/reservations" className="reservation-link">Make a Reservation</Link>
     </div>
   );
 };
 
 export default SearchBar;
-
 ```

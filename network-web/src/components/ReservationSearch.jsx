@@ -1,13 +1,26 @@
 ```typescript
 import React, { useState } from 'react';
+import * as api from '../utils/api';
 
 const ReservationSearch = () => {
   const [groupSize, setGroupSize] = useState(1);
   const [preferences, setPreferences] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = () => {
-    // Implement search logic here
-    console.log('Searching for reservations:', { groupSize, preferences });
+
+  const handleSearch = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const results = await api.searchRestaurants({ groupSize, preferences });
+      setSearchResults(results);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -32,10 +45,26 @@ const ReservationSearch = () => {
           onChange={(e) => setPreferences(e.target.value)}
         />
       </div>
-      <button onClick={handleSearch}>Search</button>
+      <button onClick={handleSearch} disabled={loading}>
+        {loading ? 'Searching...' : 'Search'}
+      </button>
+      {error && <div>Error: {error.message}</div>}
+      {searchResults.length > 0 && (
+        <ul>
+          {searchResults.map((restaurant) => (
+            <li key={restaurant.id}>
+              <h3>{restaurant.name}</h3>
+              <p>{restaurant.address}</p>
+            </li>
+          ))}
+        </ul>
+      )}
+
+
     </div>
   );
 };
 
 export default ReservationSearch;
+
 ```
