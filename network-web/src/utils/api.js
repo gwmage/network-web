@@ -5,19 +5,19 @@ const API_BASE_URL = '/api'; // Or your API base URL
 
 // ... (Existing code remains unchanged)
 
-export const runMatching = async (matchingInput) => {
+export const getRestaurants = async () => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/matching`, matchingInput);
+    const response = await axios.get(`${API_BASE_URL}/restaurants`);
     return response.data;
   } catch (error) {
-    console.error('Error running matching:', error);
+    console.error('Error fetching restaurants:', error);
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       console.error('Data:', error.response.data);
       console.error('Status:', error.response.status);
       console.error('Headers:', error.response.headers);
-      throw new Error(`API Error: ${error.response.status} - ${error.response.data.message || 'Failed to run matching'}`);
+      throw new Error(`API Error: ${error.response.status} - ${error.response.data.message || 'Failed to fetch restaurants'}`);
     } else if (error.request) {
       // The request was made but no response was received
       console.error('Request:', error.request);
@@ -29,4 +29,5 @@ export const runMatching = async (matchingInput) => {
     }
   }
 };
+
 ```
