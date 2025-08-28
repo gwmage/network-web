@@ -1,11 +1,14 @@
 ```typescript
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import RegisterForm from '../components/RegisterForm'; // Adjust path as needed
+import axios from 'axios';
 
 
+
+jest.mock('axios');
 
 describe('RegisterForm', () => {
   it('renders the form correctly', () => {
@@ -73,6 +76,45 @@ describe('RegisterForm', () => {
     });
 
   });
+
+  it('handles successful API call', async () => {
+    axios.post.mockResolvedValue({ status: 201 }); // Mock successful response
+
+    render(<RegisterForm />);
+    const emailInput = screen.getByLabelText('Email');
+    await userEvent.type(emailInput, 'test@test.com');
+    // ... other fields
+
+    fireEvent.click(screen.getByRole('button', { name: 'Register' }));
+
+    await waitFor(() => {
+      // Add assertions to check the success state, e.g., a success message.
+      expect(axios.post).toHaveBeenCalled();
+
+
+    });
+  });
+
+
+  it('handles failed API call', async () => {
+    axios.post.mockRejectedValue({ response: { status: 400, data: { message: 'Error' } } });
+
+    render(<RegisterForm />);
+
+    const emailInput = screen.getByLabelText('Email');
+    await userEvent.type(emailInput, 'test@test.com');
+    // ... other fields
+
+    fireEvent.click(screen.getByRole('button', { name: 'Register' }));
+
+    await waitFor(() => {
+
+      expect(screen.getByText('Error')).toBeVisible();  // or similar error message
+
+    });
+
+  });
+
 
 
 });
