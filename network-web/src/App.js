@@ -1,65 +1,61 @@
 ```javascript
-import React, { useState, useEffect, createContext, useContext, useReducer } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, Link, Outlet } from 'react-router-dom';
-import MatchingForm from './components/MatchingForm';
-import MatchingProgress from './components/MatchingProgress';
-import MatchingResults from './components/MatchingResults';
-import Filters from './components/Filters';
-import Applications from './components/Applications';
-import RestaurantDetails from './components/RestaurantDetails';
+import React, { useState, useEffect, useReducer } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import ForgotPassword from './components/ForgotPassword';
 import ProfileManagement from './components/ProfileManagement';
+import AppInformation from './components/AppInformation';
+import MatchingResults from './components/MatchingResults';
+import ReservationSearch from './components/ReservationSearch';
+import ReservationProcess from './components/ReservationProcess';
+import ReservationConfirmation from './components/ReservationConfirmation';
+import ReservationManagement from './components/ReservationManagement';
+import ErrorDisplay from './components/ErrorDisplay';
 import NotificationSettings from './components/NotificationSettings';
-import ReservationProcess from './components/ReservationProcess'; // Import ReservationProcess
-
-// Create context for global state
-const AppContext = createContext();
-
-// Define reducer function
-const appReducer = (state, action) => {
-  switch (action.type) {
-    case 'SET_USER_INPUT':
-      return { ...state, userInput: action.payload };
-    case 'SET_MATCHING_RESULTS':
-      return { ...state, matchingResults: action.payload };
-    case 'SET_MATCHING_PROGRESS':
-      return { ...state, matchingProgress: action.payload };
-    case 'SET_API_ERROR':
-      return { ...state, apiError: action.payload };
-    default:
-      return state;
-  }
-};
+import CommunityBoard from './components/CommunityBoard';
+import PostDetails from './components/PostDetails';
+import SearchResults from './components/SearchResults';
+import SearchBar from './components/SearchBar'; // Import SearchBar component
+import axios from 'axios';
+import Main from './components/Main';
+import SignUp from './components/SignUp';
+import Login from './components/Login';
+import AdminLogin from './components/AdminLogin';
+import AdminDashboard from './components/AdminDashboard';
 
 const App = () => {
-  const initialState = {
-    userInput: null,
-    matchingResults: null,
-    matchingProgress: 0,
-    apiError: null,
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchOption, setSearchOption] = useState('all');
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleSearch = (term, option) => {
+    setSearchTerm(term);
+    setSearchOption(option);
+
+    // Make API call to fetch search results
+    axios.get(`/api/board/posts?search=${term}&option=${option}`)
+      .then(response => {
+        setSearchResults(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching search results:", error);
+        // Handle error, e.g., display an error message
+      });
   };
 
-  const [state, dispatch] = useReducer(appReducer, initialState);
 
   return (
-    <AppContext.Provider value={{ state, dispatch }}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<MatchingForm />} />
-          <Route path="/matching-progress" element={<MatchingProgress />} />
-          <Route path="/matching-results" element={<MatchingResults />} />
-          <Route path="/filters" element={<Filters />} /> {/* Example route */}
-          <Route path="/reservation" element={<ReservationProcess />} />
-          <Route path="/restaurant/:id" element={<RestaurantDetails />} />
-          <Route path="/applications" element={<Applications />} />
-          <Route path="/profile" element={<ProfileManagement />}>
-            <Route path="notifications" element={<NotificationSettings />} /> {/* Nested route */}
-          </Route>
-        </Routes>
-      </Router>
-    </AppContext.Provider>
+    <Router>
+      <Routes>
+        {/* ... other routes */}
+        <Route path="/community" element={<><SearchBar onSearch={handleSearch} /><CommunityBoard /></>} />
+        <Route path="/community/search" element={<SearchResults searchResults={searchResults} />} />
+        <Route path="/community/:postId" element={<PostDetails />} />
+        {/* ... other routes */}
+      </Routes>
+    </Router>
   );
 };
 
 export default App;
-export { AppContext };
+
 ```

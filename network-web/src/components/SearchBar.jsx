@@ -1,13 +1,28 @@
 ```typescript
-import React, { useState } from 'react';
-import './SearchBar.css'; // Import CSS file for styling
+import React, { useState, useEffect } from 'react';
+import './SearchBar.css';
+import * as api from '../utils/api';
 
 const SearchBar = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchOption, setSearchOption] = useState('all'); // Default search option
+  const [searchOption, setSearchOption] = useState('all');
+  const [suggestions, setSuggestions] = useState([]);
 
-  const handleInputChange = (event) => {
-    setSearchTerm(event.target.value);
+  const handleInputChange = async (event) => {
+    const newSearchTerm = event.target.value;
+    setSearchTerm(newSearchTerm);
+
+    if (newSearchTerm.length > 0) {
+      try {
+        const suggestions = await api.getAutocompleteSuggestions(newSearchTerm);
+        setSuggestions(suggestions);
+      } catch (error) {
+        console.error("Error fetching suggestions:", error);
+        setSuggestions([]);
+      }
+    } else {
+      setSuggestions([]);
+    }
   };
 
   const handleSearch = () => {
@@ -16,6 +31,12 @@ const SearchBar = ({ onSearch }) => {
 
   const handleOptionChange = (event) => {
     setSearchOption(event.target.value);
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setSearchTerm(suggestion);
+    setSuggestions([]);
+    onSearch(suggestion, searchOption);
   };
 
   return (
@@ -30,9 +51,16 @@ const SearchBar = ({ onSearch }) => {
         <option value="all">All</option>
         <option value="title">Title</option>
         <option value="content">Content</option>
-        <option value="author">Author</option> 
+        <option value="author">Author</option>
       </select>
       <button onClick={handleSearch}>Search</button>
+      <ul className="suggestions">
+        {suggestions.map((suggestion, index) => (
+          <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+            {suggestion}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

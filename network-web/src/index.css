@@ -1,5 +1,27 @@
 ```css
-/* Filters Component Styles */
+/* Pagination Styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  padding: 8px 12px;
+  margin: 0 5px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Filters Styles */
 .filters {
   background-color: #fff;
   padding: 20px;
@@ -14,5 +36,24 @@
   font-weight: bold; /* Make the count stand out */
 }
 
-/* ... (rest of the CSS remains unchanged) */
+
+/* Responsive Design Tweaks */
+@media (max-width: 768px) {
+  /* ... (Existing media query styles) ... */
+
+  .filters {
+    padding: 10px; /* Reduce padding on smaller screens */
+  }
+
+    /* Make filters hidden by default on small screens */
+    .filters {
+        display: none;
+    }
+
+    /* Show filters when a "Show Filters" button is clicked */
+    .filters.show {
+        display: block;
+    }
+
+}
 ```
