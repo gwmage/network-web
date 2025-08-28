@@ -5,6 +5,17 @@ const API_BASE_URL = '/api'; // Or your API base URL
 
 // ... (Existing code remains unchanged)
 
+export const registerUser = async (userData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/auth/register`, userData);
+    return response.data;
+  } catch (error) {
+    console.error('Error registering user:', error);
+    throw error;
+  }
+};
+
+
 export const searchPosts = async (searchTerm, searchOption = 'all') => {
   try {
     const params = {

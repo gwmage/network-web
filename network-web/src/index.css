@@ -39,21 +39,49 @@
 
 /* Responsive Design Tweaks */
 @media (max-width: 768px) {
-  /* ... (Existing media query styles) ... */
 
   .filters {
     padding: 10px; /* Reduce padding on smaller screens */
   }
 
-    /* Make filters hidden by default on small screens */
-    .filters {
-        display: none;
-    }
+  /* Make filters hidden by default on small screens */
+  .filters {
+    display: none;
+  }
 
-    /* Show filters when a "Show Filters" button is clicked */
-    .filters.show {
-        display: block;
-    }
+  /* Show filters when a "Show Filters" button is clicked */
+  .filters.show {
+    display: block;
+  }
 
+  /* Responsive Table Styles */
+  table, thead, tbody, th, td, tr {
+    display: block; 
+  }
+
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px; 
+  }
+
+  tr { border: 1px solid #ccc; }
+
+  td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%; 
+  }
+
+  td:before {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    content: attr(data-label);
+  }
 }
 ```
