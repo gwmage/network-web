@@ -1,4 +1,4 @@
-```typescript
+```jsx
 import React, { useState, useEffect } from 'react';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
@@ -55,9 +55,9 @@ const MatchingProgress = () => {
 
   if (loading) {
     return (
-      <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}> {/* Center content */}
-        <Typography variant="body1" gutterBottom sx={{ fontWeight: 'bold' }}>{statusMessage}</Typography> {/* Bold status message */}
-        <LinearProgress variant="determinate" value={progress} sx={{ width: '80%', mt: 2 }} /> {/* Added styling and margin */}
+      <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Typography variant="body1" gutterBottom sx={{ fontWeight: 'bold' }}>{statusMessage}</Typography>
+        <LinearProgress variant="determinate" value={progress} sx={{ width: '80%', mt: 2 }} />
         <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>{`${Math.round(progress)}%`}</Typography>
       </Box>
     );
@@ -76,6 +76,7 @@ const MatchingProgress = () => {
     } else {
       return <div>Visualization data format not supported.</div>;
     }
+
   }
 
 

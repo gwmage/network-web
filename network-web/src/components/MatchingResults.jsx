@@ -1,21 +1,42 @@
-```typescript
+```javascript
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { toast } from 'react-toastify';
+import ErrorDisplay from './ErrorDisplay';
 
-const MatchingResults = () => {
+const MatchingResults: React.FC = () => {
   const [matchingResults, setMatchingResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [explanation, setExplanation] = useState('');
 
   useEffect(() => {
     const fetchMatchingResults = async () => {
       try {
-        const response = await axios.get('/api/matching/results'); // Replace with your actual API endpoint
-        setMatchingResults(response.data);
-      } catch (error) {
-        setError(error);
-        console.error("Error fetching matching results:", error);
+        const groupResponse = await axios.get('/api/matching'); // Updated endpoint
+        const userResponse = await axios.get('/api/users/me');
+        setMatchingResults({ groups: groupResponse.data, user: userResponse.data }); // Updated to groups
+        toast.success("Matching successful!");
+
+        // Fetch explanations for each group
+        const explanations = await Promise.all(
+          groupResponse.data.map((group) => 
+            axios.get(`/api/matching/${group.id}/explanation`).catch((err) => {
+              console.error("Error fetching explanation for group:", err);
+              toast.error(`Failed to fetch explanation for group ${group.id}`);
+              return null; // Return null for failed explanations
+            })
+          )
+        );
+
+        setExplanation(explanations);
+
+
+
+      } catch (err) {
+        console.error("Error fetching matching results:", err);
+        setError(err);
+        toast.error("Matching failed. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -29,34 +50,37 @@ const MatchingResults = () => {
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <div>
+        <ErrorDisplay error={error.message} />
+        <p>Failed to fetch matching results. Please try again later.</p>
+      </div>
+    );
   }
 
-  if (!matchingResults || !matchingResults.groups) {
+  if (!matchingResults || !matchingResults.groups || !matchingResults.user) {
     return <div>No matching results found.</div>;
   }
 
+  const { groups, user } = matchingResults;
 
   return (
     <div>
-      <Typography variant="h5" gutterBottom>Matching Results</Typography>
-      {matchingResults.groups.map((group, index) => (
+      <h2>Your Matched Groups</h2>
+      {groups.map((group, index) => (
         <div key={index}>
-          <Typography variant="h6" gutterBottom>Group {index + 1}</Typography>
-          <List>
-            {group.members.map((member, memberIndex) => (
-              <React.Fragment key={memberIndex}>
-                <ListItem>
-                  <ListItemText primary={member.name} secondary={`ID: ${member.id}`} />
-                </ListItem>
-                {memberIndex < group.members.length - 1 && <Divider />} {/* Add divider between members */}
-              </React.Fragment>
+          <h3>Group {index + 1}</h3>
+          <h4>Members:</h4>
+          <ul>
+            {group.users.map((userId) => ( // Updated to use user IDs
+              <li key={userId}>
+                {user.id === userId ? "You" : `User ${userId}`} {/* Identify the current user */}
+              </li>
             ))}
-          </List>
-          {group.explanation && (
-            <Typography variant="body2" gutterBottom>Explanation: {group.explanation}</Typography>
-          )}
-           <Divider /> {/* Add divider between groups */}
+          </ul>
+          {/* Display the explanation for the current group */}
+          <h4>Explanation:</h4>
+          <p>{explanation[index] ? explanation[index].data : "No explanation available"}</p>
         </div>
       ))}
     </div>

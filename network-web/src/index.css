@@ -1,87 +1,109 @@
 ```css
-/* Pagination Styles */
-.pagination {
+/* Search Bar Styles */
+.search-bar {
   display: flex;
-  justify-content: center;
-  margin-top: 20px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px; /* Space below search bar */
 }
 
-.pagination button {
+.search-bar input[type="text"] {
+  flex-grow: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 3px;
+}
+
+.search-bar button {
   padding: 8px 12px;
-  margin: 0 5px;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
+  background-color: #007bff; /* Example color */
+  color: white;
+  border: none;
   border-radius: 3px;
   cursor: pointer;
 }
 
-.pagination button.active {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
+
+/* Search Results Styles */
+.search-results {
+  list-style: none;
+  padding: 0;
 }
 
-/* Filters Styles */
-.filters {
+.search-result-item {
+  border-bottom: 1px solid #eee;
+  padding: 10px;
+  margin-bottom: 10px;
+  display: flex;             /* Use flexbox for layout */
+  flex-direction: column;  /* Stack elements vertically */
+}
+
+.search-result-item h3 {    /* Style for result titles */
+  margin-top: 0;            /* Remove default top margin */
+}
+
+/* Matching Input Form Styles */
+.matching-input-form {
   background-color: #fff;
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px; /* Space between filters and results */
+  margin-bottom: 20px;
 }
 
-/* Matching Results Count Styles */
-.matching-results-count {
-  margin-bottom: 10px; /* Space between count and filters */
-  font-weight: bold; /* Make the count stand out */
+.matching-input-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.matching-input-form input,
+.matching-input-form select,
+.matching-input-form button {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+/* Matching Progress Styles */
+.matching-progress {
+  margin-top: 20px; /* Space above progress bar */
 }
 
 
-/* Responsive Design Tweaks */
+/* Matching Results Styles */
+.matching-results {
+  margin-top: 20px;
+  background-color: #f8f8f8; /* Soft background color */
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.matching-group {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+
+
 @media (max-width: 768px) {
-
-  .filters {
-    padding: 10px; /* Reduce padding on smaller screens */
+  .search-bar {
+    flex-direction: column; /* Stack search bar elements vertically */
   }
-
-  /* Make filters hidden by default on small screens */
-  .filters {
-    display: none;
+  .search-bar input[type="text"] {
+    width: 100%; /* Full width input on smaller screens */
+    margin-bottom: 10px; /* Add spacing between input and button */
   }
-
-  /* Show filters when a "Show Filters" button is clicked */
-  .filters.show {
-    display: block;
+  .search-result-item { /* Adjust layout for smaller screens */
+    flex-direction: column;
   }
+  /* Add other responsive adjustments as needed */
 
-  /* Responsive Table Styles */
-  table, thead, tbody, th, td, tr {
-    display: block; 
-  }
-
-  thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px; 
-  }
-
-  tr { border: 1px solid #ccc; }
-
-  td {
-    border: none;
-    border-bottom: 1px solid #eee;
-    position: relative;
-    padding-left: 50%; 
-  }
-
-  td:before {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    width: 45%;
-    padding-right: 10px;
-    white-space: nowrap;
-    content: attr(data-label);
-  }
 }
 ```
