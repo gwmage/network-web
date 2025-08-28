@@ -1,40 +1,25 @@
 ```typescript
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000/api/v1'; // Updated base URL to include /v1
+const API_BASE_URL = '/api'; // Or your API base URL
 
-// ... other existing functions
+// ... (Existing code remains unchanged)
 
-export const saveNotificationPreferences = async (preferences) => {
+export const searchPosts = async (searchTerm, searchOption = 'all') => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/notifications/preferences`, preferences);
+    const params = {
+      q: searchTerm,
+      filter: searchOption, // Add filter based on search option
+    };
+    const response = await axios.get(`${API_BASE_URL}/community/posts/search`, { params });
     return response.data;
   } catch (error) {
-    console.error("Error saving notification preferences:", error);
+    console.error('Error searching posts:', error);
     throw error;
   }
 };
 
-export const fetchMatchingResults = async () => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/matching/results`); // Placeholder endpoint - adjust as needed
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching matching results:", error);
-    throw error;
-  }
-};
 
-export const fetchNotificationStatus = async () => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/notifications/status`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching notification status:", error);
-    throw error;
-  }
-};
-
-// ... other existing functions
+// ... (Other functions remain unchanged)
 
 ```

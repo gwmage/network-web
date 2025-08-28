@@ -1,26 +1,82 @@
 ```typescript
-import React from 'react';
-import CommentForm from './CommentForm';
-import './SearchResults.css';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import './SearchResults.css'; // Import CSS for styling
 
-const SearchResults = ({ results }) => {
-  if (!results || results.length === 0) {
-    return <p>No results found.</p>;
+const SearchResults = () => {
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchParams] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(1);
+  const resultsPerPage = 10; // Number of results per page
+
+  useEffect(() => {
+    const keyword = searchParams.get('keyword');
+
+    const fetchResults = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`/community/posts/search?keyword=${keyword}&page=${currentPage}&limit=${resultsPerPage}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setResults(data.items);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (keyword) {
+      fetchResults();
+    } else {
+      setResults([]);
+      setLoading(false);
+    }
+  }, [searchParams, currentPage]);
+
+  if (loading) {
+    return <div>Loading results...</div>;
   }
 
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (!results || results.length === 0) {
+    return <div>No results found.</div>;
+  }
+
+  const totalPages = Math.ceil(results.totalCount / resultsPerPage); // Assuming API returns totalCount
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
-    <ul className="search-results">
-      {results.map((result) => (
-        <li key={result.id} className="search-result-item">
-          <h3>{result.name}</h3>
-          <p>{result.address}</p>
-          {/* Display other relevant information */}
-          <div className="comment-section">
-            <CommentForm postId={result.id} />
-          </div>
-        </li>
-      ))}
-    </ul>
+    <div className="search-results-container">
+      <h2>Search Results for "{searchParams.get('keyword')}":</h2>
+      <ul>
+        {results.map(result => (
+          <li key={result.id} className="search-result-item">
+            <h3>{result.title}</h3>
+            <p>{result.content.substring(0, 100)}...</p>
+            <p>Author: {result.author}</p> {/* Display author */}
+          </li>
+        ))}
+      </ul>
+      <div className="pagination">
+        {pageNumbers.map(number => (
+          <button key={number} onClick={() => handlePageChange(number)} className={currentPage === number ? 'active' : ''}>
+            {number}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 };
 

@@ -1,7 +1,7 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
 import * as api from '../utils/api';
-import Filters from './Filters'; // Import the Filters component
+import SearchBar from './SearchBar'; // Import SearchBar component
 
 const PostList = () => {
   const [posts, setPosts] = useState([]);
@@ -9,61 +9,78 @@ const PostList = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
-  const [filters, setFilters] = useState({}); // State for filters
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchOption, setSearchOption] = useState('all');
+  const [searchResults, setSearchResults] = useState([]);
+
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        setLoading(true);
-        const data = await api.getPosts(currentPage, postsPerPage, filters);
-        setPosts(data.items || []);
+        const data = await api.getPosts(currentPage, postsPerPage, searchTerm, searchOption);
+        setPosts(data);
+        setLoading(false);
       } catch (err) {
         setError(err);
-      } finally {
         setLoading(false);
       }
     };
 
     fetchPosts();
-  }, [currentPage, postsPerPage, filters]);
+  }, [currentPage, postsPerPage, searchTerm, searchOption]);
 
   const handleDelete = async (postId) => {
-    // ... (existing delete logic)
+    if (window.confirm('Are you sure you want to delete this post?')) {
+      try {
+        await api.deletePost(postId);
+        setPosts(posts.filter(post => post.id !== postId));
+        setSearchResults(searchResults.filter(post => post.id !== postId)); // Also remove from search results
+      } catch (error) {
+        console.error('Error deleting post:', error);
+        alert('Failed to delete post. Please try again later.');
+      }
+    }
   };
 
-  const handlePageChange = (pageNumber) => {
+  const handleSearch = (term, option) => {
+    setSearchTerm(term);
+    setSearchOption(option);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
+  // Logic for displaying page numbers
+  const pageNumbers = [];
+  const totalPages = Math.ceil(posts.length / postsPerPage);
+
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  const handleClick = (pageNumber) => {
     setCurrentPage(pageNumber);
-  };
-
-  const handleFiltersChange = (newFilters) => {
-    setFilters(newFilters);
-    setCurrentPage(1); // Reset to first page when filters change
   };
 
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
-  // Logic for displaying page numbers (can be improved with a dedicated pagination component)
-  const totalPages = Math.ceil(posts.length / postsPerPage);
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const displayedPosts = searchTerm ? searchResults : posts;
 
   return (
     <div>
-      <Filters onChange={handleFiltersChange} /> {/* Include the Filters component */}
-      {posts.map((post) => (
+      <SearchBar onSearch={handleSearch} />
+      {displayedPosts.map((post) => (
         <div key={post.id}>
           <h3>{post.title}</h3>
-          <p>{post.content.substring(0, 100)}...</p> {/* Content snippet */}
-          <p>Author: {post.author}</p> {/* Assuming 'author' field exists */}
-          <p>Created: {new Date(post.created_at).toLocaleDateString()}</p> {/* Format date */}
+          <p>{post.content}</p>
           <button onClick={() => handleDelete(post.id)}>Delete</button>
         </div>
       ))}
+
       <ul className="pagination">
         {pageNumbers.map((number) => (
           <li key={number} className={currentPage === number ? 'active' : ''}>
-            <button onClick={() => handlePageChange(number)}>{number}</button>
+            <button onClick={() => handleClick(number)}>{number}</button>
           </li>
         ))}
       </ul>
