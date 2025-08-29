@@ -1,13 +1,12 @@
 ```typescript
 import React, { useState } from 'react';
-import { deletePost, updatePost } from '../utils/api';
+import { deletePost } from '../utils/api';
+import { Link } from 'react-router-dom';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
 
-const Post = ({ post, onDelete, currentUser, onUpdate }) => {
+const Post = ({ post, onDelete }) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedPost, setEditedPost] = useState({ ...post });
 
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this post?')) {
@@ -24,61 +23,25 @@ const Post = ({ post, onDelete, currentUser, onUpdate }) => {
     }
   };
 
-  const handleEdit = () => {
-    setIsEditing(true);
+  const handleCommentCreate = (newComment) => {
+    // Update the post object with the new comment
+    post.comments = [...post.comments, newComment];
   };
 
-  const handleSave = async () => {
-    try {
-      const updatedPost = await updatePost(post.id, editedPost);
-      onUpdate(updatedPost);
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Error updating post:', error);
-      alert('Failed to update post. Please try again later.');
-    }
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-    setEditedPost({ ...post });
-  };
 
   return (
     <div className="post-container">
-      {isEditing ? (
-        <>
-          <input
-            type="text"
-            value={editedPost.title}
-            onChange={(e) => setEditedPost({ ...editedPost, title: e.target.value })}
-          />
-          <textarea
-            value={editedPost.content}
-            onChange={(e) => setEditedPost({ ...editedPost, content: e.target.value })}
-          />
-          <button onClick={handleSave}>Save</button>
-          <button onClick={handleCancel}>Cancel</button>
-        </>
-      ) : (
-        <>
-          <h3>{post.title}</h3>
-          <p>{post.content}</p>
-        </>
-      )}
-
+      <Link to={`/posts/${post.id}`}><h3>{post.title}</h3></Link>
+      <p>{post.content}</p>
+      <p>By: {post.author ? post.author.username : 'Unknown Author'}</p> {/* Display author */}
+      <Link to={`/posts/${post.id}`}>View Details</Link> {/* Link to PostDetails */}
       {post.ownedByCurrentUser && (
-        <>
-          <button onClick={handleDelete} disabled={isDeleting}>
-            {isDeleting ? 'Deleting...' : 'Delete'}
-          </button>
-          <button onClick={handleEdit} disabled={isEditing}>
-            {isEditing ? 'Editing...' : 'Edit'}
-          </button>
-        </>
+        <button onClick={handleDelete} disabled={isDeleting}>
+          {isDeleting ? 'Deleting...' : 'Delete'}
+        </button>
       )}
-      <CommentList comments={post.comments} postId={post.id} currentUser={currentUser} />
-      <CommentForm postId={post.id} currentUser={currentUser} />
+      <CommentForm postId={post.id} onCommentCreate={handleCommentCreate} />
+      <CommentList comments={post.comments} postId={post.id} />
     </div>
   );
 };

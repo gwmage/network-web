@@ -3,71 +3,27 @@ import React, { useState, useEffect } from 'react';
 
 const Filters = ({ onFilterChange }) => {
   const [categories, setCategories] = useState([]);
-  const [availableTags, setAvailableTags] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
-  const [resultCount, setResultCount] = useState(0);
-
+  const [availableTags, setAvailableTags] = useState([]);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchCategoriesAndTags = async () => {
       try {
-        const response = await fetch('/api/categories'); // Replace with your categories API endpoint
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setCategories(data);
+        const categoriesData = await fetch('/api/categories').then(res => res.json());
+        const tagsData = await fetch('/api/tags').then(res => res.json());
+
+        setCategories(categoriesData);
+        setAvailableTags(tagsData);
       } catch (error) {
-        console.error("Error fetching categories:", error);
-        // Handle error, e.g., display an error message
+        console.error("Error fetching categories and tags:", error);
       }
     };
 
-    const fetchTags = async () => {
-      try {
-        const response = await fetch('/api/tags'); // Replace with your tags API endpoint
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setAvailableTags(data);
-      } catch (error) {
-        console.error("Error fetching tags:", error);
-        // Handle error, e.g., display an error message
-      }
-    };
-
-    fetchCategories();
-    fetchTags();
+    fetchCategoriesAndTags();
   }, []);
 
-
-
   useEffect(() => {
-    const fetchResultCount = async () => {
-      try {
-
-        const params = new URLSearchParams();
-        if (selectedCategory) {
-          params.append('category', selectedCategory);
-        }
-        if (selectedTags.length > 0) {
-          params.append('tags', selectedTags.join(','));
-        }
-
-        const response = await fetch(`/api/posts/count?${params.toString()}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setResultCount(data.count);
-
-      } catch (error) {
-        console.error("Error fetching search results count:", error)
-      }
-    }
-    fetchResultCount();
     onFilterChange({ category: selectedCategory, tags: selectedTags });
   }, [selectedCategory, selectedTags, onFilterChange]);
 
@@ -86,12 +42,8 @@ const Filters = ({ onFilterChange }) => {
     });
   };
 
-
   return (
     <div>
-      <div>
-        Matching Results: {resultCount}
-      </div>
       <label htmlFor="categorySelect">Category:</label>
       <select id="categorySelect" value={selectedCategory} onChange={handleCategoryChange}>
         <option value="">All</option>

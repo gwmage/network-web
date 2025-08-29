@@ -11,11 +11,12 @@ const PostForm = ({ post, onSubmit, onUpdate }) => {
   });
   const [error, setError] = useState(null);
 
+
   useEffect(() => {
     if (post) {
       setFormData({
         ...post,
-        category: post.category || '',
+        category: post.category || '', // Handle cases where category might be missing
         tags: post.tags ? post.tags.join(',') : '',
       });
     }
@@ -27,7 +28,7 @@ const PostForm = ({ post, onSubmit, onUpdate }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
+    setError(null); // Clear any previous errors
 
     const updatedPostData = {
       ...formData,
@@ -43,19 +44,31 @@ const PostForm = ({ post, onSubmit, onUpdate }) => {
         onSubmit(newPost);
       }
     } catch (error) {
+      setError("Failed to submit post. Please try again later.");
       console.error("Error creating/updating post:", error);
-      setError("Failed to create/update post. Please try again.");
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" name="title" placeholder="Title" value={formData.title} onChange={handleChange} required />
-      <textarea name="content" placeholder="Content" value={formData.content} onChange={handleChange} required />
-      <input type="text" name="category" placeholder="Category" value={formData.category} onChange={handleChange} />
-      <input type="text" name="tags" placeholder="Tags (comma-separated)" value={formData.tags} onChange={handleChange} />
+      {error && <div className="error-message">{error}</div>}
 
-      {error && <div style={{ color: 'red' }}>{error}</div>}
+      <label htmlFor="title">Title:</label>
+      <input type="text" name="title" id="title" value={formData.title} onChange={handleChange} required />
+
+      <label htmlFor="content">Content:</label>
+      <textarea name="content" id="content" value={formData.content} onChange={handleChange} required />
+
+      <label htmlFor="category">Category:</label>
+      <select name="category" id="category" value={formData.category} onChange={handleChange}>
+        <option value="">Select a category</option>
+        <option value="general">General</option>
+        <option value="technology">Technology</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label htmlFor="tags">Tags (comma-separated):</label>
+      <input type="text" name="tags" id="tags" value={formData.tags} onChange={handleChange} />
 
       <button type="submit">{post ? 'Update Post' : 'Create Post'}</button>
     </form>
