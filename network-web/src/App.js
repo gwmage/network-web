@@ -1,32 +1,43 @@
 ```javascript
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from 'react-router-dom';
-import MatchingForm from './components/MatchingForm';
-import MatchingProgress from './components/MatchingProgress';
-import MatchingResults from './components/MatchingResults';
-import Filters from './components/Filters';
-import Applications from './components/Applications';
-import RestaurantDetails from './components/RestaurantDetails';
+import ForgotPassword from './components/ForgotPassword';
 import ProfileManagement from './components/ProfileManagement';
+import AppInformation from './components/AppInformation';
+import MatchingResults from './components/MatchingResults';
+import ReservationSearch from './components/ReservationSearch';
+import ReservationProcess from './components/ReservationProcess';
+import ReservationConfirmation from './components/ReservationConfirmation';
+import ReservationManagement from './components/ReservationManagement';
+import ErrorDisplay from './components/ErrorDisplay';
 import NotificationSettings from './components/NotificationSettings';
-import RegistrationForm from './components/RegistrationForm'; // Import RegistrationForm
+import CommunityBoard from './components/CommunityBoard';
+import PostDetails from './components/PostDetails';
+import axios from 'axios';
+import Main from './components/Main';
+import SignUp from './components/SignUp';
+import Login from './components/Login';
+
 
 const App = () => {
   // ... existing code ...
 
   return (
     <Router>
+      <nav>
+        {/* Example navigation links */}
+        <Link to="/community">Community Board</Link>
+        {/* ... other navigation links */}
+      </nav>
       <Routes>
         {/* ... other routes ... */}
-        <Route path="/register" element={<RegistrationForm />} /> {/* Add the route for RegistrationForm */}
-        <Route path="/restaurant/:id" element={<RestaurantDetails />} />
-        <Route path="/applications" element={<Applications />} />
-        <Route path="/profile" element={<ProfileManagement />} />
-        <Route path="/notification-settings" element={<NotificationSettings />} />
+        <Route path="/community" element={<CommunityBoard />} />
+        <Route path="/community/:postId" element={<PostDetails />} />
       </Routes>
     </Router>
   );
 };
 
 export default App;
+
 ```

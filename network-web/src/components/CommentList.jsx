@@ -4,7 +4,7 @@ import Comment from './Comment';
 import './CommentList.css';
 import api from '../api';
 
-const CommentList = ({ postId, currentUser, onCommentUpdate, onCommentDelete }) => {
+const CommentList = ({ postId, currentUser, onCommentUpdate }) => {
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const CommentList = ({ postId, currentUser, onCommentUpdate, onCommentDelete }) 
     };
 
     fetchComments();
-  }, [postId]);
+  }, [postId, onCommentUpdate]);
 
   if (!comments || comments.length === 0) {
     return <p>No comments yet.</p>;
@@ -32,17 +32,15 @@ const CommentList = ({ postId, currentUser, onCommentUpdate, onCommentDelete }) 
             <Comment
               comment={comment}
               currentUser={currentUser}
-              onCommentDelete={onCommentDelete}
-              onCommentUpdate={onCommentUpdate}
+              onCommentUpdate={onCommentUpdate} // Pass onCommentUpdate to Comment component
             />
-            {/* Placeholder for nested comments */}
+            {/* Render nested comments recursively */}
             {comment.children && renderComments(comment.children)}
           </li>
         ))}
       </ul>
     );
   };
-
 
   return (
     <div className="comment-list-container">

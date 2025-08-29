@@ -1,109 +1,57 @@
 ```css
-/* Search Bar Styles */
-.search-bar {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-bottom: 20px; /* Space below search bar */
-}
+/* Responsive Design */
+@media (max-width: 768px) { /* Adjust breakpoint as needed */
+  .post-form {
+    width: 95%; /* Take up almost full width on smaller screens */
+    padding: 15px; /* Reduce padding */
+  }
 
-.search-bar input[type="text"] {
-  flex-grow: 1;
-  padding: 8px;
-  border: none;
-  border-radius: 3px;
-}
+  .post-item {
+    padding: 10px; /* Reduce padding */
+  }
 
-.search-bar button {
-  padding: 8px 12px;
-  background-color: #007bff; /* Example color */
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-
-/* Search Results Styles */
-.search-results {
-  list-style: none;
-  padding: 0;
-}
-
-.search-result-item {
-  border-bottom: 1px solid #eee;
-  padding: 10px;
-  margin-bottom: 10px;
-  display: flex;             /* Use flexbox for layout */
-  flex-direction: column;  /* Stack elements vertically */
-}
-
-.search-result-item h3 {    /* Style for result titles */
-  margin-top: 0;            /* Remove default top margin */
-}
-
-/* Matching Input Form Styles */
-.matching-input-form {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
-
-.matching-input-form label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.matching-input-form input,
-.matching-input-form select,
-.matching-input-form button {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  box-sizing: border-box;
-  margin-bottom: 10px;
-}
-
-/* Matching Progress Styles */
-.matching-progress {
-  margin-top: 20px; /* Space above progress bar */
-}
-
-
-/* Matching Results Styles */
-.matching-results {
-  margin-top: 20px;
-  background-color: #f8f8f8; /* Soft background color */
-  padding: 20px;
-  border-radius: 5px;
-}
-
-.matching-group {
-    border: 1px solid #ccc;
+  .post-details-container {
     padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+  }
+
+    .search-bar {
+        flex-direction: column; /* Stack search bar elements vertically */
+    }
+    .search-bar input[type="text"] {
+        width: 100%; /* Full width input on smaller screens */
+        margin-bottom: 10px; /* Add spacing between input and button */
+    }
+    .search-result-item { /* Adjust layout for smaller screens */
+        flex-direction: column;
+    }
+    .matching-input-form input,
+    .matching-input-form select,
+    .matching-input-form button{
+        width: 100%;
+    }
+
 }
 
+/* Readability Improvements */
+body {
+  font-family: sans-serif; /* Use a more readable font */
+  line-height: 1.6; /* Improve line height for better readability */
+  color: #333; /* Darker text color for better contrast */
+  background-color: #f9f9f9;
+}
 
+.post-content {
+  font-size: 1em; /* Ensure a comfortable font size */
+}
 
-@media (max-width: 768px) {
-  .search-bar {
-    flex-direction: column; /* Stack search bar elements vertically */
-  }
-  .search-bar input[type="text"] {
-    width: 100%; /* Full width input on smaller screens */
-    margin-bottom: 10px; /* Add spacing between input and button */
-  }
-  .search-result-item { /* Adjust layout for smaller screens */
-    flex-direction: column;
-  }
-  /* Add other responsive adjustments as needed */
+.post-content p {
+    margin-bottom: 1em;
+}
 
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 10px 0;
 }
 ```
