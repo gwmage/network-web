@@ -21,7 +21,7 @@ const LoginForm = () => {
     setGeneralError('');
 
     try {
-      const response = await fetch('/login', { // Or '/auth/login' depending on your backend setup
+      const response = await fetch('/auth/login', { // Or '/auth/login' depending on your backend setup
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,6 +69,7 @@ const LoginForm = () => {
       <button type="submit">Login</button>
 
       <Link to="/register">Don't have an account? Register here</Link>
+      <Link to="/password-reset">Forgot Password?</Link>
     </form>
   );
 };
