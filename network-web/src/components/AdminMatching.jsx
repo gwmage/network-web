@@ -6,6 +6,8 @@ const AdminMatching = () => {
   const [matchingStatus, setMatchingStatus] = useState(null);
   const [matchingResults, setMatchingResults] = useState(null);
   const [matchingError, setMatchingError] = useState(null);
+  const [triggering, setTriggering] = useState(false);
+
 
   const fetchMatchingStatus = async () => {
     try {
@@ -36,14 +38,18 @@ const AdminMatching = () => {
 
   const triggerMatching = async () => {
     try {
+      setTriggering(true); // Disable button and indicate processing
       const response = await fetch('/matching', { method: 'POST' });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       // Optionally update matching status immediately or wait for next refresh
-      fetchMatchingStatus();
+      await fetchMatchingStatus();
+       await fetchMatchingResults();
     } catch (error) {
       setMatchingError(error.message);
+    } finally {
+      setTriggering(false); // Re-enable button
     }
   };
 
@@ -55,7 +61,9 @@ const AdminMatching = () => {
   return (
     <div>
       <h2>Matching Management</h2>
-      <button onClick={triggerMatching}>Trigger Matching</button>
+      <button onClick={triggerMatching} disabled={triggering}>
+        {triggering ? 'Triggering...' : 'Trigger Matching'}
+      </button>
 
       {matchingStatus && (
         <div>

@@ -10,17 +10,15 @@ jest.mock('../utils/api');
 
 describe('MatchingProgress Component', () => {
   it('should display loading state while fetching data', async () => {
-    api.getMatchingVisualization.mockImplementation(() => new Promise(() => {})); // Mock API call to never resolve
+    api.getMatchingStatus.mockImplementation(() => new Promise(() => {})); // Mock API call to never resolve
     render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
-    expect(screen.getByText('Matching in progress...')).toBeInTheDocument();
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
-
+    expect(screen.getByText('Fetching matching status...')).toBeInTheDocument();
   });
 
 
   it('should display error message if API call fails', async () => {
     const errorMessage = 'Failed to fetch data';
-    api.getMatchingVisualization.mockRejectedValue(new Error(errorMessage));
+    api.getMatchingStatus.mockRejectedValue(new Error(errorMessage));
     render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
 
     await waitFor(() => {
@@ -30,25 +28,21 @@ describe('MatchingProgress Component', () => {
 
   it('should render visualization data when API call succeeds', async () => {
     const mockVisualizationData = '<svg></svg>'; // Example SVG data
+    api.getMatchingStatus.mockResolvedValue({ completed: true });
     api.getMatchingVisualization.mockResolvedValue(mockVisualizationData);
+
     render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
 
     await waitFor(() => {
-      // Use a more robust check depending on the visualization type. For SVG, check for a specific element within the SVG.
-      // For example: const svgElement = screen.getByRole('img'); // Or any other relevant query
-      // expect(svgElement).toBeInTheDocument();
-
-      // expect(screen.getByText(mockVisualizationData)).toBeInTheDocument(); // This wouldn't work for SVG.
-      const container = screen.getByRole('presentation'); // Assuming the parent div has role="presentation"
+      const container = screen.getByRole('presentation');
       expect(container.innerHTML).toContain(mockVisualizationData);
-
-
     });
   });
 
 
   it('should render JSON visualization data when API call succeeds', async () => {
     const mockVisualizationData = { nodes: [], links: [] }; // Example JSON data
+    api.getMatchingStatus.mockResolvedValue({ completed: true });
     api.getMatchingVisualization.mockResolvedValue(mockVisualizationData);
     render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
 
@@ -59,12 +53,27 @@ describe('MatchingProgress Component', () => {
 
 
   it('should display a message if no visualization data is available', async () => {
+    api.getMatchingStatus.mockResolvedValue({ completed: true });
     api.getMatchingVisualization.mockResolvedValue(null);
     render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
 
     await waitFor(() => {
       expect(screen.getByText('No visualization data available.')).toBeInTheDocument();
     });
+  });
+
+  it('should update progress and status message', async () => {
+    api.getMatchingStatus
+      .mockResolvedValueOnce({ progress: 30, status: 'In progress...' })
+      .mockResolvedValueOnce({ progress: 60, status: 'Still in progress...' })
+      .mockResolvedValueOnce({ progress: 100, status: 'Completed!', completed: true });
+    api.getMatchingVisualization.mockResolvedValue(null); // Mock visualization data
+    render(<BrowserRouter><Routes><Route path="/:groupId" element={<MatchingProgress />} /></Routes></BrowserRouter>, { route: '/1' });
+    await waitFor(() => expect(screen.getByText('In progress...')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Still in progress...')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText('Completed!')).toBeInTheDocument());
+
+
   });
 
 
