@@ -13,7 +13,8 @@ import LoginForm from './components/LoginForm';
 import RegistrationForm from './components/RegistrationForm';
 
 const App = () => {
-  // ... existing code ...
+  const [matchingGroupId, setMatchingGroupId] = useState(null);
+
 
   return (
     <Router>
@@ -21,9 +22,9 @@ const App = () => {
         {/* ... other routes ... */}
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegistrationForm />} />
-        <Route path="/matching" element={<MatchingForm />} />
-        <Route path="/matching/progress/:groupId" element={<MatchingProgress />} />
-        <Route path="/matching/results/:groupId" element={<MatchingResults />} />
+        <Route path="/matching" element={<MatchingForm setMatchingGroupId={setMatchingGroupId} />} />
+        <Route path="/matching/progress" element={<MatchingProgress groupId={matchingGroupId} />} />
+        <Route path="/matching/results" element={<MatchingResults groupId={matchingGroupId} />} />
         <Route path="/restaurant/:id" element={<RestaurantDetails />} />
         <Route path="/applications" element={<Applications />} />
         <Route path="/profile" element={<ProfileManagement />} />

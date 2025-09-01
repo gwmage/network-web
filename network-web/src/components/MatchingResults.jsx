@@ -66,13 +66,13 @@ const MatchingResults: React.FC = () => {
     <div>
       <h2>Your Matched Groups</h2>
       {groups.map((group, index) => (
-        <div key={group.id}> {/* Use group.id as key */}
-          <h3>Group {index + 1}</h3>
+        <div key={group.id}>
+          <h3>Group {index + 1} (Matching Score: {group.matchingScore || 'N/A'})</h3>
           <h4>Members:</h4>
           <ul>
-            {group.users.map((userId) => (
-              <li key={userId}>
-                {user.id === userId ? "You" : `User ${userId}`}
+            {group.participants.map((participant) => (
+              <li key={participant.userId}>
+                {user.id === participant.userId ? "You" : `User ${participant.userId}`}
               </li>
             ))}
           </ul>

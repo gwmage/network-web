@@ -8,6 +8,7 @@ const MatchingInputForm = ({ onSubmit }) => {
     preferences: '',
     interests: '',
   });
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,10 +16,26 @@ const MatchingInputForm = ({ onSubmit }) => {
       ...formData,
       [name]: value,
     });
+    setErrors({ ...errors, [name]: '' }); // Clear error on input change
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const newErrors = {};
+    if (!formData.region) {
+      newErrors.region = 'Region is required';
+    }
+    if (formData.interests && formData.interests.split(',').some(interest => !interest.trim())) {
+      newErrors.interests = 'Interests must be comma-separated and cannot contain empty values';
+    }
+
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     const interestsArray = formData.interests.split(',').map((interest) => interest.trim());
     onSubmit({ ...formData, interests: interestsArray });
   };
@@ -32,8 +49,8 @@ const MatchingInputForm = ({ onSubmit }) => {
         name="region"
         value={formData.region}
         onChange={handleChange}
-        required
       />
+      {errors.region && <p style={{ color: 'red' }}>{errors.region}</p>}
 
       <label htmlFor="preferences">Preferences:</label>
       <textarea
@@ -51,6 +68,7 @@ const MatchingInputForm = ({ onSubmit }) => {
         value={formData.interests}
         onChange={handleChange}
       />
+      {errors.interests && <p style={{ color: 'red' }}>{errors.interests}</p>}
 
       <button type="submit">Submit</button>
     </form>
