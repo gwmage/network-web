@@ -17,8 +17,12 @@ router.post('/', async (req, res) => {
 
 router.post('/run', async (req, res) => {
   try {
-    const criteria = req.body.criteria;
-    const results = await matchUsers(criteria); // Pass criteria to matchUsers
+    const criteria = req.body; // No need for .criteria, it's the whole body
+    if (!criteria.region || typeof criteria.region !== 'string' || !criteria.region.trim()) {
+      return res.status(400).json({ statusCode: 400, message: "Invalid input: region must be a non-empty string" });
+    }
+
+    const results = await matchUsers(criteria);
     res.json(results);
   } catch (error) {
     console.error("Error during matching:", error);
@@ -35,17 +39,6 @@ router.get('/status', async (req, res) => {
     res.status(500).json({ error: 'Failed to get matching status' });
   }
 });
-
-router.get('/groups', async (req, res) => {
-  try {
-    const groups = await getMatchingGroups();
-    res.json(groups);
-  } catch (error) {
-    console.error("Error getting matching groups:", error);
-    res.status(500).json({ error: 'Failed to get matching groups' });
-  }
-});
-
 
 export default router;
 

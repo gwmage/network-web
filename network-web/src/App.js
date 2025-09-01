@@ -1,34 +1,46 @@
 ```javascript
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import ForgotPassword from './components/ForgotPassword';
+import ProfileManagement from './components/ProfileManagement';
+import AppInformation from './components/AppInformation';
+import MatchingResults from './components/MatchingResults';
 import MatchingForm from './components/MatchingForm';
 import MatchingProgress from './components/MatchingProgress';
-import MatchingResults from './components/MatchingResults';
-import Filters from './components/Filters';
-import Applications from './components/Applications';
-import RestaurantDetails from './components/RestaurantDetails';
-import ProfileManagement from './components/ProfileManagement';
+import ReservationSearch from './components/ReservationSearch';
+import ReservationProcess from './components/ReservationProcess';
+import ReservationConfirmation from './components/ReservationConfirmation';
+import ReservationManagement from './components/ReservationManagement';
+import ErrorDisplay from './components/ErrorDisplay';
 import NotificationSettings from './components/NotificationSettings';
-import LoginForm from './components/LoginForm';
-import RegistrationForm from './components/RegistrationForm';
+import CommunityBoard from './components/CommunityBoard';
+import PostDetails from './components/PostDetails';
+import SearchResults from './components/SearchResults';
+import axios from 'axios';
+import Main from './components/Main';
+import SignUp from './components/SignUp';
+import Login from './components/Login';
+import AdminLogin from './components/AdminLogin';
+import AdminDashboard from './components/AdminDashboard';
+import MatchingGroups from './components/MatchingGroups';
 
 const App = () => {
+  const [matchingResults, setMatchingResults] = useState(null);
   const [matchingGroupId, setMatchingGroupId] = useState(null);
 
 
   return (
     <Router>
       <Routes>
-        {/* ... other routes ... */}
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/register" element={<RegistrationForm />} />
-        <Route path="/matching" element={<MatchingForm setMatchingGroupId={setMatchingGroupId} />} />
+        {/* ... other routes */}
+        <Route path="/matching" element={<MatchingForm setMatchingResults={setMatchingResults} setMatchingGroupId={setMatchingGroupId}/>} />
         <Route path="/matching/progress" element={<MatchingProgress groupId={matchingGroupId} />} />
-        <Route path="/matching/results" element={<MatchingResults groupId={matchingGroupId} />} />
-        <Route path="/restaurant/:id" element={<RestaurantDetails />} />
-        <Route path="/applications" element={<Applications />} />
-        <Route path="/profile" element={<ProfileManagement />} />
-        <Route path="/notification-settings" element={<NotificationSettings />} />
+        <Route path="/matching/results" element={<MatchingResults results={matchingResults} groupId={matchingGroupId} />} />
+        <Route path="/admin/matching/groups" element={<MatchingGroups />} />
+        <Route path="/community" element={<CommunityBoard />} />
+        <Route path="/community/search" element={<SearchResults />} />
+        <Route path="/community/:postId" element={<PostDetails />} />
+        {/* ... other routes */}
       </Routes>
     </Router>
   );
