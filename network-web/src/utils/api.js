@@ -5,28 +5,28 @@ const API_BASE_URL = '/api'; // Or your API base URL
 
 // ... (Existing code remains unchanged)
 
-export const runMatchingWithCriteria = async (matchingCriteria) => {
+export const getCancellationRestrictions = async () => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/matching/run`, matchingCriteria);
+    const response = await axios.get(`${API_BASE_URL}/reservations/cancellation-restrictions`);
     return response.data;
   } catch (error) {
-    console.error('Error running matching with criteria:', error);
+    console.error('Error fetching cancellation restrictions:', error);
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
       console.error('Data:', error.response.data);
       console.error('Status:', error.response.status);
       console.error('Headers:', error.response.headers);
-      throw new Error(`API Error: ${error.response.status} - ${error.response.data.message || 'Failed to run matching'}`);
+      throw new Error(`API Error: ${error.response.status} - ${error.response.data.message || 'Failed to fetch cancellation restrictions'}`);
     } else if (error.request) {
-      // The request was made but no response was received
       console.error('Request:', error.request);
       throw new Error('Network Error: Failed to connect to the server');
     } else {
-      // Something happened in setting up the request that triggered an Error
       console.error('Error:', error.message);
       throw new Error(`Request Error: ${error.message}`);
     }
   }
+};
+
+export const runMatchingWithCriteria = async (matchingCriteria) => {
+  // ... (Existing code remains unchanged)
 };
 ```
