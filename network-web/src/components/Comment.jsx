@@ -18,7 +18,28 @@ const Comment: React.FC<CommentProps> = ({ comment, currentUser, onCommentDelete
     // ... (This function remains unchanged)
   };
 
-  // ... (Other functions remain unchanged)
+  const renderReplies = (replies: Comment[]) => {
+    if (!replies) {
+      return null;
+    }
+    return (
+      <ul className="comment-replies">
+        {replies.map((reply) => (
+          <li key={reply.id}>
+            <Comment
+              comment={reply}
+              currentUser={currentUser}
+              onCommentDelete={onCommentDelete}
+              onCommentCreate={onCommentCreate}
+              onCommentUpdate={onCommentUpdate}
+            />
+            {reply.children && renderReplies(reply.children)}
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
 
   return (
     <div className="comment-container">
@@ -29,7 +50,6 @@ const Comment: React.FC<CommentProps> = ({ comment, currentUser, onCommentDelete
         </span>
       </div>
       {/* ... (Other JSX remains unchanged) */}
-
       {isEditing ? (
         <CommentForm
           initialContent={comment.content}
@@ -37,7 +57,11 @@ const Comment: React.FC<CommentProps> = ({ comment, currentUser, onCommentDelete
           onCancel={() => setIsEditing(false)}
           submitButtonText="Update"
         />
+      ) : (
+        <p className="comment-content">{comment.content}</p>
       )}
+
+      {renderReplies(comment.children)}
     </div>
   );
 };

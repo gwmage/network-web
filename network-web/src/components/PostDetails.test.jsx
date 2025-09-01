@@ -18,7 +18,19 @@ const mockComments = [
 ];
 
 describe('PostDetails', () => {
-  // ... other tests ...
+  it('renders post details correctly', () => {
+    render(<PostDetails post={mockPost} />);
+    expect(screen.getByText('Test Post')).toBeInTheDocument();
+    expect(screen.getByText('Test content')).toBeInTheDocument();
+  });
+
+  it('displays comments', () => {
+    render(<PostDetails post={{ ...mockPost, comments: mockComments }} />);
+    mockComments.forEach((comment) => {
+      expect(screen.getByText(comment.content)).toBeInTheDocument();
+    });
+  });
+
 
   it('creates a new comment', async () => {
     const createMock = jest.fn().mockResolvedValue({ id: 3, content: 'New comment', createdAt: '2024-01-03', author: { username: 'user3' } });
@@ -52,27 +64,33 @@ describe('PostDetails', () => {
     fireEvent.submit(commentInput.closest('form'));
 
     await waitFor(() => {
-      expect(updateComment).toHaveBeenCalledWith(mockPost.id, mockComments[0].id, { content: 'Updated comment' });
+      expect(updateComment).toHaveBeenCalledWith(mockPost.id, updatedComment.id, { content: 'Updated comment' });
     });
+
     expect(screen.getByText('Updated comment')).toBeInTheDocument();
+
+
 
   });
 
   it('deletes a comment', async () => {
-    const deleteMock = jest.fn().mockResolvedValue(null);
-    deleteComment.mockImplementation(deleteMock);
+      const deleteMock = jest.fn().mockResolvedValue(null);
+      deleteComment.mockImplementation(deleteMock);
 
     render(<PostDetails post={{ ...mockPost, comments: mockComments }} />);
 
-    fireEvent.click(screen.getByRole('button', { name: /delete comment 1/i }));
+    fireEvent.click(screen.getByRole('button', {name: /delete comment 1/i}));
 
     await waitFor(() => {
-      expect(deleteComment).toHaveBeenCalledWith(mockPost.id, mockComments[0].id);
+        expect(deleteComment).toHaveBeenCalledWith(mockPost.id, mockComments[0].id);
     });
+
     expect(screen.queryByText('Comment 1')).not.toBeInTheDocument();
 
-
   });
+
+
+
 });
 
 ```

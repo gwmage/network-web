@@ -5,29 +5,47 @@ const API_BASE_URL = '/api'; // Or your API base URL
 
 // ... (Existing code remains unchanged)
 
-export const requestMatch = async (userData) => {
+export const fetchComments = async (postId) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/match`, userData);
+    const response = await axios.get(`${API_BASE_URL}/posts/${postId}/comments`);
     return response.data;
   } catch (error) {
-    console.error('Error requesting match:', error);
-    if (error.response) {
-      console.error('Data:', error.response.data);
-      console.error('Status:', error.response.status);
-      throw new Error(`API Error: ${error.response.status} - ${error.response.data.message || 'Failed to request match'}`);
-    } else if (error.request) {
-      console.error('Request:', error.request);
-      throw new Error('Network Error: Failed to connect to the server');
-    } else {
-      console.error('Error:', error.message);
-      throw new Error(`Request Error: ${error.message}`);
-    }
+    console.error('Error fetching comments:', error);
+    throw error;
+  }
+};
+
+export const createComment = async (commentData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/posts/${commentData.postId}/comments`, commentData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating comment:', error);
+    throw error;
+  }
+};
+
+export const updateComment = async (postId, commentId, commentData) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/posts/${postId}/comments/${commentId}`, commentData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating comment:', error);
+    throw error;
+  }
+};
+
+export const deleteComment = async (postId, commentId) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/posts/${postId}/comments/${commentId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    throw error;
   }
 };
 
 
-export const runMatching = async (matchingInput) => {
-  // ... (Existing runMatching function remains unchanged)
-};
+// ... (Other functions remain unchanged)
 
 ```

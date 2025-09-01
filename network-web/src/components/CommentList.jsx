@@ -1,51 +1,66 @@
 ```typescript
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import * as api from '../utils/api';
 import Comment from './Comment';
 import './CommentList.css';
-import api from '../api';
 
-const CommentList = ({ postId, currentUser, onCommentUpdate }) => {
+const CommentList = ({ itemId, onCommentUpdate }) => {
   const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const fetchedComments = await api.getComments(parseInt(postId, 10));
+        const fetchedComments = await api.getComments(itemId);
         setComments(fetchedComments);
-      } catch (error) {
-        console.error("Error fetching comments:", error);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchComments();
-  }, [postId, onCommentUpdate]);
+  }, [itemId, onCommentUpdate]);
+
+  if (loading) {
+    return <p>Loading comments...</p>;
+  }
+
+  if (error) {
+    return <p>Error loading comments: {error.message}</p>;
+  }
 
   if (!comments || comments.length === 0) {
     return <p>No comments yet.</p>;
   }
 
-  const renderComments = (commentList) => {
-    return (
-      <ul className="comment-list">
-        {commentList.map((comment) => (
-          <li key={comment.id} className="comment-item">
-            <Comment
-              comment={comment}
-              currentUser={currentUser}
-              onCommentUpdate={onCommentUpdate} // Pass onCommentUpdate to Comment component
-            />
-            {/* Render nested comments recursively */}
-            {comment.children && renderComments(comment.children)}
-          </li>
-        ))}
-      </ul>
-    );
-  };
-
   return (
     <div className="comment-list-container">
       <h3>Comments</h3>
-      {renderComments(comments)}
+      <ul className="comment-list">
+        {comments.map((comment) => (
+          <li key={comment.id} className="comment-item">
+            <Comment
+              comment={comment}
+              currentUser={1} // Replace with actual current user ID
+              onCommentDelete={(commentId) => {
+                setComments(comments.filter((c) => c.id !== commentId));
+                if (onCommentUpdate) {
+                  onCommentUpdate();
+                }
+              }}
+              onCommentUpdate={(updatedComment) => {
+                setComments(comments.map((c) => (c.id === updatedComment.id ? updatedComment : c)));
+                if (onCommentUpdate) {
+                  onCommentUpdate();
+                }
+              }}
+            />
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

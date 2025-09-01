@@ -1,45 +1,69 @@
 ```typescript
-import * as api from '../utils/api';
-import axios from 'axios';
+import { getPosts, getPost, createPost, updatePost, deletePost, getComments, createComment, updateComment, deleteComment } from './api';
 
-jest.mock('axios');
+jest.mock('./api', () => ({
+    getPosts: jest.fn(),
+    getPost: jest.fn(),
+    createPost: jest.fn(),
+    updatePost: jest.fn(),
+    deletePost: jest.fn(),
+    getComments: jest.fn(),
+    createComment: jest.fn(),
+    updateComment: jest.fn(),
+    deleteComment: jest.fn(),
+}));
 
-describe('API interaction functions', () => {
-  it('submitMatchingForm formats request correctly and handles success', async () => {
-    const mockFormData = { name: 'Test User', interests: ['Hiking', 'Reading'] };
-    const mockResponse = { data: { groupId: 123 } };
-    axios.post.mockResolvedValue(mockResponse);
 
-    const response = await api.submitMatchingForm(mockFormData);
+describe('API Utils - Comments', () => {
+    describe('getComments', () => {
+        it('should return comments for a post successfully', async () => {
+            const postId = 1;
+            const mockResponse = [{ id: 1, content: 'Comment 1' }, { id: 2, content: 'Comment 2' }];
+            (getComments as jest.Mock).mockResolvedValue(mockResponse);
 
-    expect(axios.post).toHaveBeenCalledWith('/api/matching', mockFormData);
-    expect(response).toEqual(mockResponse.data);
-  });
+            const response = await getComments(postId);
+            expect(getComments).toHaveBeenCalledWith(postId);
+            expect(response).toEqual(mockResponse);
+        });
+    });
 
-  it('submitMatchingForm handles errors', async () => {
-    const mockError = new Error('Network error');
-    axios.post.mockRejectedValue(mockError);
+    describe('createComment', () => {
+        it('should create a comment successfully', async () => {
+            const postId = 1;
+            const commentData = { content: 'New comment' };
+            const mockResponse = { id: 1, ...commentData };
+            (createComment as jest.Mock).mockResolvedValue(mockResponse);
 
-    await expect(api.submitMatchingForm({})).rejects.toThrow(mockError);
-  });
+            const response = await createComment(postId, commentData);
+            expect(createComment).toHaveBeenCalledWith(postId, commentData);
+            expect(response).toEqual(mockResponse);
 
-  it('getMatchingVisualization formats request correctly and handles success', async () => {
-    const groupId = 123;
-    const mockResponse = { data: { visualizationData: 'some data' } };
-    axios.get.mockResolvedValue(mockResponse);
+        });
+    });
 
-    const response = await api.getMatchingVisualization(groupId);
+    describe('updateComment', () => {
+        it('should update a comment successfully', async () => {
+            const commentId = 1;
+            const commentData = { content: 'Updated comment' };
+            const mockResponse = { id: 1, ...commentData };
+            (updateComment as jest.Mock).mockResolvedValue(mockResponse);
 
-    expect(axios.get).toHaveBeenCalledWith(`/api/matching/${groupId}/visualization`);
-    expect(response).toEqual(mockResponse.data);
-  });
+            const response = await updateComment(commentId, commentData);
+            expect(updateComment).toHaveBeenCalledWith(commentId, commentData);
+            expect(response).toEqual(mockResponse);
+        });
+    });
 
-  it('getMatchingVisualization handles errors', async () => {
-    const mockError = new Error('Network error');
-    axios.get.mockRejectedValue(mockError);
 
-    await expect(api.getMatchingVisualization(123)).rejects.toThrow(mockError);
-  });
+    describe('deleteComment', () => {
+        it('should delete a comment successfully', async () => {
+            const commentId = 1;
+            (deleteComment as jest.Mock).mockResolvedValue(undefined);
+
+            await deleteComment(commentId);
+            expect(deleteComment).toHaveBeenCalledWith(commentId);
+        });
+    });
 });
 
 ```
