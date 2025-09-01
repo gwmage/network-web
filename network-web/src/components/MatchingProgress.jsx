@@ -25,7 +25,7 @@ const MatchingProgress = () => {
 
         if (data.completed) {
           clearInterval(intervalId);
-          setLoading(false); // Stop loading when matching is complete
+          setLoading(false);
           fetchVisualizationData();
         }
       } catch (err) {

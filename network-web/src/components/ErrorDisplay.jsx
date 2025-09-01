@@ -2,7 +2,7 @@
 import React from 'react';
 
 type ErrorDisplayProps = {
-  error: string | null | Error;
+  error: string | null | unknown;
 };
 
 const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ error }) => {
@@ -13,14 +13,14 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ error }) => {
   let errorMessage = 'An unexpected error occurred. Please try again later.';
   let errorDetails = null;
 
-  if (error.response && error.response.data) {
+  if (error && typeof error === 'object' && 'response' in error && error.response && error.response.data) {
     if (error.response.data.message) {
       errorMessage = error.response.data.message;
     }
     if (error.response.status) {
       errorDetails = `Status Code: ${error.response.status}`;
     }
-   } else if (typeof error === 'string') {
+  } else if (typeof error === 'string') {
     errorMessage = error;
   } else if (error instanceof Error) {
     errorMessage = error.message;
