@@ -1,57 +1,40 @@
 ```css
-/* Responsive Design */
-@media (max-width: 768px) { /* Adjust breakpoint as needed */
-  .post-form {
-    width: 95%; /* Take up almost full width on smaller screens */
-    padding: 15px; /* Reduce padding */
-  }
-
-  .post-item {
-    padding: 10px; /* Reduce padding */
-  }
-
-  .post-details-container {
-    padding: 10px;
-  }
-
-    .search-bar {
-        flex-direction: column; /* Stack search bar elements vertically */
-    }
-    .search-bar input[type="text"] {
-        width: 100%; /* Full width input on smaller screens */
-        margin-bottom: 10px; /* Add spacing between input and button */
-    }
-    .search-result-item { /* Adjust layout for smaller screens */
-        flex-direction: column;
-    }
-    .matching-input-form input,
-    .matching-input-form select,
-    .matching-input-form button{
-        width: 100%;
-    }
-
+/* Registration Form Styles */
+.registration-form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 20px auto; /* Center the form */
+  max-width: 500px; /* Set a maximum width */
 }
 
-/* Readability Improvements */
-body {
-  font-family: sans-serif; /* Use a more readable font */
-  line-height: 1.6; /* Improve line height for better readability */
-  color: #333; /* Darker text color for better contrast */
-  background-color: #f9f9f9;
+.registration-form label {
+  display: block;
+  margin-bottom: 5px;
 }
 
-.post-content {
-  font-size: 1em; /* Ensure a comfortable font size */
+.registration-form input,
+.registration-form button {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
 }
 
-.post-content p {
-    margin-bottom: 1em;
+.registration-form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
 
-.post-content img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 10px 0;
+.registration-form .error-message {
+  color: red;
+  margin-bottom: 10px;
 }
+
+
 ```

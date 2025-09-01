@@ -1,38 +1,49 @@
 ```typescript
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { registerUser } from '../services/AuthService'; // Import your registration service
-import ErrorDisplay from './ErrorDisplay';
-
-// ... (rest of the file)
-
-const [error, setError] = useState<string | null>(null);
 
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null); // Clear any previous errors
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 90%;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 
-    try {
-      const response = await registerUser(formData);
-      console.log('Registration successful:', response);
-      navigate('/login'); // Redirect after successful registration
-    } catch (err) {
-      console.error('Registration failed:', err);
-      if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message);
-      } else {
-        setError('An unexpected error occurred during registration.');
-      }
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
 
-    }
-  };
+const Input = styled.input`
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+`;
 
-// ... (rest of the file)
+const Button = styled.button`
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+`;
 
-      <ErrorDisplay error={error} />
+const RegisterForm = ({ onSubmit }) => {
+  // ... (rest of the component code)
 
-// ... (rest of the file)
+  return (
+    <FormContainer>
+      {/* ... (form elements) */}
+    </FormContainer>
+  );
+};
+
+export default RegisterForm;
 
 ```
