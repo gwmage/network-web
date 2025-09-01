@@ -1,8 +1,8 @@
-```jsx
+```javascript
 import React, { useState, useEffect } from 'react';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
-import * as api from '../utils/api';
+import * as api from '../utils/api'; // Import the API functions
 import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 
@@ -20,13 +20,12 @@ const MatchingProgress = () => {
     const fetchMatchingStatus = async () => {
       try {
         const data = await api.getMatchingStatus(groupId);
-        setProgress(data.progress || 0);
+        setProgress(data.progress || 0); // Update progress from API
         setStatusMessage(data.status || 'Matching in progress...');
 
         if (data.completed) {
           clearInterval(intervalId);
-          setLoading(false);
-          fetchVisualizationData();
+          fetchVisualizationData(); // Fetch visualization data once matching is complete
         }
       } catch (err) {
         setError(err);
@@ -39,15 +38,18 @@ const MatchingProgress = () => {
       try {
         const data = await api.getMatchingVisualization(groupId);
         setVisualizationData(data);
+        setLoading(false);
       } catch (err) {
         setError(err);
+        setLoading(false);
       }
     };
 
+    // Poll matching status every 3 seconds
     intervalId = setInterval(fetchMatchingStatus, 3000);
-    fetchMatchingStatus();
+    fetchMatchingStatus(); //also call the first time immediately
 
-    return () => clearInterval(intervalId);
+    return () => clearInterval(intervalId); // Clear interval on component unmount
   }, [groupId]);
 
 
@@ -74,7 +76,9 @@ const MatchingProgress = () => {
     } else {
       return <div>Visualization data format not supported.</div>;
     }
+
   }
+
 
   return <div>No visualization data available.</div>;
 };

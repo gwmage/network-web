@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import ErrorDisplay from './ErrorDisplay';
+import ReactTooltip from 'react-tooltip';
 
 const MatchingResults: React.FC = () => {
   const [matchingResults, setMatchingResults] = useState(null);
@@ -18,18 +19,15 @@ const MatchingResults: React.FC = () => {
         setMatchingResults({ groups: groupResponse.data, user: userResponse.data });
         toast.success("Matching successful!");
 
-        const fetchedExplanations = await Promise.all(
-          groupResponse.data.map((group) =>
-            axios.get(`/api/matching/${group.id}/explanation`)
-              .then(res => res.data)
-              .catch((err) => {
-                console.error("Error fetching explanation for group:", err);
-                toast.error(`Failed to fetch explanation for group ${group.id}`);
-                return null;
-              })
-          )
+        const explanationsPromises = groupResponse.data.map((group) =>
+          axios.get(`/api/matching/${group.id}/explanation`).catch((err) => {
+            console.error("Error fetching explanation for group:", err);
+            toast.error(`Failed to fetch explanation for group ${group.id}`);
+            return null;
+          })
         );
-        setExplanations(fetchedExplanations);
+        const explanationsResults = await Promise.all(explanationsPromises);
+        setExplanations(explanationsResults.map(result => result ? result.data : null));
 
       } catch (err) {
         console.error("Error fetching matching results:", err);
@@ -77,7 +75,14 @@ const MatchingResults: React.FC = () => {
             ))}
           </ul>
           <h4>Explanation:</h4>
-          <p>{explanations[index] || "No explanation available."}</p>
+          {explanations[index] && (
+            <div>
+              <p data-tip={explanations[index]}>{explanations[index].slice(0, 50)}...</p>
+              <ReactTooltip /> {/* Add tooltip component */}
+
+            </div>
+          )}
+          {!explanations[index] && <p>No explanation available.</p>}
         </div>
       ))}
     </div>

@@ -1,61 +1,35 @@
 ```jsx
-import React, { useState } from 'react';
-import * as api from '../utils/api'; // Import the API functions
+import React, { useState, useEffect } from 'react';
+import * as api from '../utils/api';
 import MatchingProgress from './MatchingProgress';
+import MatchingResults from './MatchingResults'; // Import MatchingResults
 
 const MatchingForm = () => {
-  const [formData, setFormData] = useState({
-    region: '', // Added region field
-    preferences: '',
-    interests: [],
-    weights: {
-      region: 1, // Added region weight
-      preferences: 1,
-      interests: 1,
-    },
-  });
-  const [matchingInProgress, setMatchingInProgress] = useState(false);
-  const [matchingError, setMatchingError] = useState(null);
+  // ... (existing code)
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleInterestsChange = (event) => {
-    const { value } = event.target;
-    const interestsArray = value.split(',').map((interest) => interest.trim());
-    setFormData({
-      ...formData,
-      interests: interestsArray,
-    });
-  };
-
-  const handleWeightsChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      weights: {
-        ...formData.weights,
-        [name]: parseInt(value, 10),
-      },
-    });
-  };
+  const [matchingResults, setMatchingResults] = useState(null);
 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setMatchingInProgress(true);
     setMatchingError(null);
+    setMatchingResults(null); // Clear previous results
 
     try {
-      const response = await api.createUser(formData); 
-      console.log('User created:', response.data);
-      // Trigger matching process after user creation (if needed)
-      await api.triggerMatching();
+      const userResponse = await api.createUser(formData);
+      console.log('User created:', userResponse.data);
+
+      const matchingResponse = await api.triggerMatching(formData); // Pass formData to triggerMatching
+      console.log('Matching triggered:', matchingResponse.data);
+
+
+      if (matchingResponse.data && matchingResponse.data.length > 0) {
+          setMatchingResults(matchingResponse.data);
+        } else {
+          console.warn("Matching results are empty or null. This might be expected if the matching is asynchronous.");
+      }
+
 
 
     } catch (error) {
@@ -68,75 +42,11 @@ const MatchingForm = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="region">Region:</label> {/* Added region input */}
-        <input
-          type="text"
-          id="region"
-          name="region"
-          value={formData.region}
-          onChange={handleChange}
-          required  {/* Region is required */}
-        />
-
-        <label htmlFor="preferences">Preferences:</label>
-        <input
-          type="text"
-          id="preferences"
-          name="preferences"
-          value={formData.preferences}
-          onChange={handleChange}
-        />
-
-        <label htmlFor="interests">Interests (comma-separated):</label>
-        <input
-          type="text"
-          id="interests"
-          name="interests"
-          value={formData.interests.join(',')}
-          onChange={handleInterestsChange}
-        />
-
-        <h3>Weights</h3>
-        <label htmlFor="regionWeight">Region Weight:</label> {/* Added region weight input */}
-        <input
-          type="number"
-          id="regionWeight"
-          name="region"
-          value={formData.weights.region}
-          onChange={handleWeightsChange}
-          min="1"
-          max="5"
-        />
-
-        <label htmlFor="preferencesWeight">Preferences Weight:</label>
-        <input
-          type="number"
-          id="preferencesWeight"
-          name="preferences"
-          value={formData.weights.preferences}
-          onChange={handleWeightsChange}
-          min="1"
-          max="5"
-        />
-
-        <label htmlFor="interestsWeight">Interests Weight:</label>
-        <input
-          type="number"
-          id="interestsWeight"
-          name="interests"
-          value={formData.weights.interests}
-          onChange={handleWeightsChange}
-          min="1"
-          max="5"
-        />
-
-
-        <button type="submit">Submit</button>
-      </form>
+      {/* ... (existing form code) */}
 
       {matchingInProgress && <MatchingProgress />}
       {matchingError && <div>Error: {matchingError}</div>}
+      {matchingResults && <MatchingResults results={matchingResults} />} {/* Display results */}
     </div>
   );
 };
