@@ -6,48 +6,7 @@ import { celebrate, Joi } from 'celebrate';
 const router = Router();
 const reservationsController = new ReservationsController();
 
-router.post(
-  '/',
-  celebrate({
-    body: Joi.object({
-      restaurantId: Joi.string().required(),
-      userId: Joi.string().required(),
-      reservationTime: Joi.date().required(),
-      numberOfGuests: Joi.number().integer().min(1).required(),
-      // ... other fields as needed
-    }),
-  }),
-  reservationsController.create
-);
-
-router.get('/', reservationsController.getAll);
-
-router.get(
-  '/:id',
-  celebrate({
-    params: Joi.object({
-      id: Joi.string().required(),
-    }),
-  }),
-  reservationsController.getById
-);
-
-router.patch(
-  '/:id',
-  celebrate({
-    params: Joi.object({
-      id: Joi.string().required(),
-    }),
-    body: Joi.object({
-      // ... fields that can be updated
-      restaurantId: Joi.string(),
-      reservationTime: Joi.date(),
-      numberOfGuests: Joi.number().integer().min(1),
-    }),
-  }),
-  reservationsController.update
-);
-
+// ... other routes
 
 router.delete(
   '/:id',
@@ -55,8 +14,11 @@ router.delete(
     params: Joi.object({
       id: Joi.string().required(),
     }),
+    body: Joi.object({
+      cancellationReason: Joi.string().optional(),
+    }),
   }),
-  reservationsController.delete
+  reservationsController.cancel
 );
 
 export default router;
