@@ -54,7 +54,6 @@ describe('CommentList', () => {
     expect(screen.getByText('No comments yet')).toBeInTheDocument();
   });
 
-
   it('displays loading indicator when isLoading is true', () => {
     render(<CommentList comments={[]} isLoading={true} error={null} />);
     // Check for loading indicator, e.g.,

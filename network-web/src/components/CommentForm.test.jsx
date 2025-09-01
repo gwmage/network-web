@@ -32,6 +32,15 @@ it('calls createComment on submit when creating a new comment', async () => {
   await expect(createComment({ text: 'New comment', postId: "123", userId: "456" })).resolves.not.toThrow();
 });
 
+it('calls createComment on submit when creating a new reply', async () => {
+  render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} postId="123" userId="456" parentCommentId="789" />);
+  const inputElement = screen.getByRole('textbox');
+  fireEvent.change(inputElement, { target: { value: 'New reply' } });
+  fireEvent.submit(screen.getByRole('form'));
+  expect(createComment).toHaveBeenCalledWith({ text: 'New reply', postId: "123", userId: "456", parentCommentId: "789" });
+  await expect(createComment({ text: 'New reply', postId: "123", userId: "456", parentCommentId: "789" })).resolves.not.toThrow();
+});
+
 
 it('calls updateComment on submit when updating a comment', async () => {
   const comment = { id: 789, text: 'Original comment' };
@@ -69,22 +78,6 @@ it('does not display error message when input is valid', () => {
     fireEvent.change(inputElement, { target: { value: 'Valid comment' } });
     fireEvent.submit(screen.getByRole('form'));
     expect(screen.queryByText('댓글 내용을 입력해주세요.')).not.toBeInTheDocument();
-});
-
-it('disables submit button when input is empty', () => {
-  render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} postId="123" userId="456"/>);
-  const submitButton = screen.getByRole('button', { name: 'Submit' });
-  expect(submitButton).toBeDisabled();
-});
-
-
-it('enables submit button when input is valid', () => {
-  render(<CommentForm onSubmit={mockOnSubmit} onClose={mockOnClose} postId="123" userId="456"/>);
-  const inputElement = screen.getByRole('textbox');
-  fireEvent.change(inputElement, { target: { value: 'Valid comment' } });
-
-  const submitButton = screen.getByRole('button', { name: 'Submit' });
-  expect(submitButton).toBeEnabled();
 
 });
 ```

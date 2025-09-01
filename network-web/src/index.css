@@ -1,114 +1,93 @@
 ```css
-/* Search Bar Styles */
-.search-bar {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-bottom: 20px; /* Space below search bar */
-}
-
-.search-bar input[type="text"] {
-  flex-grow: 1;
-  padding: 8px;
-  border: none;
-  border-radius: 3px;
-}
-
-.search-bar button {
-  padding: 8px 12px;
-  background-color: #007bff; /* Example color */
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-
-/* Search Results Styles */
-.search-results {
-  list-style: none;
-  padding: 0;
-}
-
-.search-result-item {
-  border-bottom: 1px solid #eee;
-  padding: 10px;
-  margin-bottom: 10px;
-  display: flex;             /* Use flexbox for layout */
-  flex-direction: column;  /* Stack elements vertically */
-}
-
-.search-result-item h3 {    /* Style for result titles */
-  margin-top: 0;            /* Remove default top margin */
-}
-
-/* Matching Input Form Styles */
-.matching-input-form {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
-
-.matching-input-form label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.matching-input-form input,
-.matching-input-form select,
-.matching-input-form button {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  box-sizing: border-box;
-  margin-bottom: 10px;
-}
-
-/* Matching Progress Styles */
-.matching-progress {
-  margin-top: 20px; /* Space above progress bar */
-}
-
-
-/* Matching Results Styles */
-.matching-results {
-  margin-top: 20px;
-  background-color: #f8f8f8; /* Soft background color */
-  padding: 20px;
-  border-radius: 5px;
-}
-
-.matching-group {
+.comment-list-container {
+    width: 100%;
+    max-width: 800px; /* Adjust as needed */
+    margin: 20px auto;
+    padding: 20px;
     border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
     border-radius: 5px;
 }
 
+.comment-container {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+}
+
+.comment-container .comment-container {
+    margin-left: 20px; /* Indent nested replies */
+    border-left: 2px solid #ddd; /* Visual distinction for nested replies */
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.comment-timestamp {
+    font-size: 0.8em;
+    color: #999;
+}
 
 
-@media (max-width: 768px) { /* Adjust breakpoint as needed */
-  .search-bar {
-    flex-direction: column; /* Stack search bar elements vertically */
-  }
-  .search-bar input[type="text"] {
-    width: 100%; /* Full width input on smaller screens */
-    margin-bottom: 10px; /* Add spacing between input and button */
-  }
-  .search-result-item { /* Adjust layout for smaller screens */
+.comment-form {
+    display: flex;
     flex-direction: column;
-  }
-  .matching-input-form {  /* Responsive form adjustments */
-    padding: 15px;        /* Reduce padding on smaller screens */
-  }
-  .matching-results {      /* Responsive results adjustments */
-    padding: 15px;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.comment-form-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+    min-height: 80px; /* Ensure sufficient height */
+}
+
+.comment-form-button {
+    padding: 8px 12px;
+    background-color: #007bff; /* Example color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.comment-form-button:disabled {
+    background-color: #ccc;
+    cursor: default;
+}
+
+
+@media (max-width: 768px) {
+    /* existing styles */
+    .comment-actions {
+        gap: 0; /* Remove gap between buttons */
+        margin-top: 10px; /* Add margin top */
+    }
+
+    .comment-form {
+        flex-direction: column; /* Stack form elements vertically */
+    }
+
+    .comment-form-textarea {
+        min-height: 60px; /* Adjust min-height for smaller screens */
+    }
+}
+
+@media (max-width: 500px) {
+    /* existing styles */
+    .comment-container {
+      padding: 5px; /* Reduce padding */
   }
 
+    .comment-form-textarea {
+        min-height: 40px; /* Further reduce height */
+    }
 }
 ```
