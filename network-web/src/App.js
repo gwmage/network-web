@@ -9,8 +9,8 @@ import Applications from './components/Applications';
 import RestaurantDetails from './components/RestaurantDetails';
 import ProfileManagement from './components/ProfileManagement';
 import NotificationSettings from './components/NotificationSettings';
-import LoginForm from './components/LoginForm'; // Import LoginForm
-import RegistrationForm from './components/RegistrationForm'; // Import RegistrationForm
+import LoginForm from './components/LoginForm';
+import RegistrationForm from './components/RegistrationForm';
 
 const App = () => {
   // ... existing code ...
@@ -19,8 +19,11 @@ const App = () => {
     <Router>
       <Routes>
         {/* ... other routes ... */}
-        <Route path="/login" element={<LoginForm />} /> {/* Ensure the login route exists */}
-        <Route path="/register" element={<RegistrationForm />} /> {/* Add the route for RegistrationForm */}
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<RegistrationForm />} />
+        <Route path="/matching" element={<MatchingForm />} />
+        <Route path="/matching/progress/:groupId" element={<MatchingProgress />} />
+        <Route path="/matching/results/:groupId" element={<MatchingResults />} />
         <Route path="/restaurant/:id" element={<RestaurantDetails />} />
         <Route path="/applications" element={<Applications />} />
         <Route path="/profile" element={<ProfileManagement />} />
