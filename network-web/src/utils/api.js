@@ -5,64 +5,29 @@ const API_BASE_URL = '/api'; // Or your API base URL
 
 // ... (Existing code remains unchanged)
 
-export const fetchMembers = async (params = {}) => {
+export const submitApplication = async (applicationData) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/admin/users`, { params });
+    const response = await axios.post(`${API_BASE_URL}/application`, applicationData);
     return response.data;
   } catch (error) {
-    console.error('Error fetching members:', error);
-    throw error; // Re-throw the error for handling in the component
-  }
-};
-
-export const searchMembers = async (query) => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/admin/users`, { params: { search: query } });
-    return response.data;
-  } catch (error) {
-    console.error('Error searching members:', error);
-    throw error;
-  }
-};
-
-
-export const sortMembers = async (sortBy, sortOrder) => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/admin/users`, { params: { sortBy, sort: sortOrder } });
-    return response.data;
-  } catch (error) {
-    console.error('Error sorting members:', error);
-    throw error;
-  }
-};
-
-export const editMember = async (userId, updatedData) => {
-  try {
-    const response = await axios.put(`${API_BASE_URL}/admin/users/${userId}`, updatedData);
-    return response.data;
-  } catch (error) {
-    console.error('Error editing member:', error);
-    throw error;
-  }
-};
-
-export const deleteMember = async (userId) => {
-  try {
-    const response = await axios.delete(`${API_BASE_URL}/admin/users/${userId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting member:', error);
-    throw error;
-  }
-};
-
-export const fetchMemberActivityHistory = async (userId) => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/admin/users/${userId}/activity`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching member activity history:', error);
-    throw error;
+    console.error('Error submitting application:', error);
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error('Response data:', error.response.data);
+      console.error('Response status:', error.response.status);
+      throw new Error(`Server responded with error ${error.response.status}`); // Or handle the error as needed
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.error('No response received:', error.request);
+      throw new Error('Network error: No response received'); // Or handle the error as needed, e.g., retry logic
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error('Error setting up request:', error.message);
+      throw new Error(`Network error: ${error.message}`); // Or handle the error appropriately
+    }
   }
 };
 
