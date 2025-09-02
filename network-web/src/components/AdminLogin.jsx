@@ -26,11 +26,11 @@ const AdminLogin = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error("Login failed with status ", response.status, ":", errorData); // Log the full response status and error data
         if (response.status === 401) {
           setGeneralError(errorData.message || 'Invalid credentials');
         } else {
-          console.error('Login failed:', errorData);
-          setGeneralError('An error occurred during login.');
+          setGeneralError(`An error occurred during login: ${response.status} - ${errorData.message || 'Unknown error'}`);
         }
       } else {
         const data = await response.json();
@@ -39,12 +39,12 @@ const AdminLogin = () => {
         navigate('/admin');
       }
     } catch (error) {
-      console.error('Login failed:', error);
-      setGeneralError('An error occurred during login.');
+      console.error('An unexpected error occurred during login:', error); // Log the full error object
+      setGeneralError('An unexpected error occurred during login.');
     }
   };
 
-  // ... rest of the component code ...
+  // ... rest of the component code (JSX)
 };
 
 export default AdminLogin;
