@@ -1,10 +1,10 @@
-```typescript
+// File: network-web/src/components/AdminLogin.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: '', password: '' }); // Use email instead of username
+  const [formData, setFormData] = useState({ username: '', password: '' });
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState('');
 
@@ -34,33 +34,17 @@ const AdminLogin = () => {
         }
       } else {
         const data = await response.json();
-        localStorage.setItem('adminToken', data.accessToken); // Store accessToken
+        localStorage.setItem('adminToken', data.accessToken);
         console.log('Login successful:', data);
         navigate('/admin');
       }
     } catch (error) {
-      console.error('An error occurred:', error);
+      console.error('Login failed:', error);
       setGeneralError('An error occurred during login.');
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="email">Email:</label>
-      <input type="email" id="email" name="email" onChange={handleChange} value={formData.email} />
-      {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
-
-      <label htmlFor="password">Password:</label>
-      <input type="password" id="password" name="password" onChange={handleChange} value={formData.password} />
-      {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
-
-      {generalError && <p style={{ color: 'red' }}>{generalError}</p>}
-
-      <button type="submit">Login</button>
-    </form>
-  );
+  // ... rest of the component code ...
 };
 
 export default AdminLogin;
-
-```

@@ -1,4 +1,4 @@
-```typescript
+// File: network-web/src/components/ReservationManagement.jsx
 import React, { useState } from 'react';
 
 const ReservationManagement = () => {
@@ -25,17 +25,16 @@ const ReservationManagement = () => {
       setReservations(reservations.filter((r) => r.id !== selectedReservation.id));
       setSelectedReservation(null);
       // Optionally display a success message to the user
-      alert('Reservation cancelled successfully!');
+      alert('Reservation cancelled successfully');
     } catch (error) {
-      console.error('Error cancelling reservation:', error);
-      // Display a more user-friendly error message based on the error type
-      alert(error.message);
+      console.error("Error cancelling reservation:", error); // Log the full error object
+      // Display an error message to the user
+      alert(`Failed to cancel reservation: ${error.message}`);
     }
   };
 
-  // ... other code ...
+
+  // ... rest of component code
 };
 
 export default ReservationManagement;
-
-```
