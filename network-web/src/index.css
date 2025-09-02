@@ -7,6 +7,10 @@
         width: 95%;
         margin: 0 auto;
     }
+
+    .post-list {
+        grid-template-columns: 1fr; /* Single column on smaller screens */
+    }
 }
 
 /* Readability Improvements */
@@ -36,6 +40,7 @@
     padding: 20px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     transition: transform 0.2s ease-in-out; /* Smooth hover effect */
+    background-color: #fff; /* White background for better contrast */
 }
 
 .post-item:hover {
@@ -54,5 +59,14 @@
     font-size: 0.9em;
     color: #999;
     margin-bottom: 10px;
+}
+
+.post-content {  /* Style the post content */
+    overflow: hidden; /* Prevent content from overflowing */
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Show up to 3 lines */
+    -webkit-box-orient: vertical;
+
 }
 ```

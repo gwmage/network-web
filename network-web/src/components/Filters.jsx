@@ -1,7 +1,7 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
 
-const Filters = ({ onFilterChange }) => {
+const Filters = ({ onChange }) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
@@ -39,8 +39,8 @@ const Filters = ({ onFilterChange }) => {
   }, []);
 
   useEffect(() => {
-    onFilterChange({ category: selectedCategory, tags: selectedTags });
-  }, [selectedCategory, selectedTags, onFilterChange]);
+    onChange({ category: selectedCategory, tags: selectedTags });
+  }, [selectedCategory, selectedTags, onChange]);
 
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
