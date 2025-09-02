@@ -4,6 +4,8 @@ import { deletePost } from '../utils/api';
 import { Link } from 'react-router-dom';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
+import { format } from 'date-fns';
+
 
 const Post = ({ post, onDelete }) => {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -28,13 +30,16 @@ const Post = ({ post, onDelete }) => {
     post.comments = [...post.comments, newComment];
   };
 
+  const formattedDate = format(new Date(post.createdAt), 'yyyy-MM-dd HH:mm:ss');
+
 
   return (
     <div className="post-container">
       <Link to={`/posts/${post.id}`}><h3>{post.title}</h3></Link>
       <p>{post.content}</p>
-      <p>By: {post.author ? post.author.username : 'Unknown Author'}</p> {/* Display author */}
-      <Link to={`/posts/${post.id}`}>View Details</Link> {/* Link to PostDetails */}
+      <p>By: {post.author ? post.author.username : 'Unknown Author'}</p>
+      <p>Created at: {formattedDate}</p> {/* Display creation date */}
+      <Link to={`/posts/${post.id}`}>View Details</Link>
       {post.ownedByCurrentUser && (
         <button onClick={handleDelete} disabled={isDeleting}>
           {isDeleting ? 'Deleting...' : 'Delete'}

@@ -11,12 +11,11 @@ const PostForm = ({ post, onSubmit, onUpdate }) => {
   });
   const [error, setError] = useState(null);
 
-
   useEffect(() => {
     if (post) {
       setFormData({
         ...post,
-        category: post.category || '', // Handle cases where category might be missing
+        category: post.category || '',
         tags: post.tags ? post.tags.join(',') : '',
       });
     }
@@ -28,7 +27,7 @@ const PostForm = ({ post, onSubmit, onUpdate }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Clear any previous errors
+    setError(null);
 
     const updatedPostData = {
       ...formData,

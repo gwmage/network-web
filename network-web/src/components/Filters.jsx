@@ -8,19 +8,34 @@ const Filters = ({ onFilterChange }) => {
   const [availableTags, setAvailableTags] = useState([]);
 
   useEffect(() => {
-    const fetchCategoriesAndTags = async () => {
+    const fetchCategories = async () => {
       try {
-        const categoriesData = await fetch('/api/categories').then(res => res.json());
-        const tagsData = await fetch('/api/tags').then(res => res.json());
-
-        setCategories(categoriesData);
-        setAvailableTags(tagsData);
+        const response = await fetch('/api/categories');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setCategories(data);
       } catch (error) {
-        console.error("Error fetching categories and tags:", error);
+        console.error("Error fetching categories:", error);
       }
     };
 
-    fetchCategoriesAndTags();
+    const fetchTags = async () => {
+      try {
+        const response = await fetch('/api/tags');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setAvailableTags(data);
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    };
+
+    fetchCategories();
+    fetchTags();
   }, []);
 
   useEffect(() => {

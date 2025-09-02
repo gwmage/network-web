@@ -1,66 +1,51 @@
 ```typescript
-import React, { useState, useEffect } from 'react';
-import * as api from '../utils/api';
+import React, { useEffect, useState } from 'react';
 import Comment from './Comment';
 import './CommentList.css';
+import api from '../api';
 
-const CommentList = ({ itemId, onCommentUpdate }) => {
+const CommentList = ({ postId, currentUser, onCommentUpdate }) => {
   const [comments, setComments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const fetchedComments = await api.getComments(itemId);
+        const fetchedComments = await api.getComments(parseInt(postId, 10));
         setComments(fetchedComments);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
       }
     };
 
     fetchComments();
-  }, [itemId, onCommentUpdate]);
-
-  if (loading) {
-    return <p>Loading comments...</p>;
-  }
-
-  if (error) {
-    return <p>Error loading comments: {error.message}</p>;
-  }
+  }, [postId, onCommentUpdate]);
 
   if (!comments || comments.length === 0) {
     return <p>No comments yet.</p>;
   }
 
-  return (
-    <div className="comment-list-container">
-      <h3>Comments</h3>
+  const renderComments = (commentList) => {
+    return (
       <ul className="comment-list">
-        {comments.map((comment) => (
+        {commentList.map((comment) => (
           <li key={comment.id} className="comment-item">
             <Comment
               comment={comment}
-              currentUser={1} // Replace with actual current user ID
-              onCommentDelete={(commentId) => {
-                setComments(comments.filter((c) => c.id !== commentId));
-                if (onCommentUpdate) {
-                  onCommentUpdate();
-                }
-              }}
-              onCommentUpdate={(updatedComment) => {
-                setComments(comments.map((c) => (c.id === updatedComment.id ? updatedComment : c)));
-                if (onCommentUpdate) {
-                  onCommentUpdate();
-                }
-              }}
+              currentUser={currentUser}
+              onCommentUpdate={onCommentUpdate}
             />
+            {/* Render nested comments recursively */}
+            {comment.children && renderComments(comment.children)}
           </li>
         ))}
       </ul>
+    );
+  };
+
+  return (
+    <div className="comment-list-container">
+      <h3>Comments</h3>
+      {renderComments(comments)}
     </div>
   );
 };
