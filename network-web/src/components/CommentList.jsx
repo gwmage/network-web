@@ -44,7 +44,6 @@ const CommentList = ({ postId, currentUser, onCommentUpdate }) => {
 
   return (
     <div className="comment-list-container">
-      <h3>Comments</h3>
       {renderComments(comments)}
     </div>
   );

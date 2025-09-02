@@ -1,6 +1,6 @@
 ```javascript
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, Link, useParams } from 'react-router-dom';
 import ForgotPassword from './components/ForgotPassword';
 import ProfileManagement from './components/ProfileManagement';
 import AppInformation from './components/AppInformation';
@@ -32,11 +32,16 @@ const App = () => {
       <Routes>
         {/* ... other routes ... */}
         <Route path="/community" element={<CommunityBoard />} />
-        <Route path="/community/posts/:postId" element={<PostDetails />} /> {/* Updated path */}
+        <Route path="/community/posts/:postId" element={<PostDetailsWrapper />} /> 
       </Routes>
     </Router>
   );
 };
+
+const PostDetailsWrapper = () => {
+  const { postId } = useParams();
+  return <PostDetails postId={postId} />;
+}
 
 export default App;
 

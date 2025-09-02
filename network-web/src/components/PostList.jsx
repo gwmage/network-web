@@ -19,8 +19,8 @@ const PostList = () => {
       setLoading(true);
       try {
         const data = await api.getPosts(currentPage, postsPerPage, filters);
-        setPosts(data.posts || []);
-        setTotalPosts(data.total || 0);
+        setPosts(data.posts || data.items || []); // Handle both "items" and "posts"
+        setTotalPosts(data.total || data.meta?.totalItems || 0); // Extract total from different data structures
       } catch (err) {
         setError(err);
       } finally {

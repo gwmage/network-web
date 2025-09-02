@@ -29,6 +29,17 @@ const PostForm = ({ post, onSubmit, onUpdate }) => {
     e.preventDefault();
     setError(null);
 
+    if (!formData.title) {
+      setError("Title is required.");
+      return;
+    }
+
+    if (!formData.content) {
+      setError("Content is required.");
+      return;
+    }
+
+
     const updatedPostData = {
       ...formData,
       tags: formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : [],
