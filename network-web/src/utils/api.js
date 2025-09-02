@@ -1,30 +1,101 @@
-// File: network-web/src/utils/api.js
+```typescript
 import axios from 'axios';
 
 const API_BASE_URL = '/api'; // Or your API base URL
 
 // ... (Existing code remains unchanged)
 
-export const submitApplication = async (applicationData) => {
+
+export const getPosts = async (page = 1, limit = 10, filter = '', categories = [], tags = []) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/application`, applicationData);
+    const response = await axios.get(`${API_BASE_URL}/community/posts`, {
+      params: { page, limit, filter, categories, tags },
+    });
     return response.data;
   } catch (error) {
-    console.error('Error submitting application:', error); // Log the full error object for more details
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error('Response data:', error.response.data);
-      console.error('Response status:', error.response.status);
-      throw new Error(`Server responded with error ${error.response.status}: ${error.response.data.message}`); // Include the error message from the response
-    } else if (error.request) {
-      // The request was made but no response was received
-      console.error('No response received from server:', error.request);
-      throw new Error('No response received from server');
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error('Error setting up request:', error.message);
-      throw error; // Re-throw the error to be handled by the caller
-    }
+    console.error('Error fetching posts:', error);
+    throw error;
   }
 };
+
+export const getPost = async (postId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/community/posts/${postId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching post ${postId}:`, error);
+    throw error;
+  }
+};
+
+export const createPost = async (postData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/community/posts`, postData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating post:', error);
+    throw error;
+  }
+};
+
+export const updatePost = async (postId, postData) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/community/posts/${postId}`, postData);
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating post ${postId}:`, error);
+    throw error;
+  }
+};
+
+export const deletePost = async (postId) => {
+  try {
+    await axios.delete(`${API_BASE_URL}/community/posts/${postId}`);
+  } catch (error) {
+    console.error(`Error deleting post ${postId}:`, error);
+    throw error;
+  }
+};
+
+export const createComment = async (postId, commentData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/community/posts/${postId}/comments`, commentData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating comment:', error);
+    throw error;
+  }
+};
+
+export const getComments = async (postId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/community/posts/${postId}/comments`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching comments for post ${postId}:`, error);
+    throw error;
+  }
+};
+
+export const updateComment = async (postId, commentId, commentData) => {
+  try {
+    const response = await axios.patch(`${API_BASE_URL}/community/posts/${postId}/comments/${commentId}`, commentData);
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating comment ${commentId} for post ${postId}:`, error);
+    throw error;
+  }
+};
+
+export const deleteComment = async (postId, commentId) => {
+  try {
+    await axios.delete(`${API_BASE_URL}/community/posts/${postId}/comments/${commentId}`);
+  } catch (error) {
+    console.error(`Error deleting comment ${commentId} for post ${postId}:`, error);
+    throw error;
+  }
+};
+
+// ... (Other functions remain unchanged)
+
+```

@@ -34,14 +34,14 @@ const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) =>
         await updateComment(postId, comment.id, { content });
       } else {
         // Create new comment
-        await createComment({ postId, content, parentCommentId });
+        await createComment(postId, { content, parentCommentId });
       }
       onSubmit();
       setContent('');
       onClose();
     } catch (error) {
       console.error('Error updating/creating comment:', error);
-      setError('Failed to submit comment. Please try again later.');
+      setError('Failed to submit comment. Please try again.');
     } finally {
       setIsUpdating(false);
     }
@@ -52,15 +52,21 @@ const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) =>
       <textarea
         value={content}
         onChange={handleChange}
+        required
         placeholder="Write your comment..."
-        disabled={isUpdating}
-        className="comment-form-textarea"
+        className="comment-textarea"
       />
-      {error && <div className="error-message">{error}</div>}
-      <button type="submit" disabled={isUpdating} className="comment-form-button">
-        {isUpdating ? 'Submitting...' : comment ? 'Update' : 'Submit'}
-      </button>
-      {comment && <button type="button" onClick={onClose} disabled={isUpdating} className="comment-form-button">Cancel</button>}
+      {error && <div className="comment-error">{error}</div>}
+      <div className="comment-buttons">
+        <button type="submit" disabled={isUpdating} className="comment-submit">
+          {comment ? 'Update Comment' : 'Add Comment'}
+        </button>
+        {onClose && (
+          <button type="button" onClick={onClose} disabled={isUpdating} className="comment-cancel">
+            Cancel
+          </button>
+        )}
+      </div>
     </form>
   );
 };
