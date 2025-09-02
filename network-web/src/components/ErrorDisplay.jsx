@@ -1,4 +1,4 @@
-```typescript
+// File: network-web/src/components/ErrorDisplay.jsx
 import React from 'react';
 
 type ErrorDisplayProps = {
@@ -37,5 +37,3 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ error }) => {
 };
 
 export default ErrorDisplay;
-
-```
