@@ -10,6 +10,8 @@ const SearchResults = () => {
   const [searchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const resultsPerPage = 10; // Number of results per page
+  const [totalCount, setTotalCount] = useState(0);
+
 
   useEffect(() => {
     const keyword = searchParams.get('keyword');
@@ -23,6 +25,7 @@ const SearchResults = () => {
         }
         const data = await response.json();
         setResults(data.items);
+        setTotalCount(data.totalCount); // Update totalCount
       } catch (error) {
         setError(error);
       } finally {
@@ -35,6 +38,7 @@ const SearchResults = () => {
     } else {
       setResults([]);
       setLoading(false);
+      setTotalCount(0);
     }
   }, [searchParams, currentPage]);
 
@@ -50,7 +54,7 @@ const SearchResults = () => {
     return <div>No results found.</div>;
   }
 
-  const totalPages = Math.ceil(results.totalCount / resultsPerPage); // Assuming API returns totalCount
+  const totalPages = Math.ceil(totalCount / resultsPerPage);
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const handlePageChange = (pageNumber) => {
@@ -65,7 +69,7 @@ const SearchResults = () => {
           <li key={result.id} className="search-result-item">
             <h3>{result.title}</h3>
             <p>{result.content.substring(0, 100)}...</p>
-            <p>Author: {result.author}</p> {/* Display author */}
+            <p>Author: {result.author}</p>
           </li>
         ))}
       </ul>

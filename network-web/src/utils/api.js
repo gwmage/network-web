@@ -10,82 +10,19 @@ const getAuthToken = () => {
 
 // ... (Existing code remains unchanged)
 
-export const createPost = async (postData) => {
+export const searchPosts = async (searchTerm, searchOption) => {
   try {
-    const token = getAuthToken();
-    const response = await axios.post(`${API_BASE_URL}/community/posts`, postData, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const params = {
+      search: searchTerm,
+      option: searchOption,
+    };
+    const response = await axios.get(`${API_BASE_URL}/board/posts`, { params }); // Or your search endpoint
     return response.data;
   } catch (error) {
-    console.error('Error creating post:', error);
+    console.error('Error searching posts:', error);
     throw error;
   }
 };
 
-export const updatePost = async (postId, postData) => {
-  try {
-    const token = getAuthToken();
-    const response = await axios.put(`${API_BASE_URL}/community/posts/${postId}`, postData, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`Error updating post ${postId}:`, error);
-    throw error;
-  }
-};
-
-export const deletePost = async (postId) => {
-  try {
-    const token = getAuthToken();
-    await axios.delete(`${API_BASE_URL}/community/posts/${postId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-  } catch (error) {
-    console.error(`Error deleting post ${postId}:`, error);
-    throw error;
-  }
-};
-
-export const createComment = async (postId, commentData) => {
-  try {
-    const token = getAuthToken();
-    const response = await axios.post(`${API_BASE_URL}/community/posts/${postId}/comments`, commentData, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error creating comment:', error);
-    throw error;
-  }
-};
-
-export const updateComment = async (postId, commentId, commentData) => {
-  try {
-    const token = getAuthToken();
-    const response = await axios.patch(`${API_BASE_URL}/community/posts/${postId}/comments/${commentId}`, commentData, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`Error updating comment ${commentId} for post ${postId}:`, error);
-    throw error;
-  }
-};
-
-export const deleteComment = async (postId, commentId) => {
-  try {
-    const token = getAuthToken();
-    await axios.delete(`${API_BASE_URL}/community/posts/${postId}/comments/${commentId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-  } catch (error) {
-    console.error(`Error deleting comment ${commentId} for post ${postId}:`, error);
-    throw error;
-  }
-};
-
-// ... (Other functions remain unchanged)
 
 ```
