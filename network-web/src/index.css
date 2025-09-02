@@ -3,70 +3,38 @@
 @media (max-width: 768px) { /* Adjust breakpoint as needed */
     /* ... (existing styles) */
 
-    .community-board-container { /* Add a container for better structure */
+    .community-board-container {
         width: 95%;
         margin: 0 auto;
+        padding: 10px; /* Reduce padding on smaller screens */
     }
 
     .post-list {
         grid-template-columns: 1fr; /* Single column on smaller screens */
+        gap: 10px; /* Reduce gap between posts */
+    }
+
+    .post-item {
+        padding: 15px; /* Reduce padding within post items */
+    }
+
+    .post-title {
+        font-size: 1.1em; /* Slightly smaller title */
+    }
+
+
+    .post-content {
+        -webkit-line-clamp: 2; /* Show up to 2 lines on smaller screens */
     }
 }
 
-/* Readability Improvements */
-/* ... (existing styles) */
+@media (max-width: 480px) { /* Styles for even smaller screens (e.g., mobile) */
+    .post-title {
+        font-size: 1em;
+    }
 
-.community-board-container {  /* Styles for the container */
-    max-width: 1200px; /* Adjust as needed */
-    margin: 20px auto;
-    padding: 20px;
-}
-
-
-.post-list {
-    list-style: none; /* Remove default list styling */
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid layout */
-    gap: 20px;
-}
-
-
-
-.post-item {
-    border: 1px solid #eee;
-    border-radius: 5px;
-    padding: 20px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    transition: transform 0.2s ease-in-out; /* Smooth hover effect */
-    background-color: #fff; /* White background for better contrast */
-}
-
-.post-item:hover {
-    transform: translateY(-5px); /* Lift on hover */
-}
-
-
-.post-title {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-    color: #333; /* Darker title color */
-}
-
-
-.post-meta {
-    font-size: 0.9em;
-    color: #999;
-    margin-bottom: 10px;
-}
-
-.post-content {  /* Style the post content */
-    overflow: hidden; /* Prevent content from overflowing */
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 3; /* Show up to 3 lines */
-    -webkit-box-orient: vertical;
-
+    .post-meta {
+        font-size: 0.8em;
+    }
 }
 ```
