@@ -1,3 +1,4 @@
+// File: network-web/src/utils/api.js
 import axios from 'axios';
 
 const API_BASE_URL = '/api'; // Or your API base URL
@@ -15,7 +16,7 @@ export const submitApplication = async (applicationData) => {
       // that falls out of the range of 2xx
       console.error('Response data:', error.response.data);
       console.error('Response status:', error.response.status);
-      throw new Error(`Server responded with error ${error.response.status}: ${JSON.stringify(error.response.data)}`); // Include response data in error
+      throw new Error(`Server responded with error ${error.response.status}`); // Or handle the error as needed
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
@@ -25,7 +26,7 @@ export const submitApplication = async (applicationData) => {
     } else {
       // Something happened in setting up the request that triggered an Error
       console.error('Error setting up request:', error.message);
-      throw new Error(`Request setup error: ${error.message}`);
+      throw error; // Re-throw the error
     }
   }
 };

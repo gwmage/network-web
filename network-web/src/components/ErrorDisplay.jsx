@@ -25,7 +25,7 @@ const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ error }) => {
   } else if (error instanceof Error) {
     errorMessage = error.message;
   } else if (error && typeof error === 'object' && 'message' in error) {
-    errorMessage = error.message;
+    errorMessage = error.message; 
   }
 
   return (
