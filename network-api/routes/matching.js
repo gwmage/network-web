@@ -1,15 +1,17 @@
 // File: network-api/routes/matching.js
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 
-// ... other route handlers ...
+// ... (import necessary functions like getMatchingStatus, startMatching, etc.)
 
-router.post('/', async (req, res) => {
+router.post('/start', async (req, res) => {
   try {
-    const result = await startMatching(req.body);
+    const { groupId } = req.body;
+    const result = await startMatching(groupId);
     res.json(result);
   } catch (error) {
-    console.error("Error during matching process:", error);
-    res.status(500).json({ statusCode: 500, message: `Error during matching process: ${error.message}`, errorDetails: error }); // Include more error details
+    console.error("Error starting matching:", error); // Log the full error object
+    res.status(500).json({ statusCode: 500, message: `Error during matching process: ${error.message}` });
   }
 });
 
@@ -18,8 +20,8 @@ router.get('/status', async (req, res) => {
     const status = await getMatchingStatus();
     res.json(status);
   } catch (error) {
-    console.error("Error getting matching status:", error);
-    res.status(500).json({ error: 'Failed to get matching status', errorDetails: error }); // Include more error details
+    console.error("Error getting matching status:", error); // Log the full error object
+    res.status(500).json({ error: 'Failed to get matching status' });
   }
 });
 
