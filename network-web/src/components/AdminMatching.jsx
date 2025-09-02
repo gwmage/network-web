@@ -1,58 +1,61 @@
-// File: network-web/src/components/AdminMatching.jsx
+```jsx
 import React, { useState, useEffect } from 'react';
+import MatchingProgress from './MatchingProgress'; // Assuming this component exists
 
 const AdminMatching = () => {
   const [matchingStatus, setMatchingStatus] = useState(null);
-  const [matchingResults, setMatchingResults] = useState([]);
+  const [matchingResults, setMatchingResults] = useState(null);
   const [matchingError, setMatchingError] = useState(null);
   const [triggering, setTriggering] = useState(false);
+
 
   const fetchMatchingStatus = async () => {
     try {
       const response = await fetch('/matching/status');
       if (!response.ok) {
-        const errorData = await response.json(); // Try to parse error as JSON
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || 'Unknown error'}`); // Include error message if available
+        const errorData = await response.json(); // Try to parse JSON error
+        const errorMessage = errorData.message || `Failed to fetch matching status: ${response.status}`; // Use error message from JSON or generic message
+        throw new Error(errorMessage);
       }
       const data = await response.json();
       setMatchingStatus(data);
     } catch (error) {
-      console.error("Error fetching matching status:", error);  // Log the full error object for debugging
       setMatchingError(error.message);
     }
   };
 
   const fetchMatchingResults = async () => {
     try {
-      const response = await fetch('/matching/results'); // Correct endpoint
+      const response = await fetch('/matching/groups'); // Updated endpoint
       if (!response.ok) {
-        const errorData = await response.json(); // Try to get error details
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || 'Unknown error'}`);
+        const errorData = await response.json();
+        const errorMessage = errorData.message || `Failed to fetch matching results: ${response.status}`;
+        throw new Error(errorMessage);
       }
       const data = await response.json();
       setMatchingResults(data);
     } catch (error) {
-      console.error("Error fetching matching results:", error); // Improved error logging
       setMatchingError(error.message);
     }
   };
 
+
   const triggerMatching = async () => {
     try {
-      setTriggering(true);
+      setTriggering(true); // Disable button and indicate processing
       const response = await fetch('/matching', { method: 'POST' });
       if (!response.ok) {
-        const errorData = await response.json(); // Attempt to parse error as JSON
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || 'Unknown error'}`); // Add more context to error message
+        const errorData = await response.json();
+        const errorMessage = errorData.message || `Failed to trigger matching: ${response.status}`;
+        throw new Error(errorMessage);
       }
       // Optionally update matching status immediately or wait for next refresh
       await fetchMatchingStatus();
       await fetchMatchingResults();
     } catch (error) {
-      console.error("Error triggering matching:", error); // Log the full error object
       setMatchingError(error.message);
     } finally {
-      setTriggering(false);
+      setTriggering(false); // Re-enable button
     }
   };
 
@@ -67,9 +70,14 @@ const AdminMatching = () => {
       <button onClick={triggerMatching} disabled={triggering}>
         {triggering ? 'Triggering...' : 'Trigger Matching'}
       </button>
-      {/* ... rest of the component JSX ... */}
+      {matchingError && <div>Error: {matchingError}</div>}
+
+      {matchingStatus && (
+        <MatchingProgress status={matchingStatus} results={matchingResults} />
+      )}
     </div>
   );
 };
 
 export default AdminMatching;
+```
