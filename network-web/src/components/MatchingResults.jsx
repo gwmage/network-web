@@ -9,26 +9,13 @@ const MatchingResults: React.FC = () => {
   const [matchingResults, setMatchingResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [explanations, setExplanations] = useState([]);
 
   useEffect(() => {
     const fetchMatchingResults = async () => {
       try {
-        const groupResponse = await axios.get('/api/matching');
-        const userResponse = await axios.get('/api/users/me');
-        setMatchingResults({ groups: groupResponse.data, user: userResponse.data });
+        const response = await axios.get('/api/matching/results/me'); // Updated endpoint
+        setMatchingResults(response.data);
         toast.success("Matching successful!");
-
-        const explanationsPromises = groupResponse.data.map((group) =>
-          axios.get(`/api/matching/${group.id}/explanation`).catch((err) => {
-            console.error("Error fetching explanation for group:", err);
-            toast.error(`Failed to fetch explanation for group ${group.id}`);
-            return null;
-          })
-        );
-        const explanationsResults = await Promise.all(explanationsPromises);
-        setExplanations(explanationsResults.map(result => result ? result.data : null));
-
       } catch (err) {
         console.error("Error fetching matching results:", err);
         setError(err);
@@ -54,35 +41,29 @@ const MatchingResults: React.FC = () => {
     );
   }
 
-  if (!matchingResults || !matchingResults.groups || !matchingResults.user) {
+  if (!matchingResults || !matchingResults.groups) {
     return <div>No matching results found.</div>;
   }
 
-  const { groups, user } = matchingResults;
+  const { groups } = matchingResults;
 
   return (
     <div>
       <h2>Your Matched Groups</h2>
-      {groups.map((group, index) => (
-        <div key={group.id}>
-          <h3>Group {index + 1} (Matching Score: {group.matchingScore || 'N/A'})</h3>
+      {groups.map((group) => (
+        <div key={group.groupId}>
+          <h3>Group {group.groupId} (Matching Score: {group.matchingScore || 'N/A'})</h3>
           <h4>Members:</h4>
           <ul>
             {group.participants.map((participant) => (
               <li key={participant.userId}>
-                {user.id === participant.userId ? "You" : `User ${participant.userId}`}
+                {participant.name}
               </li>
             ))}
           </ul>
           <h4>Explanation:</h4>
-          {explanations[index] && (
-            <div>
-              <p data-tip={explanations[index]}>{explanations[index].slice(0, 50)}...</p>
-              <ReactTooltip /> {/* Add tooltip component */}
-
-            </div>
-          )}
-          {!explanations[index] && <p>No explanation available.</p>}
+          <p data-tip={group.explanation}>{group.explanation ? group.explanation.slice(0, 50) + "..." : "No explanation available."}</p>
+          <ReactTooltip />
         </div>
       ))}
     </div>
