@@ -4,6 +4,7 @@ import axios from 'axios';
 
 const MatchingResultNotifications = () => {
   const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -13,18 +14,20 @@ const MatchingResultNotifications = () => {
         setNotifications(response.data);
       } catch (error) {
         setError(error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchNotifications();
   }, []);
 
-  if (error) {
-    return <div>Error: {error}</div>;
+  if (loading) {
+    return <div>Loading notifications...</div>;
   }
 
-  if (!notifications) {
-    return <div>Loading...</div>;
+  if (error) {
+    return <div>Error: {error}</div>;
   }
 
   return (
@@ -36,9 +39,7 @@ const MatchingResultNotifications = () => {
         <ul>
           {notifications.map((notification) => (
             <li key={notification.id}>
-              {/* Display notification details */}
-              {notification.message} 
-              {/* Example: Add other details like timestamp, type, etc. */}
+              {notification.message}
             </li>
           ))}
         </ul>

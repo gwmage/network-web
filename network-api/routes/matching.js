@@ -1,28 +1,19 @@
-// File: network-api/routes/matching.js
-const express = require('express');
-const router = express.Router();
+```typescript
+import { Router } from 'express';
+import { matchUsers } from '../controllers/matching';
 
-// ... (import necessary functions like getMatchingStatus, startMatching, etc.)
+const router = Router();
 
-router.post('/start', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
-    const { groupId } = req.body;
-    const result = await startMatching(groupId);
-    res.json(result);
+    const results = await matchUsers();
+    res.json({ results, notification: 'New match available' }); // Added notification flag
   } catch (error) {
-    console.error("Error starting matching:", error); // Log the full error object
-    res.status(500).json({ statusCode: 500, message: `Error during matching process: ${error.message}` });
-  }
-});
-
-router.get('/status', async (req, res) => {
-  try {
-    const status = await getMatchingStatus();
-    res.json(status);
-  } catch (error) {
-    console.error("Error getting matching status:", error); // Log the full error object
-    res.status(500).json({ error: 'Failed to get matching status' });
+    console.error("Error during matching:", error);
+    res.status(500).json({ error: 'Matching failed' });
   }
 });
 
 export default router;
+
+```

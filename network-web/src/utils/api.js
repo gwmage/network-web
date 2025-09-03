@@ -1,49 +1,49 @@
 ```typescript
 import axios from 'axios';
 
-const API_BASE_URL = '/api/board'; // Updated base URL
+const API_BASE_URL = 'http://localhost:3000/api/v1'; // Updated base URL to include /v1
 
-// ... (Existing code remains unchanged)
-
-export const getNotificationPreferences = async () => {
-  try {
-    const response = await axios.get('/api/notifications/preferences');
-    return response.data;
-  } catch (error) {
-    console.error('Error getting notification preferences:', error);
-    throw error;
-  }
-};
+// ... other existing functions
 
 export const saveNotificationPreferences = async (preferences) => {
   try {
-    const response = await axios.put('/api/notifications/preferences', preferences);
+    const response = await axios.put(`${API_BASE_URL}/notifications/preferences`, preferences);
     return response.data;
   } catch (error) {
-    console.error('Error saving notification preferences:', error);
+    console.error("Error saving notification preferences:", error);
     throw error;
   }
 };
 
-export const getNotificationDeliveryStatus = async () => {
+export const fetchMatchingResults = async () => {
   try {
-    const response = await axios.get('/api/v1/notifications/status');
+    const response = await axios.get(`${API_BASE_URL}/matching/results`); // Placeholder endpoint - adjust as needed
     return response.data;
   } catch (error) {
-    console.error('Error getting notification delivery status:', error);
+    console.error("Error fetching matching results:", error);
     throw error;
   }
 };
 
-
-export const getMatchingResultNotifications = async () => {
+export const fetchNotificationStatus = async () => {
   try {
-    const response = await axios.get('/api/v1/notifications/matching'); // Replace with the actual endpoint
+    const response = await axios.get(`${API_BASE_URL}/notifications/status`);
     return response.data;
   } catch (error) {
-    console.error('Error getting matching result notifications:', error);
+    console.error("Error fetching notification status:", error);
     throw error;
   }
 };
+
+export const updateNotificationStatus = async (status) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/notifications/status`, status);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating notification status:", error);
+    throw error;
+  }
+};
+// ... other existing functions
 
 ```

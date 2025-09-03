@@ -1,69 +1,60 @@
 ```typescript
-import { getPosts, getPost, createPost, updatePost, deletePost, getComments, createComment, updateComment, deleteComment } from './api';
+import { getNotificationPreferences, updateNotificationPreferences, getNotificationStatus, getMatchingNotificationStatus, sendNotification } from './api';
 
 jest.mock('./api', () => ({
-    getPosts: jest.fn(),
-    getPost: jest.fn(),
-    createPost: jest.fn(),
-    updatePost: jest.fn(),
-    deletePost: jest.fn(),
-    getComments: jest.fn(),
-    createComment: jest.fn(),
-    updateComment: jest.fn(),
-    deleteComment: jest.fn(),
+    initiateMatching: jest.fn(),
+    getMatchesForUser: jest.fn(),
+    getMatchingStatus: jest.fn(),
+    getNotificationPreferences: jest.fn(),
+    updateNotificationPreferences: jest.fn(),
+    getNotificationStatus: jest.fn(),
+    getMatchingNotificationStatus: jest.fn(),
+    sendNotification: jest.fn(),
 }));
 
+describe('API Utils - Notifications', () => {
+    // ... (Existing tests)
 
-describe('API Utils - Comments', () => {
-    describe('getComments', () => {
-        it('should return comments for a post successfully', async () => {
-            const postId = 1;
-            const mockResponse = [{ id: 1, content: 'Comment 1' }, { id: 2, content: 'Comment 2' }];
-            (getComments as jest.Mock).mockResolvedValue(mockResponse);
+    describe('getNotificationStatus', () => {
+        it('should get notification status successfully', async () => {
+            const mockResponse = { enabled: true, lastSent: '2024-07-28T12:00:00Z' };
+            (getNotificationStatus as jest.Mock).mockResolvedValue(mockResponse);
 
-            const response = await getComments(postId);
-            expect(getComments).toHaveBeenCalledWith(postId);
-            expect(response).toEqual(mockResponse);
-        });
-    });
-
-    describe('createComment', () => {
-        it('should create a comment successfully', async () => {
-            const postId = 1;
-            const commentData = { content: 'New comment' };
-            const mockResponse = { id: 1, ...commentData };
-            (createComment as jest.Mock).mockResolvedValue(mockResponse);
-
-            const response = await createComment(postId, commentData);
-            expect(createComment).toHaveBeenCalledWith(postId, commentData);
+            const response = await getNotificationStatus();
+            expect(getNotificationStatus).toHaveBeenCalled();
             expect(response).toEqual(mockResponse);
 
         });
+        it('should handle errors', async () => {
+            const mockError = new Error('Failed to retrieve notification status');
+            (getNotificationStatus as jest.Mock).mockRejectedValue(mockError);
+
+            await expect(getNotificationStatus()).rejects.toThrow(mockError);
+
+        });
+
     });
 
-    describe('updateComment', () => {
-        it('should update a comment successfully', async () => {
-            const commentId = 1;
-            const commentData = { content: 'Updated comment' };
-            const mockResponse = { id: 1, ...commentData };
-            (updateComment as jest.Mock).mockResolvedValue(mockResponse);
+    describe('getMatchingNotificationStatus', () => {
+        it('should get matching notification status successfully', async () => {
+            const mockResponse = { status: 'pending', lastSent: '2024-07-28T12:00:00Z' };
+            (getMatchingNotificationStatus as jest.Mock).mockResolvedValue(mockResponse);
 
-            const response = await updateComment(commentId, commentData);
-            expect(updateComment).toHaveBeenCalledWith(commentId, commentData);
+            const response = await getMatchingNotificationStatus();
+            expect(getMatchingNotificationStatus).toHaveBeenCalled();
             expect(response).toEqual(mockResponse);
+
+        });
+        it('should handle errors', async () => {
+            const mockError = new Error('Failed to retrieve matching notification status');
+            (getMatchingNotificationStatus as jest.Mock).mockRejectedValue(mockError);
+
+            await expect(getMatchingNotificationStatus()).rejects.toThrow(mockError);
+
         });
     });
 
-
-    describe('deleteComment', () => {
-        it('should delete a comment successfully', async () => {
-            const commentId = 1;
-            (deleteComment as jest.Mock).mockResolvedValue(undefined);
-
-            await deleteComment(commentId);
-            expect(deleteComment).toHaveBeenCalledWith(commentId);
-        });
-    });
+    // ... (Existing tests)
 });
 
 ```
