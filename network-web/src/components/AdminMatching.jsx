@@ -72,6 +72,7 @@ const AdminMatching = () => {
       </button>
       {matchingError && <div>Error: {matchingError}</div>}
 
+      {/* Conditionally render MatchingProgress */}
       {matchingStatus && (
         <MatchingProgress status={matchingStatus} results={matchingResults} />
       )}
@@ -80,4 +81,5 @@ const AdminMatching = () => {
 };
 
 export default AdminMatching;
+
 ```
