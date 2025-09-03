@@ -1,40 +1,73 @@
-// File: network-web/src/components/ReservationManagement.jsx
-import React, { useState } from 'react';
+```typescript
+import React, { useState, useEffect } from 'react';
+import ReservationCancellation from './ReservationCancellation';
 
 const ReservationManagement = () => {
-  // ... other code ...
+  const [reservations, setReservations] = useState([]);
+  const [selectedReservation, setSelectedReservation] = useState(null);
+  const [isCancellationModalOpen, setIsCancellationModalOpen] = useState(false);
 
-  const handleCancelReservation = async () => {
-    try {
-      const response = await fetch(`/reservation/${selectedReservation.id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        // More specific error handling based on the status code
-        if (response.status === 400) {
-          throw new Error(`Bad Request: ${errorData.message}`);
-        } else if (response.status === 404) {
-          throw new Error('Not Found: Reservation not found.');
-        } else {
-          throw new Error(`${response.status}: ${errorData.message || 'Failed to cancel reservation'}`);
+  useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        const response = await fetch('/reservations');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+        const data = await response.json();
+        setReservations(data);
+      } catch (error) {
+        console.error('Error fetching reservations:', error);
+        // Handle error, e.g., display an error message
       }
+    };
 
-      setReservations(reservations.filter((r) => r.id !== selectedReservation.id));
-      setSelectedReservation(null);
-      // Optionally display a success message to the user
-      alert('Reservation cancelled successfully');
-    } catch (error) {
-      console.error("Error cancelling reservation:", error); // Log the full error object
-      // Display an error message to the user
-      alert(`Failed to cancel reservation: ${error.message}`);
-    }
+    fetchReservations();
+  }, []);
+
+  const handleCancelReservation = (reservationId) => {
+    setSelectedReservation(reservations.find(r => r.id === reservationId));
+    setIsCancellationModalOpen(true);
   };
 
 
-  // ... rest of component code
+  const handleCloseCancellationModal = () => {
+    setIsCancellationModalOpen(false);
+    setSelectedReservation(null);
+  };
+
+  const handleConfirmCancellation = () => {
+    setIsCancellationModalOpen(false);
+      setReservations(reservations.filter((r) => r.id !== selectedReservation.id));
+      setSelectedReservation(null);
+  };
+
+
+
+  return (
+    <div>
+      {/* ... other JSX ... */}
+      <h2>My Reservations</h2>
+      <ul>
+        {reservations.map((reservation) => (
+          <li key={reservation.id}>
+            {/* ... reservation details ... */}
+            <button onClick={() => handleCancelReservation(reservation.id)}>Cancel</button>
+          </li>
+        ))}
+      </ul>
+
+      {selectedReservation && isCancellationModalOpen && (
+        <ReservationCancellation
+          reservation={selectedReservation}
+          onClose={handleCloseCancellationModal}
+          onCancel={handleConfirmCancellation}
+        />
+      )}
+    </div>
+  );
 };
 
 export default ReservationManagement;
+
+```

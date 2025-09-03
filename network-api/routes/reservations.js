@@ -6,7 +6,7 @@ import { celebrate, Joi } from 'celebrate';
 const router = Router();
 const reservationsController = new ReservationsController();
 
-// ... other routes
+// ... (Existing routes)
 
 router.delete(
   '/:id',
@@ -15,11 +15,12 @@ router.delete(
       id: Joi.string().required(),
     }),
     body: Joi.object({
-      cancellationReason: Joi.string().optional(),
-    }),
+      reason: Joi.string().allow(''), // Allow optional reason
+    }).unknown(true), // Allow other unknown properties for future extensibility
   }),
   reservationsController.cancel
 );
+
 
 export default router;
 
