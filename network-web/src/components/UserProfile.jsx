@@ -1,27 +1,14 @@
-```typescript
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import NotificationSettings from './NotificationSettings';
-import * as api from '../utils/api'; // Import API functions
+import * as api from '../utils/api';
 
 const UserProfile = () => {
-  const [profile, setProfile] = useState({
-    name: '',
-    bio: '',
-    // ... other profile fields
-  });
-  const [notificationStatus, setNotificationStatus] = useState(null);
-  const [statusLoading, setStatusLoading] = useState(true);
-  const [statusError, setStatusError] = useState(null);
-
-
-  useEffect(() => {
-    // Fetch user profile data
-  }, []);
+  // ... (existing code)
 
   useEffect(() => {
     const fetchNotificationStatus = async () => {
       try {
+        setStatusLoading(true);
+        setStatusError(null);
         const status = await api.getNotificationDeliveryStatus();
         setNotificationStatus(status);
       } catch (error) {
@@ -35,29 +22,17 @@ const UserProfile = () => {
     fetchNotificationStatus();
   }, []);
 
-  const handleChange = (e) => {
-    setProfile({ ...profile, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Save profile data
-  };
+  // ... (rest of the code)
 
   return (
     <div>
-      <h2>User Profile</h2>
-      <form onSubmit={handleSubmit}>
-        {/* ... existing form elements */}
-      </form>
-
-      <NotificationSettings />
+      {/* ... other JSX */}
 
       <h3>Notification Status</h3>
       {statusLoading ? (
         <p>Loading notification status...</p>
       ) : statusError ? (
-        <p>Error: {statusError}</p>
+        <p className="error-message">Error: {statusError}</p>
       ) : (
         <pre>{JSON.stringify(notificationStatus, null, 2)}</pre>
       )}
@@ -66,4 +41,3 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
-```

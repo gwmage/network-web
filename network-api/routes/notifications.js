@@ -1,24 +1,59 @@
-```typescript
-import { getNotificationStatus } from '../controllers/notifications'; // Import the controller function
+import { Router } from 'express';
+import { getNotificationStatus } from '../controllers/notifications';
+import authMiddleware from '../middleware/auth'; // Import auth middleware
+
+const router = Router();
 
 // ... other routes
 
-// GET /users/{userId}/notifications/status - Get user's notification status
-router.get('/users/:userId/notifications/status', authMiddleware, async (req: Request, res: Response) => {
+router.get('/users/:userId/notifications/status', authMiddleware, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId, 10);
+      if (isNaN(userId)) {
+        return res.status(400).json({ error: 'Invalid userId' });
+      }
+  
+      const status = await getNotificationStatus(userId);
+      res.json(status);
+    } catch (error) {
+      console.error('Error fetching notification status:', error);
+      res.status(500).json({ error: 'Failed to fetch notification status' });
+    }
+  });
+
+// PUT /users/:userId/notifications/preferences - Update notification preferences
+router.put('/users/:userId/notifications/preferences', authMiddleware, async (req, res) => {
   try {
-    const userId = parseInt(req.params.userId, 10); // Extract userId from the URL parameters
+    const userId = parseInt(req.params.userId, 10);
     if (isNaN(userId)) {
       return res.status(400).json({ error: 'Invalid userId' });
     }
 
-    const status = await getNotificationStatus(userId); // Call the controller function
-    res.json(status); 
+    // ... logic to update preferences in database ...
+    // Example: Update preferences based on req.body
+
+    res.json({ message: 'Notification preferences updated successfully' });
   } catch (error) {
-    console.error('Error fetching notification status:', error);
-    res.status(500).json({ error: 'Failed to fetch notification status' }); // Generic error message for now
+    console.error('Error updating notification preferences:', error);
+    res.status(500).json({ error: 'Failed to update notification preferences' });
   }
 });
 
-export default router;
+// GET /users/:userId/notifications - Get past notifications
+router.get('/users/:userId/notifications', authMiddleware, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId, 10);
+      if (isNaN(userId)) {
+        return res.status(400).json({ error: 'Invalid userId' });
+      }
+  
+      // ... logic to retrieve notifications from the database ...
+      const notifications = []; // Replace with actual data from the database
+      res.json(notifications);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      res.status(500).json({ error: 'Failed to fetch notifications' });
+    }
+  });
 
-```
+export default router;
