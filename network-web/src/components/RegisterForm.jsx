@@ -71,6 +71,24 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({}); // Clear previous errors
+    setGeneralError('');
+
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$/i;
+    const passwordRegex = /^.{6,}$/;
+    const nameRegex = /^.+$/;
+    const phoneRegex = /^.+$/;
+
+    const newErrors = {};
+    if (!emailRegex.test(formData.email)) newErrors.email = 'Invalid email';
+    if (!passwordRegex.test(formData.password)) newErrors.password = 'Password must be at least 6 characters';
+    if (!nameRegex.test(formData.name)) newErrors.name = 'Name is required';
+    if (!phoneRegex.test(formData.phoneNumber)) newErrors.phoneNumber = 'Phone number is required';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
     try {
       const response = await registerUser(formData);
@@ -79,13 +97,17 @@ const RegisterForm = () => {
     } catch (error) {
       console.error('Registration failed:', error);
       if (error.response) {
-        // Client received an error response (e.g., 4xx or 5xx)
-        const errorData = error.response.data;
-        setErrors(errorData.errors || {}); // Set field-specific errors if available
-        setGeneralError(errorData.message || 'Registration failed');
+        const { status, data } = error.response;
+        if (status >= 400 && status < 500) {
+          setErrors(data.errors || {});
+          setGeneralError(data.message || 'Registration failed');
+        } else {
+          setGeneralError('Server error');
+        }
+      } else if (error.request) {
+        setGeneralError('Network error');
       } else {
-        // Something happened in setting up the request that triggered an Error
-        setGeneralError('An error occurred during registration.');
+        setGeneralError('An error occurred');
       }
     }
   };
@@ -107,6 +129,7 @@ const RegisterForm = () => {
       <Label htmlFor="phoneNumber">Phone Number:</Label>
       <Input type="tel" id="phoneNumber" name="phoneNumber" onChange={handleChange} value={formData.phoneNumber} placeholder="Enter your phone number" required />
       {errors.phoneNumber && <ErrorText>{errors.phoneNumber}</ErrorText>}
+
       {generalError && <ErrorText>{generalError}</ErrorText>}
 
       <Button type="submit" onClick={handleSubmit}>Register</Button>
