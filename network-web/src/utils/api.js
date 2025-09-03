@@ -62,4 +62,14 @@ export const triggerMatching = async () => {
     console.error('Error triggering matching:', error);
     throw error;
   }
+};
+
+export const createApplication = async (applicationData) => {
+  try {
+    const response = await axios.post('/applications', applicationData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating application:', error);
+    throw error; // Re-throw the error for handling in the component
+  }
 };"
