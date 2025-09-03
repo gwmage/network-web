@@ -1,0 +1,28 @@
+"## `/register` Endpoint
+
+**Method:** POST
+
+**Description:** Registers a new user.
+
+**Request Body Parameters:**
+
+| Parameter | Type | Required | Description |
+|---|---|---|---| 
+| `email` | string | Yes | User's email address. Must be a valid email format. |
+| `password` | string | Yes | User's password. Must be at least 6 characters long. |
+| `name` | string | Yes | User's full name. |
+| `phoneNumber` | string | Yes | User's phone number. |
+
+**Success Response:**
+
+* **Status Code:** 201 Created
+* **Response Body:** `{ "message": "User registered successfully" }`
+
+**Error Responses:**
+
+* **Status Code:** 400 Bad Request
+* **Response Body:** `{ "errors": { "fieldName": "errorMessage", ... } }`  (If validation fails, returns an object with field-specific error messages)
+* **Status Code:** 409 Conflict
+* **Response Body:** `{ "message": "Email already exists" }` (If a user with the given email already exists)
+* **Status Code:** 500 Internal Server Error
+* **Response Body:** `{ "message": "Server error" }` (For any other server-side errors)"

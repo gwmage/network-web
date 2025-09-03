@@ -1,31 +1,27 @@
-```typescript
-import axios from 'axios';
+"import axios from 'axios';
 
-const API_BASE_URL = '/api'; // Or your API base URL
+const API_BASE_URL = '/api';
 
 // ... (Existing code remains unchanged)
 
-export const cancelReservation = async (reservationId, cancellationReason) => {
+export const registerUser = async (userData) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/reservations/${reservationId}`, {
-      data: { reason: cancellationReason } // Send cancellation reason in request body
-    });
+    const response = await axios.post(`${API_BASE_URL}/register`, userData);
     return response.data;
   } catch (error) {
-    console.error('Error cancelling reservation:', error);
+    console.error('Error registering user:', error);
     if (error.response) {
-      console.error('Data:', error.response.data);
-      console.error('Status:', error.response.status);
-      console.error('Headers:', error.response.headers);
-      throw new Error(`API Error: ${error.response.status} - ${error.response.data.message || 'Failed to cancel reservation'}`);
+      throw error; // Re-throw the error to be handled by the caller
     } else if (error.request) {
-      console.error('Request:', error.request);
       throw new Error('Network Error: Failed to connect to the server');
     } else {
-      console.error('Error:', error.message);
       throw new Error(`Request Error: ${error.message}`);
     }
   }
+};
+
+export const cancelReservation = async (reservationId, cancellationReason) => {
+  // ... (Existing code remains unchanged)
 };
 
 export const getCancellationRestrictions = async () => {
@@ -34,5 +30,4 @@ export const getCancellationRestrictions = async () => {
 
 export const runMatchingWithCriteria = async (matchingCriteria) => {
   // ... (Existing code remains unchanged)
-};
-```
+};"
