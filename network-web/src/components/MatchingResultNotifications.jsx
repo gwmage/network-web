@@ -1,42 +1,51 @@
-// File: network-web/src/components/MatchingResultNotifications.jsx
+```typescript
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const MatchingResultNotifications = () => {
-  const [notificationStatus, setNotificationStatus] = useState(null);
+  const [notifications, setNotifications] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchNotificationStatus = async () => {
+    const fetchNotifications = async () => {
       try {
-        const response = await fetch('/api/notifications/status'); // Ensure correct API endpoint
-        if (!response.ok) {
-          const errorData = await response.json(); // Get error details from the response
-          throw new Error(errorData.message || 'Failed to fetch notification status'); // Throw error with message from API
-        }
-        const data = await response.json();
-        setNotificationStatus(data.status);
-      } catch (err) {
-        console.error("Error fetching notification status:", JSON.stringify(err, null, 2)); // Log the full error object
-        setError("Failed to fetch notification status. Please try again later.");
+        const response = await axios.get('/api/matching/notifications'); // Replace with your actual API endpoint
+        setNotifications(response.data);
+      } catch (error) {
+        setError(error.message);
       }
     };
 
-    fetchNotificationStatus();
+    fetchNotifications();
   }, []);
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  if (notificationStatus === null) {
-    return <div>Loading notification status...</div>;
+  if (!notifications) {
+    return <div>Loading...</div>;
   }
 
   return (
     <div>
-      Notification Status: {notificationStatus}
+      <h3>Matching Result Notifications</h3>
+      {notifications.length === 0 ? (
+        <p>No notifications yet.</p>
+      ) : (
+        <ul>
+          {notifications.map((notification) => (
+            <li key={notification.id}>
+              {/* Display notification details */}
+              {notification.message} 
+              {/* Example: Add other details like timestamp, type, etc. */}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
 
 export default MatchingResultNotifications;
+```
