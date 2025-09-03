@@ -1,87 +1,101 @@
 ```typescript
 import React, { useState } from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import RegisterForm from './RegisterForm';
-import { registerUser } from '../services/AuthService';
-import ErrorDisplay from './ErrorDisplay'; // Import the ErrorDisplay component
+import styled from 'styled-components';
 
-jest.mock('../services/AuthService');
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 90%;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow */
 
-describe('RegisterForm', () => {
-  it('renders the form elements', () => {
-    render(<RegisterForm />);
-    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
-    // Add more expectations for other form fields
+  @media (max-width: 768px) {
+    width: 95%; /* Adjust width for smaller screens */
+  }
+`;
+
+const Input = styled.input`
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 5px; /* Add margin */
+`;
+
+const Label = styled.label`
+  margin-bottom: 5px; /* Add margin */
+`;
+
+const Button = styled.button`
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth transition */
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+const ErrorText = styled.p`
+    color: red;
+    font-size: small;
+    margin-top: -5px; /* Adjust position */
+    margin-bottom: 10px; /* Add some bottom margin */
+`;
+
+
+const RegisterForm = ({ onSubmit }) => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    name: '',
+    phoneNumber: '',
   });
 
-  it('validates email format', async () => {
-    render(<RegisterForm />);
-    const emailInput = screen.getByLabelText(/Email/i);
-    fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
-    fireEvent.blur(emailInput); // Trigger validation
-    // Expect an error message to be displayed
-     // You might need to adjust the selector based on your implementation
-    expect(screen.getByText(/Invalid email format/i)).toBeVisible();
+    const [errors, setErrors] = useState({});
 
 
-  });
-
-  it('displays error messages from API', async () => {
-    const errorMessage = 'Email already exists';
-    (registerUser as jest.Mock).mockRejectedValue({
-      response: { data: { message: errorMessage } },
-    });
-
-    render(<RegisterForm />);
-    fireEvent.submit(screen.getByRole('form'));
-
-    expect(await screen.findByText(errorMessage)).toBeVisible();
-  });
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: '' }); // Clear error on input change
+  };
 
 
-  it('handles successful registration', async () => {
-    const mockNavigate = jest.fn();
-    jest.mock('react-router-dom', () => ({
-       ...jest.requireActual('react-router-dom'),
-      useNavigate: () => mockNavigate,
-    }));
+  // ... (rest of the component code)
+
+  return (
+    <FormContainer>
+      <Label htmlFor="email">Email:</Label>
+      <Input type="email" id="email" name="email" onChange={handleChange} value={formData.email} />
+      {errors.email && <ErrorText>{errors.email}</ErrorText>}
+
+      <Label htmlFor="password">Password:</Label>
+      <Input type="password" id="password" name="password" onChange={handleChange} value={formData.password} />
+      {errors.password && <ErrorText>{errors.password}</ErrorText>}
 
 
-    (registerUser as jest.Mock).mockResolvedValue({});
-    render(<RegisterForm />);
+      <Label htmlFor="name">Name:</Label>
+      <Input type="text" id="name" name="name" onChange={handleChange} value={formData.name} />
+      {errors.name && <ErrorText>{errors.name}</ErrorText>}
 
-    fireEvent.submit(screen.getByRole('form'));
-    // Add assertions, e.g., check if navigate was called with the correct path
-
-    expect(mockNavigate).toHaveBeenCalledWith('/login');
-  });
-
+      <Label htmlFor="phoneNumber">Phone Number:</Label>
+      <Input type="tel" id="phoneNumber" name="phoneNumber" onChange={handleChange} value={formData.phoneNumber} />
+      {errors.phoneNumber && <ErrorText>{errors.phoneNumber}</ErrorText>}
 
 
-  it('validates required fields', async () => {
-    render(<RegisterForm />);
+      <Button type="submit">Register</Button>
+    </FormContainer>
+  );
+};
 
-    fireEvent.submit(screen.getByRole('form'));
-
-
-
-     // You might need to adjust the selector based on your implementation
-    expect(screen.getByText(/Email is required/i)).toBeVisible();
-    expect(screen.getByText(/Password is required/i)).toBeVisible();
-    // Check for other required field error messages
-
-  });
-
-
-  it('handles unexpected errors', async () => {
-    (registerUser as jest.Mock).mockRejectedValue(new Error('Unexpected error'));
-    render(<RegisterForm />);
-    fireEvent.submit(screen.getByRole('form'));
-    expect(await screen.findByText(/An unexpected error occurred during registration./i)).toBeVisible();
-  });
-
-});
+export default RegisterForm;
 
 ```
