@@ -1,34 +1,46 @@
 ```css
-/* Notification styles */
-.unread-badge {
-  background-color: #dc3545; /* Red background for unread badge */
+/* Registration Form Styles */
+.registration-form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 20px auto; /* Center the form */
+  max-width: 500px; /* Set a maximum width */
+}
+
+.registration-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.registration-form input,
+.registration-form button {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.registration-form button {
+  background-color: #007bff;
   color: white;
-  padding: 2px 6px;
-  border-radius: 50%;
-  font-size: 12px;
-  margin-left: 5px;
-  vertical-align: middle;
+  border: none;
+  cursor: pointer;
 }
 
-.unread {
-  font-weight: bold;
-  background-color: #f0f0f5; /* Light gray background for unread notifications */
-  padding: 10px;
-  margin-bottom: 5px;
-  border-radius: 5px;
-  cursor: pointer; /* Indicate clickable */
+.registration-form .error-message {
+  color: red;
+  margin-bottom: 10px;
 }
 
-.read {
-  background-color: #ffffff; /* White background for read notifications */
-  padding: 10px;
-  margin-bottom: 5px;
-  border-radius: 5px;
-  cursor: pointer; /* Indicate clickable */
-}
-
-.read:hover, .unread:hover {
-  background-color: #e2e6ea; /* Slightly darker background on hover */
+/* Responsive Design */
+@media (max-width: 768px) {
+  .registration-form {
+    width: 90%; /* Adjust width on smaller screens */
+  }
 }
 
 ```
