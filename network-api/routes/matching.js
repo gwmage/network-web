@@ -1,7 +1,5 @@
-```typescript
 import { Router } from 'express';
-import { matchUsers } from '../controllers/matching';
-import { getMatchingStatus } from '../controllers/matching'; // Import the status function
+import { matchUsers, getMatchingStatus, getMatchingResults } from '../controllers/matching'; // Import getMatchingResults
 
 const router = Router();
 
@@ -25,5 +23,15 @@ router.get('/status', async (req, res) => {
   }
 });
 
+// GET /matching/results - Get matching results
+router.get('/results', async (req, res) => {
+  try {
+    const results = await getMatchingResults();
+    res.json(results);
+  } catch (error) {
+    console.error("Error getting matching results:", error);
+    res.status(500).json({ error: 'Failed to get matching results' });
+  }
+});
+
 export default router;
-```
