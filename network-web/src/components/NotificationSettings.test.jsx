@@ -81,7 +81,7 @@ describe('NotificationSettings', () => {
     });
     expect(await screen.findByLabelText('Push')).toBeChecked();
     expect(await screen.findByLabelText('Email')).not.toBeChecked();
-    expect(await screen.findByLabelText('None')).not.toBeChecked(); // Ensure None is not checked
+    expect(await screen.findByLabelText('None')).not.toBeChecked();
   });
 
   it('updates notifications enabled state correctly', async () => {
@@ -107,6 +107,18 @@ describe('NotificationSettings', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: /Save Settings/i }));
     expect(api.updateNotificationPreferences).toHaveBeenCalledWith({ email: true, push: false });
-  })
+  });
+
+  it('retrieves and displays saved settings', async () => {
+    const savedSettings = { email: true, push: true };
+    api.getNotificationPreferences.mockResolvedValue(savedSettings);
+
+    render(<NotificationSettings />);
+
+    expect(await screen.findByLabelText('Email')).toBeChecked();
+    expect(await screen.findByLabelText('Push')).toBeChecked();
+    expect(await screen.findByLabelText('None')).not.toBeChecked();
+  });
 });
+
 ```
