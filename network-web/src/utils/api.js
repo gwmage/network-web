@@ -1,8 +1,18 @@
 "import axios from 'axios';
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = '/auth'; // Updated base URL
 
-// ... (Existing code remains unchanged)
+// ... (Existing code)
+
+export const loginUser = async (credentials) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/login`, credentials);
+    return response.data;
+  } catch (error) {
+    console.error('Error logging in user:', error);
+    throw error; // Re-throw the error to be handled by the caller
+  }
+};
 
 export const registerUser = async (userData) => {
   try {
