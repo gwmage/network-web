@@ -1,5 +1,4 @@
-```typescript
-import React, { useState } from 'react';
+"import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 const LoginForm = () => {
@@ -7,7 +6,6 @@ const LoginForm = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState('');
-
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,7 +19,7 @@ const LoginForm = () => {
     setGeneralError('');
 
     try {
-      const response = await fetch('/auth/login', { // Or '/auth/login' depending on your backend setup
+      const response = await fetch('/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,31 +28,22 @@ const LoginForm = () => {
       });
 
       if (response.ok) {
-        // Successful login
-        navigate('/'); // Redirect to main page
+        navigate('/');
       } else {
-        // Handle login errors
         const errorData = await response.json();
 
-
         if (response.status === 401) {
-          // Display user-friendly error message
           setGeneralError(errorData.message || 'Invalid credentials');
         } else {
-           // Generic error handling
-           console.error('Login failed:', errorData);
-           setGeneralError('An error occurred during login.');
+          console.error('Login failed:', errorData);
+          setGeneralError('An error occurred during login.');
         }
-
-
       }
     } catch (error) {
       console.error('An error occurred:', error);
       setGeneralError('An error occurred during login.');
     }
   };
-
-
 
   return (
     <form onSubmit={handleSubmit}>
@@ -74,6 +63,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
-
-```
+export default LoginForm;"

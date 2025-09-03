@@ -1,23 +1,18 @@
-```javascript
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import RegisterForm from './components/RegisterForm';
-import MatchingForm from './components/MatchingForm'; // Import MatchingForm
+"import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm'; // Import the RegisterForm
 
-// ... other imports
-
-function App() {
+const App = () => {
   return (
     <Router>
       <Routes>
-        {/* ... other routes */}
+        <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
-        <Route path="/matching" element={<MatchingForm />} /> {/* Add route for MatchingForm */}
+        {/* Other routes */}
       </Routes>
     </Router>
   );
-}
+};
 
-export default App;
-
-```
+export default App;"
