@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Comment from './Comment';
 import './CommentList.css';
-import api from '../api';
+import * as api from '../utils/api'; // Use * to import all exported members
 
 const CommentList = ({ postId, currentUser, onCommentUpdate }) => {
   const [comments, setComments] = useState([]);
@@ -10,7 +10,7 @@ const CommentList = ({ postId, currentUser, onCommentUpdate }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const fetchedComments = await api.getComments(parseInt(postId, 10));
+        const fetchedComments = await api.getComments(postId);
         setComments(fetchedComments);
       } catch (error) {
         console.error("Error fetching comments:", error);
@@ -32,6 +32,12 @@ const CommentList = ({ postId, currentUser, onCommentUpdate }) => {
             <Comment
               comment={comment}
               currentUser={currentUser}
+              onCommentDelete={(commentId) => {
+                setComments(comments.filter((c) => c.id !== commentId));
+                if (onCommentUpdate) {
+                  onCommentUpdate();
+                }
+              }}
               onCommentUpdate={onCommentUpdate}
             />
             {/* Render nested comments recursively */}

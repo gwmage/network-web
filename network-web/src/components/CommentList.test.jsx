@@ -36,7 +36,6 @@ describe('CommentList', () => {
   it('renders the comment creation date', () => {
     render(<CommentList comments={mockComments} isLoading={false} error={null} />);
     mockComments.forEach((comment) => {
-      // Adjust date format as needed
       const date = new Date(comment.createdAt);
       expect(screen.getByText(date.toLocaleDateString())).toBeInTheDocument();
       expect(screen.getByText(date.toLocaleTimeString())).toBeInTheDocument();
@@ -50,14 +49,12 @@ describe('CommentList', () => {
 
   it('handles empty comments array', () => {
     render(<CommentList comments={[]} isLoading={false} error={null} />);
-    // Check for a message or placeholder, for example
     expect(screen.getByText('No comments yet')).toBeInTheDocument();
   });
 
   it('displays loading indicator when isLoading is true', () => {
     render(<CommentList comments={[]} isLoading={true} error={null} />);
-    // Check for loading indicator, e.g.,
-    expect(screen.getByText('Loading comments...')).toBeInTheDocument(); // Or your specific loading indicator
+    expect(screen.getByText('Loading comments...')).toBeInTheDocument(); 
   });
 
   it('displays error message when error is present', () => {

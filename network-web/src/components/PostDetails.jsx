@@ -2,96 +2,112 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import * as api from '../utils/api';
-import CommentList from './CommentList';
+import Comment from './Comment';
 import CommentForm from './CommentForm';
-import { format } from 'date-fns';
-import './PostDetails.css';
 
 const PostDetails = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null); // Add currentUser state
-  const [formattedDate, setFormattedDate] = useState('');
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentUser, setCurrentUser] = useState(1); // Replace with actual user ID retrieval
 
   useEffect(() => {
-    const fetchPost = async () => {
+    const fetchPostDetails = async () => {
       try {
-        const fetchedPost = await api.getPost(parseInt(postId, 10));
-        setPost(fetchedPost);
-        setFormattedDate(format(new Date(fetchedPost.createdAt), 'yyyy-MM-dd HH:mm:ss'));
+        const data = await api.getPost(postId);
+        setPost(data);
+        setLoading(false);
       } catch (error) {
-        console.error('Error fetching post:', error);
-        // Handle error, e.g., display an error message or redirect
+        setError(error);
+        setLoading(false);
       }
     };
 
-    const fetchCurrentUser = async () => {
-      try {
-        const user = await api.getCurrentUser(); // Implement getCurrentUser in api.ts
-        setCurrentUser(user);
-      } catch (error) {
-        console.error('Error fetching current user:', error);
-      }
-    }
-
-    fetchPost();
-    fetchCurrentUser();
+    fetchPostDetails();
   }, [postId]);
 
   const handleCommentCreate = async (newComment) => {
     try {
-      await api.createComment(parseInt(postId, 10), newComment);
-      // Update the post object with the new comment
+      const createdComment = await api.createComment({ ...newComment, postId: parseInt(postId, 10), itemId: postId.toString() });
       setPost((prevPost) => ({
         ...prevPost,
-        comments: [...(prevPost?.comments || []), newComment]
-      }))
+        comments: [...prevPost.comments, createdComment],
+      }));
     } catch (error) {
-      console.log('Error creating comment', error)
+      console.error("Error creating comment:", error);
     }
-  }
+  };
 
   const handleCommentUpdate = async (updatedComment) => {
     try {
-      const response = await api.updateComment(parseInt(postId, 10), updatedComment.id, updatedComment);
-
-      setPost(prevPost => {
-        const updatedComments = prevPost.comments.map(comment => {
-          if (comment.id === updatedComment.id) {
-            return updatedComment;
-          }
-          return comment;
-        });
-        return { ...prevPost, comments: updatedComments };
-      });
+      await api.updateComment(parseInt(postId, 10), updatedComment.id, updatedComment);
+      setPost((prevPost) => ({
+        ...prevPost,
+        comments: prevPost.comments.map((comment) =>
+          comment.id === updatedComment.id ? updatedComment : comment
+        ),
+      }));
     } catch (error) {
-      console.log('Error updating comment', error);
+      console.error("Error updating comment:", error);
     }
-  }
+  };
 
   const handleCommentDelete = async (commentId) => {
     try {
-      await api.deleteComment(parseInt(postId, 10), commentId)
-      setPost(prevPost => ({
+      await api.deleteComment(parseInt(postId, 10), commentId);
+      setPost((prevPost) => ({
         ...prevPost,
-        comments: prevPost.comments.filter(comment => comment.id !== commentId)
+        comments: prevPost.comments.filter((comment) => comment.id !== commentId),
       }));
     } catch (error) {
-      console.log('Error deleting comment', error);
+      console.error("Error deleting comment:", error);
     }
+  };
+
+  if (loading) {
+    return <div>Loading post details...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading post details: {error.message}</div>;
   }
 
   if (!post) {
-    return <div>Loading post...</div>;
+    return <div>Post not found.</div>;
   }
 
-
   return (
-    // ... (rest of the code remains unchanged)
+    <div>
+      <h2>{post.title}</h2>
+      <p>{post.content}</p>
+
+      <CommentForm onSubmit={handleCommentCreate} postId={parseInt(postId, 10)} />
+
+      <h3>Comments</h3>
+      {post.comments && post.comments.length > 0 ? (
+        <ul>
+          {post.comments.map((comment) => (
+            <li key={comment.id}>
+              <Comment
+                comment={comment}
+                currentUser={currentUser}
+                onCommentUpdate={handleCommentUpdate}
+                onCommentDelete={handleCommentDelete}
+                postId={parseInt(postId, 10)}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No comments yet.</p>
+      )}
+      <button onClick={() => navigate(-1)}>Back to Post List</button>
+    </div>
   );
 };
 
 export default PostDetails;
+
 ```
