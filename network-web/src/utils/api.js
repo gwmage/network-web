@@ -5,29 +5,11 @@ const API_BASE_URL = '/auth'; // Updated base URL
 // ... (Existing code)
 
 export const loginUser = async (credentials) => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/login`, credentials);
-    return response.data;
-  } catch (error) {
-    console.error('Error logging in user:', error);
-    throw error; // Re-throw the error to be handled by the caller
-  }
+  // ... (Existing code)
 };
 
 export const registerUser = async (userData) => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/register`, userData);
-    return response.data;
-  } catch (error) {
-    console.error('Error registering user:', error);
-    if (error.response) {
-      throw error; // Re-throw the error to be handled by the caller
-    } else if (error.request) {
-      throw new Error('Network Error: Failed to connect to the server');
-    } else {
-      throw new Error(`Request Error: ${error.message}`);
-    }
-  }
+  // ... (Existing code)
 };
 
 export const cancelReservation = async (reservationId, cancellationReason) => {
@@ -40,4 +22,44 @@ export const getCancellationRestrictions = async () => {
 
 export const runMatchingWithCriteria = async (matchingCriteria) => {
   // ... (Existing code remains unchanged)
+};
+
+export const getMatchingStatus = async () => {
+  try {
+    const response = await axios.get('/matching/status');
+    return response.data;
+  } catch (error) {
+    console.error('Error getting matching status:', error);
+    throw error;
+  }
+};
+
+export const getMatchingResults = async () => {
+  try {
+    const response = await axios.get('/matching/groups'); // Or /matching/results
+    return response.data;
+  } catch (error) {
+    console.error('Error getting matching results:', error);
+    throw error;
+  }
+};
+
+export const getMatchingExplanations = async () => {
+  try {
+    const response = await axios.get('/matching/explanations');
+    return response.data;
+  } catch (error) {
+    console.error('Error getting matching explanations:', error);
+    throw error;
+  }
+};
+
+export const triggerMatching = async () => {
+  try {
+    const response = await axios.post('/matching');
+    return response.data;
+  } catch (error) {
+    console.error('Error triggering matching:', error);
+    throw error;
+  }
 };"

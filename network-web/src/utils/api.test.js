@@ -1,60 +1,47 @@
-```typescript
-import { getNotificationPreferences, updateNotificationPreferences, getNotificationStatus, getMatchingNotificationStatus, sendNotification } from './api';
+"import axios from 'axios';
+import { getMatchingStatus, getMatchingResults, getMatchingExplanations, triggerMatching } from './api';
+jest.mock('axios');
 
-jest.mock('./api', () => ({
-    initiateMatching: jest.fn(),
-    getMatchesForUser: jest.fn(),
-    getMatchingStatus: jest.fn(),
-    getNotificationPreferences: jest.fn(),
-    updateNotificationPreferences: jest.fn(),
-    getNotificationStatus: jest.fn(),
-    getMatchingNotificationStatus: jest.fn(),
-    sendNotification: jest.fn(),
-}));
+describe('API functions', () => {
+  it('getMatchingStatus fetches status successfully', async () => {
+    const mockStatus = { state: 'completed' };
+    axios.get.mockResolvedValueOnce({ data: mockStatus });
+    const status = await getMatchingStatus();
+    expect(status).toEqual(mockStatus);
+    expect(axios.get).toHaveBeenCalledWith('/matching/status');
+  });
 
-describe('API Utils - Notifications', () => {
-    // ... (Existing tests)
+  it('getMatchingResults fetches results successfully', async () => {
+    const mockResults = [{ users: [] }];
+    axios.get.mockResolvedValueOnce({ data: mockResults });
+    const results = await getMatchingResults();
+    expect(results).toEqual(mockResults);
+    expect(axios.get).toHaveBeenCalledWith('/matching/groups');
+  });
 
-    describe('getNotificationStatus', () => {
-        it('should get notification status successfully', async () => {
-            const mockResponse = { enabled: true, lastSent: '2024-07-28T12:00:00Z' };
-            (getNotificationStatus as jest.Mock).mockResolvedValue(mockResponse);
+  it('getMatchingExplanations fetches explanations successfully', async () => {
+    const mockExplanations = ['Explanation 1'];
+    axios.get.mockResolvedValueOnce({ data: mockExplanations });
+    const explanations = await getMatchingExplanations();
+    expect(explanations).toEqual(mockExplanations);
+    expect(axios.get).toHaveBeenCalledWith('/matching/explanations');
+  });
 
-            const response = await getNotificationStatus();
-            expect(getNotificationStatus).toHaveBeenCalled();
-            expect(response).toEqual(mockResponse);
+  it('triggerMatching triggers matching successfully', async () => {
+    const mockResponse = { message: 'Matching triggered' };
+    axios.post.mockResolvedValueOnce({ data: mockResponse });
+    const response = await triggerMatching();
+    expect(response).toEqual(mockResponse);
+    expect(axios.post).toHaveBeenCalledWith('/matching');
+  });
 
-        });
-        it('should handle errors', async () => {
-            const mockError = new Error('Failed to retrieve notification status');
-            (getNotificationStatus as jest.Mock).mockRejectedValue(mockError);
-
-            await expect(getNotificationStatus()).rejects.toThrow(mockError);
-
-        });
-
-    });
-
-    describe('getMatchingNotificationStatus', () => {
-        it('should get matching notification status successfully', async () => {
-            const mockResponse = { status: 'pending', lastSent: '2024-07-28T12:00:00Z' };
-            (getMatchingNotificationStatus as jest.Mock).mockResolvedValue(mockResponse);
-
-            const response = await getMatchingNotificationStatus();
-            expect(getMatchingNotificationStatus).toHaveBeenCalled();
-            expect(response).toEqual(mockResponse);
-
-        });
-        it('should handle errors', async () => {
-            const mockError = new Error('Failed to retrieve matching notification status');
-            (getMatchingNotificationStatus as jest.Mock).mockRejectedValue(mockError);
-
-            await expect(getMatchingNotificationStatus()).rejects.toThrow(mockError);
-
-        });
-    });
-
-    // ... (Existing tests)
-});
-
-```
+  it('handles errors for all API calls', async () => {
+    const mockError = new Error('Network error');
+    axios.get.mockRejectedValueOnce(mockError);
+    axios.post.mockRejectedValueOnce(mockError);
+    await expect(getMatchingStatus()).rejects.toThrow(mockError);
+    await expect(getMatchingResults()).rejects.toThrow(mockError);
+    await expect(getMatchingExplanations()).rejects.toThrow(mockError);
+    await expect(triggerMatching()).rejects.toThrow(mockError);
+  });
+});"

@@ -1,28 +1,57 @@
-"## `/register` Endpoint
+"## New Matching API Endpoints
 
-**Method:** POST
+The following endpoints have been added to manage the matching process:
 
-**Description:** Registers a new user.
+**GET /matching/status**
 
-**Request Body Parameters:**
+Retrieves the current status of the matching process.
 
-| Parameter | Type | Required | Description |
-|---|---|---|---| 
-| `email` | string | Yes | User's email address. Must be a valid email format. |
-| `password` | string | Yes | User's password. Must be at least 6 characters long. |
-| `name` | string | Yes | User's full name. |
-| `phoneNumber` | string | Yes | User's phone number. |
+* **Response:**
 
-**Success Response:**
+{
+  "state": "running" | "completed" | "failed",
+  // ... other status information
+}
 
-* **Status Code:** 201 Created
-* **Response Body:** `{ "message": "User registered successfully" }`
 
-**Error Responses:**
+**GET /matching/groups**
 
-* **Status Code:** 400 Bad Request
-* **Response Body:** `{ "errors": { "fieldName": "errorMessage", ... } }`  (If validation fails, returns an object with field-specific error messages)
-* **Status Code:** 409 Conflict
-* **Response Body:** `{ "message": "Email already exists" }` (If a user with the given email already exists)
-* **Status Code:** 500 Internal Server Error
-* **Response Body:** `{ "message": "Server error" }` (For any other server-side errors)"
+Retrieves the matching results, grouped by users.
+
+* **Response:**
+
+[
+  { 
+    "users": [
+      { "id": 1, "name": "User 1" },
+      // ... other user details
+    ]
+  },
+  // ... more groups
+]
+
+
+**GET /matching/explanations**
+
+Retrieves explanations for the matching results.
+
+* **Response:**
+
+[
+  "Explanation for group 1",
+  "Explanation for group 2",
+  // ... explanations for each group
+]
+
+
+**POST /matching**
+
+Triggers the matching process.
+
+* **Response:**
+
+{
+  "message": "Matching triggered"
+  // ... other potential metadata about triggered request
+}
+"
