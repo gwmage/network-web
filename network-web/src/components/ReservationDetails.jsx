@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import ReservationCancellation from './ReservationCancellation';
 
-const ReservationDetails = ({ reservation }) => {
+const ReservationDetails = ({ reservation, onReservationCancelled }) => {
   const [isCancellationModalOpen, setIsCancellationModalOpen] = useState(false);
 
   const handleCancelReservation = () => {
@@ -14,12 +14,8 @@ const ReservationDetails = ({ reservation }) => {
   };
 
   const handleConfirmCancellation = () => {
-    // Logic to handle cancellation confirmation (e.g., API call)
-    console.log('Reservation cancelled:', reservation.id);
-    // Update UI or state to reflect the cancellation
-    // ...
-
     setIsCancellationModalOpen(false);
+    onReservationCancelled(reservation.id); // Notify parent component
   };
 
   return (
@@ -39,4 +35,5 @@ const ReservationDetails = ({ reservation }) => {
 };
 
 export default ReservationDetails;
+
 ```
