@@ -3,21 +3,22 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import ForgotPassword from './components/ForgotPassword';
+import MatchingManagement from './components/MatchingManagement';
 
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('token');
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+  return isAuthenticated ? children : <Navigate to=\"/login\" replace />;
 };
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/register" element={<RegisterForm />} />
-        <Route path="/password-reset" element={<ForgotPassword />} />
+        <Route path=\"/login\" element={<LoginForm />} />
+        <Route path=\"/register\" element={<RegisterForm />} />
+        <Route path=\"/password-reset\" element={<ForgotPassword />} />
         <Route
-          path="/"
+          path=\""
           element={
             <ProtectedRoute>
               {/* Your main app content here */}
@@ -25,6 +26,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        <Route path=\"/admin/matching\" element={<MatchingManagement />} />
         {/* Other routes */}
       </Routes>
     </Router>
