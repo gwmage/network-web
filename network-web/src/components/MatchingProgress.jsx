@@ -67,20 +67,22 @@ const MatchingProgress = () => {
     return <div>Error: {error.message}</div>;
   }
 
-  if (visualizationData) {
-    // Render the visualization data based on its type
-    if (typeof visualizationData === 'string') {
-      return <div dangerouslySetInnerHTML={{ __html: visualizationData }} />; // For SVG, ensure safe rendering
-    } else if (typeof visualizationData === 'object') {
-      return <pre>{JSON.stringify(visualizationData, null, 2)}</pre>; // For JSON data
-    } else {
-      return <div>Visualization data format not supported.</div>;
-    }
+  // Display visualization data (if available) after loading is complete
+  return (
+    <div>
+      {visualizationData && (
+        typeof visualizationData === 'string' ? (
+          <div dangerouslySetInnerHTML={{ __html: visualizationData }} /> // For SVG or HTML content
+        ) : typeof visualizationData === 'object' ? (
+          <pre>{JSON.stringify(visualizationData, null, 2)}</pre> // For JSON data, for debugging or display purposes
+        ) : (
+          <div>Visualization data format not supported.</div>
+        )
+      )}
 
-  }
-
-
-  return <div>No visualization data available.</div>;
+      {!visualizationData && !loading && !error && <div>No visualization data available.</div>} {/* Display message when no data exists */}
+    </div>
+  );
 };
 
 export default MatchingProgress;
