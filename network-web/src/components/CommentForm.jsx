@@ -34,7 +34,7 @@ const CommentForm = ({ comment, onSubmit, onClose, postId, parentCommentId }) =>
         await updateComment(postId, comment.id, { content });
       } else {
         // Create new comment
-        await createComment(postId, { content, parentCommentId });
+        await createComment(postId, { content, parentCommentId, itemId: postId });
       }
       onSubmit();
       setContent('');
