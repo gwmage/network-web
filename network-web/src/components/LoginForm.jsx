@@ -1,5 +1,7 @@
 "import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { loginUser } from '../utils/api'; // Import the API function
+import './LoginForm.css'; // Import CSS file
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -19,41 +21,42 @@ const LoginForm = () => {
     setGeneralError('');
 
     try {
-      const response = await fetch('/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        navigate('/');
-      } else {
-        const errorData = await response.json();
-
-        if (response.status === 401) {
+      const response = await loginUser(formData); // Use the API function
+      localStorage.setItem('token', response.token); // Store JWT in local storage
+      navigate('/'); // Redirect on success
+    } catch (error) {
+      if (error.response) {
+        const errorData = error.response.data;
+        if (error.response.status === 401) {
           setGeneralError(errorData.message || 'Invalid credentials');
+        } else if (error.response.status === 400) { // Check for 400 status (validation errors)
+          setErrors(errorData);
         } else {
           console.error('Login failed:', errorData);
           setGeneralError('An error occurred during login.');
         }
+      } else if (error.request) {
+        setGeneralError('Network Error: Failed to connect to the server');
+      } else {
+        setGeneralError(`Request Error: ${error.message}`);
       }
-    } catch (error) {
-      console.error('An error occurred:', error);
-      setGeneralError('An error occurred during login.');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" name="email" onChange={handleChange} />
-      {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
+    <form onSubmit={handleSubmit} className="login-form">
+      <div>
+        <label htmlFor="email">Email:</label>
+        <input type="email" name="email" id="email" onChange={handleChange} value={formData.email} required />
+        {errors.email && <p className="error-message">{errors.email}</p>}
+      </div>
+      <div>
+        <label htmlFor="password">Password:</label>
+        <input type="password" name="password" id="password" onChange={handleChange} value={formData.password} required />
+        {errors.password && <p className="error-message">{errors.password}</p>}
+      </div>
 
-      <input type="password" name="password" onChange={handleChange} />
-      {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
-
-      {generalError && <p style={{ color: 'red' }}>{generalError}</p>}
+      {generalError && <p className="error-message">{generalError}</p>}
 
       <button type="submit">Login</button>
 

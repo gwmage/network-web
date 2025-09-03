@@ -1,6 +1,6 @@
-```typescript
-import React, { useState } from 'react';
+"import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './ForgotPassword.css'; // Import CSS
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -8,12 +8,11 @@ const ForgotPassword = () => {
   const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('/auth/password-recovery', { // Update with your API endpoint
+      const response = await fetch('/auth/password-recovery', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,11 +24,9 @@ const ForgotPassword = () => {
         const data = await response.json();
         setMessage(data.message);
         setIsError(false);
-         // Optionally redirect or show a different view after successful submission
-         setTimeout(() => {
-           navigate('/login');
-        }, 3000); // Redirect after 3 seconds
-
+        setTimeout(() => {
+          navigate('/login');
+        }, 3000);
       } else {
         const errorData = await response.json();
         setMessage(errorData.message);
@@ -43,26 +40,16 @@ const ForgotPassword = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="forgot-password-form">
       <h2>Forgot Password</h2>
       <div>
         <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
       </div>
       <button type="submit">Reset Password</button>
-      {message && (
-        <p className={isError ? 'error-message' : 'success-message'}>{message}</p>
-      )}
+      {message && <p className={isError ? 'error-message' : 'success-message'}>{message}</p>}
     </form>
   );
 };
 
-export default ForgotPassword;
-
-```
+export default ForgotPassword;"
