@@ -1,46 +1,61 @@
 ```css
-/* Registration Form Styles */
-.registration-form {
+/* Matching Management Styles */
+.matching-management {
   background-color: #fff;
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin: 20px auto; /* Center the form */
-  max-width: 500px; /* Set a maximum width */
+  margin: 20px auto;
+  max-width: 800px; /* Increased width for potential larger data display */
 }
 
-.registration-form label {
-  display: block;
-  margin-bottom: 5px;
+.matching-management h2,
+.matching-management h3 {
+  margin-top: 0;
 }
 
-.registration-form input,
-.registration-form button {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  box-sizing: border-box;
-  margin-bottom: 10px;
-}
-
-.registration-form button {
+.matching-management button {
   background-color: #007bff;
   color: white;
   border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
   cursor: pointer;
+  margin-bottom: 20px;
 }
 
-.registration-form .error-message {
-  color: red;
-  margin-bottom: 10px;
+.matching-management button:disabled {
+  background-color: #ccc;
+  cursor: default;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .registration-form {
-    width: 90%; /* Adjust width on smaller screens */
-  }
+.matching-management pre {
+  background-color: #f8f8f8;
+  padding: 10px;
+  border-radius: 5px;
+  overflow: auto; /* Added for potential long JSON outputs */
+  white-space: pre-wrap; /* Handles long lines without horizontal scroll */
 }
 
+.matching-results div {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+
+.matching-results h3 {
+    margin-bottom: 5px;
+}
+
+.matching-results ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.matching-results li {
+    margin-bottom: 5px;
+}
 ```
