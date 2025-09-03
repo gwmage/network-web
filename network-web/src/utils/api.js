@@ -1,30 +1,38 @@
 ```typescript
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000/api/v1'; // Updated base URL to include /v1
+const API_BASE_URL = '/api'; // Or your API base URL
 
-// ... other existing functions
+// ... (Existing code remains unchanged)
 
-export const fetchMatchingResultsForUser = async (userId) => {
+export const cancelReservation = async (reservationId, cancellationReason) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/matching/results/${userId}`);
+    const response = await axios.delete(`${API_BASE_URL}/reservations/${reservationId}`, {
+      data: { reason: cancellationReason } // Send cancellation reason in request body
+    });
     return response.data;
   } catch (error) {
-    console.error(`Error fetching matching results for user ${userId}:`, error);
-    throw error;
+    console.error('Error cancelling reservation:', error);
+    if (error.response) {
+      console.error('Data:', error.response.data);
+      console.error('Status:', error.response.status);
+      console.error('Headers:', error.response.headers);
+      throw new Error(`API Error: ${error.response.status} - ${error.response.data.message || 'Failed to cancel reservation'}`);
+    } else if (error.request) {
+      console.error('Request:', error.request);
+      throw new Error('Network Error: Failed to connect to the server');
+    } else {
+      console.error('Error:', error.message);
+      throw new Error(`Request Error: ${error.message}`);
+    }
   }
 };
 
-export const getMatchingGroupExplanation = async (groupId) => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/matching/${groupId}/explanation`);
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching explanation for group ${groupId}:`, error);
-    throw error;
-  }
+export const getCancellationRestrictions = async () => {
+  // ... (Existing code remains unchanged)
 };
 
-// ... other existing functions
-
+export const runMatchingWithCriteria = async (matchingCriteria) => {
+  // ... (Existing code remains unchanged)
+};
 ```
