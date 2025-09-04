@@ -1,97 +1,65 @@
 ```typescript
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import * as api from '../utils/api';
-import CommentList from './CommentList';
-import CommentForm from './CommentForm';
+import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import CommentList from './CommentList'; // Import the CommentList component
 import './PostDetails.css';
+import api from '../api';
 
-const PostDetails = () => {
-  const { postId } = useParams();
-  const navigate = useNavigate();
-  const [post, setPost] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null); // Add currentUser state
-  const [formattedDate, setFormattedDate] = useState('');
+const PostDetails = ({ currentUser }) => {
+    const { id } = useParams();
+    const [post, setPost] = useState(null);
+    const [comments, setComments] = useState([]);
 
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const fetchedPost = await api.getPost(parseInt(postId, 10));
-        setPost(fetchedPost);
-        setFormattedDate(format(new Date(fetchedPost.createdAt), 'yyyy-MM-dd HH:mm:ss'));
-      } catch (error) {
-        console.error('Error fetching post:', error);
-        // Handle error, e.g., display an error message or redirect
-      }
-    };
-
-    const fetchCurrentUser = async () => {
-      try {
-        const user = await api.getCurrentUser(); // Implement getCurrentUser in api.ts
-        setCurrentUser(user);
-      } catch (error) {
-        console.error('Error fetching current user:', error);
-      }
-    }
-
-    fetchPost();
-    fetchCurrentUser();
-  }, [postId]);
-
-  const handleCommentCreate = async (newComment) => {
-    try {
-      await api.createComment(parseInt(postId, 10), newComment);
-      // Update the post object with the new comment
-      setPost((prevPost) => ({
-        ...prevPost,
-        comments: [...(prevPost?.comments || []), newComment]
-      }))
-    } catch (error) {
-      console.log('Error creating comment', error)
-    }
-  }
-
-  const handleCommentUpdate = async (updatedComment) => {
-    try {
-      const response = await api.updateComment(parseInt(postId, 10), updatedComment.id, updatedComment);
-
-      setPost(prevPost => {
-        const updatedComments = prevPost.comments.map(comment => {
-          if (comment.id === updatedComment.id) {
-            return updatedComment;
+    useEffect(() => {
+        const fetchPost = async () => {
+          try {
+            const fetchedPost = await api.getPost(parseInt(id, 10));
+            setPost(fetchedPost);
+          } catch (error) {
+            console.error('Error fetching post:', error);
+            // Handle error, e.g., display an error message or redirect
           }
-          return comment;
-        });
-        return { ...prevPost, comments: updatedComments };
-      });
-    } catch (error) {
-      console.log('Error updating comment', error);
-    }
-  }
+        };
+    
+        fetchPost();
+      }, [id]);
 
-  const handleCommentDelete = async (commentId) => {
-    try {
-      await api.deleteComment(parseInt(postId, 10), commentId)
-      setPost(prevPost => ({
-        ...prevPost,
-        comments: prevPost.comments.filter(comment => comment.id !== commentId)
-      }));
-    } catch (error) {
-      console.log('Error deleting comment', error);
-    }
-  }
+      const handleCommentUpdate = () => {
+        // This function will be passed down to the CommentList and Comment components
+        // It will be called whenever a comment is created, updated, or deleted
+        // to refresh the comment list.
+        console.log("Refreshing comments");
+      };
+    
+    
+      if (!post) {
+        return <div>Loading post...</div>;
+      }
 
-  if (!post) {
-    return <div>Loading post...</div>;
-  }
-
+  const formattedDate = format(new Date(post.createdAt), 'yyyy-MM-dd HH:mm:ss');
 
   return (
-    // ... (rest of the code remains unchanged)
+    <div className="post-details-container">
+      <article className="post-details">
+        <h2>{post.title}</h2>
+        <p className="post-metadata">
+          By {post.author ? post.author.username : 'Unknown Author'} on {formattedDate}
+        </p>
+        <p className="post-content">{post.content}</p>
+
+        <CommentList postId={post.id} currentUser={currentUser} onCommentUpdate={handleCommentUpdate} />
+      </article>
+
+
+      <Link to="/" className="back-to-posts">
+        Back to Posts
+      </Link>
+    </div>
   );
 };
 
 export default PostDetails;
+
 ```

@@ -1,35 +1,150 @@
 ```
-## Documentation for Reservation Cancellation Feature
+## Comment API Endpoints
 
-### Frontend Component: `ReservationCancellation.jsx`
+This document describes the API endpoints for managing comments.
 
-**Purpose:** This component provides the user interface for cancelling reservations. It displays a list of upcoming reservations, allows the user to select a reservation to cancel, provides an optional text input for a cancellation reason, and handles the confirmation process.
+**Base URL:** `/comments`
 
-**Parameters:**
+### 1. Get Comments for a Post
 
-* `reservations`: An array of reservation objects. Each reservation object should have at least an `id`, `description`, and `date` property.
-* `setReservations`: A function to update the `reservations` state in the parent component after a successful cancellation.
+**Endpoint:** `/comments/{postId}`
+**Method:** `GET`
+**Description:** Retrieves all comments for a specific post, including nested comments.
+
+**Path Parameters:**
+
+- `postId` (integer, required): The ID of the post.
+
+**Response (200 OK):**
+
+```json
+[
+  {
+    "id": 1,
+    "content": "This is a comment.",
+    "createdAt": "2024-03-10T12:30:00Z",
+    "author": {
+      "id": 123,
+      "username": "user123"
+    },
+    "children": [
+        {
+          "id": 2,
+          "content": "This is a reply.",
+          "createdAt": "2024-03-10T13:00:00Z",
+          "author": {
+            "id": 456,
+            "username": "user456"
+          },
+          "children": [] // Potentially more nested comments
+        }
+    ]
+  },
+  // ... more comments
+]
+```
+
+**Error Responses:**
+
+- 500 Internal Server Error: If an error occurs during retrieval.
 
 
-**Return Value:**  Renders the reservation cancellation UI.  Doesn't return a specific value.
+### 2. Create a New Comment
 
-**Usage:**  The component is used within `ReservationManagement.jsx` to provide reservation cancellation functionality.
+**Endpoint:** `/comments/{postId}`
+**Method:** `POST`
+**Description:** Creates a new comment on a specific post.
+
+**Path Parameters:**
+
+- `postId` (integer, required): The ID of the post.
+
+**Request Body:**
+
+```json
+{
+  "content": "This is the comment text.",
+  "parentCommentId": 123  // Optional: ID of the parent comment for replies. Omit for top-level comments.
+}
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "id": 1,
+  "content": "This is a comment.",
+  "createdAt": "2024-03-10T12:30:00Z",
+  "author": {
+    "id": 123,
+    "username": "user123"
+  }
+}
+```
+
+
+**Error Responses:**
+
+- 400 Bad Request: If the request body is invalid or missing required fields.
+- 401 Unauthorized: If the user is not authenticated.
+- 404 Not Found: If the post or parent comment (if specified) does not exist.
+- 500 Internal Server Error: If an error occurs during creation.
 
 
 
-### API Utility Function: `cancelReservation` (in `api.js`)
+### 3. Update an Existing Comment
 
-**Purpose:** Makes an API call to cancel a reservation.
+**Endpoint:** `/comments/{commentId}`
+**Method:** `PUT`
+**Description:** Updates the content of an existing comment. Only the author of the comment can update it.
 
-**Parameters:**
+**Path Parameters:**
+- `commentId` (integer, required): The ID of the comment to update.
 
-* `reservationId`: The ID of the reservation to be cancelled (string).
-* `reason`: (Optional) A string providing the reason for cancellation. Defaults to an empty string.
 
-**Return Value:** A Promise that resolves when the cancellation is successful.  It does not return any specific data.
+**Request Body:**
 
-**Throws:** An error if the API call fails. The error message will contain details about the failure.
+```json
+{
+  "content": "This is the updated comment text."
+}
+```
+
+**Response (200 OK):**
+
+Returns the updated comment object (similar to the response of the POST endpoint).
+
+**Error Responses:**
+
+- 400 Bad Request: If the request body is invalid.
+- 401 Unauthorized: If the user is not the author of the comment.
+- 404 Not Found: If the comment does not exist.
+- 500 Internal Server Error: If an error occurs during the update.
+
+
+### 4. Delete a Comment
+
+**Endpoint:** `/comments/{commentId}`
+**Method:** `DELETE`
+**Description:** Deletes a comment. Only the author of the comment can delete it.
+
+**Path Parameters:**
+
+- `commentId` (integer, required): The ID of the comment to delete.
+
+**Response (204 No Content):**
+
+No content is returned on successful deletion.
+
+**Error Responses:**
+
+- 401 Unauthorized: If the user is not the author of the comment.
+- 404 Not Found: If the comment does not exist.
+- 500 Internal Server Error: If an error occurs during deletion.
+
+**Nested Comments:**
+
+Nested comments are handled by including a "children" array in the comment object. This array contains any direct replies to the comment. Replies to replies are nested within the "children" array of their parent comment and so on, creating a tree structure.
 
 
 ```
----[END_OF_FILES]---
