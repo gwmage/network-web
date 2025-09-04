@@ -1,7 +1,9 @@
-"import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import MatchingResultsDisplay from './MatchingResultsDisplay';
-import { getMatchingStatus, getMatchingResults, getMatchingExplanations, triggerMatching } from '../utils/api';
+import { getMatchingStatus, getMatchingResults, getMatchingExplanations, triggerMatching, getMatchingProgress, getMatchingGroups } from '../utils/api';
 import ErrorDisplay from './ErrorDisplay';
+import MatchingGroupDisplay from './MatchingGroupDisplay';
+
 
 const MatchingManagement = () => {
   const [status, setStatus] = useState(null);
@@ -10,6 +12,10 @@ const MatchingManagement = () => {
   const [error, setError] = useState(null);
   const [triggering, setTriggering] = useState(false);
   const [logsVisible, setLogsVisible] = useState(false);
+  const [progress, setProgress] = useState(null);
+  const [groups, setGroups] = useState([]);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,12 +26,30 @@ const MatchingManagement = () => {
         setResults(resultsData);
         const explanationsData = await getMatchingExplanations();
         setExplanations(explanationsData);
+        const groupsData = await getMatchingGroups();
+        setGroups(groupsData);
+
       } catch (err) {
         setError(err);
       }
     };
     fetchData();
+
+
+    const fetchProgress = async () => {
+      try {
+        const progressData = await getMatchingProgress();
+        setProgress(progressData);
+      } catch (err) {
+        console.error("Failed to fetch matching progress:", err);
+      }
+    }
+    fetchProgress();
+
+
   }, []);
+
+
 
   const handleTriggerMatching = async () => {
     try {
@@ -48,6 +72,8 @@ const MatchingManagement = () => {
     setLogsVisible(!logsVisible);
   };
 
+
+
   if (error) {
     return <ErrorDisplay error={error} />;
   }
@@ -58,14 +84,33 @@ const MatchingManagement = () => {
       <button onClick={handleTriggerMatching} disabled={triggering}>
         {triggering ? 'Triggering...' : 'Trigger Matching'}
       </button>
+
+      {progress && (
+        <div>
+          <h3>Matching Progress</h3>
+          <p>Status: {progress.state}</p>
+          {progress.startTime && <p>Start Time: {progress.startTime}</p>}
+          {progress.endTime && <p>End Time: {progress.endTime}</p>}
+          {progress.currentStage && <p>Current Stage: {progress.currentStage}</p>}
+          {progress.progress && <p>Progress: {progress.progress}%</p>}
+        </div>
+      )}
+
+
       <button onClick={toggleLogs}>
         {logsVisible ? 'Hide Logs' : 'Show Logs'}
       </button>
-      {logsVisible && <div>\{/* Placeholder for logs */}</div>}
+      {logsVisible && <div>{/* Placeholder for logs */}</div>}
       {status && <p>Matching Status: {status.state}</p>}
       {results && <MatchingResultsDisplay results={results} explanations={explanations} />}
+
+      <h3>Matching Groups</h3>
+      {groups.map((group) => (
+        <MatchingGroupDisplay key={group.groupId} group={group} />
+      ))}
+
     </div>
   );
 };
 
-export default MatchingManagement;"
+export default MatchingManagement;

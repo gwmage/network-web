@@ -1,30 +1,116 @@
-## API Change: /auth/login Response
+```
+## API Changes for Updating User Profiles
 
-The `/auth/login` API endpoint now returns user data along with the JWT in the successful login response (200 OK).
+**Endpoint:** `/auth/me` (PUT)
 
-**Previous Response:**
+**Request Body:**
 
 ```json
 {
-  "token": "your_jwt_token"
+  "region": "string (optional)",
+  "preferences": "string (optional)",
+  "interests": "string (optional)"
 }
 ```
 
-**New Response:**
+**Response (Success):**
 
 ```json
 {
-  "token": "your_jwt_token",
-  "user": {
-    "id": "user_id",
-    "name": "user_name",
-    "email": "user_email"
-  }
+  "id": "user_id",
+  "username": "username",
+  "email": "email",
+  "region": "region",
+  "preferences": "preferences",
+  "interests": "interests"
 }
 ```
 
-This change allows the frontend to directly access user information upon successful login without needing a separate API call to fetch user details.
+
+**Response (Error):**
+
+```json
+{
+  "error": "Error message"
+}
+```
+
+HTTP Status Codes:
+
+* 200 OK: Successful update.
+* 400 Bad Request: Invalid input data.
+* 401 Unauthorized: User not authenticated.
+* 500 Internal Server Error: Server error during update.
+
+
+## API Endpoint for Retrieving Matching Progress
+
+**Endpoint:** `/matching/progress` (GET)
+
+**Response (Success):**
+
+```json
+{
+  "state": "running" | "completed" | "failed",
+  "startTime": "ISO8601 timestamp",
+  "endTime": "ISO8601 timestamp (if completed or failed)",
+  "currentStage": "string (e.g., 'grouping', 'scoring', etc.)",
+  "progress": "number between 0 and 100 (optional)"
+}
+```
+
+**Response (Error):**
+
+```json
+{
+  "error": "Error message"
+}
+```
+
+HTTP Status Codes:
+* 200 OK: Successful retrieval of matching progress.
+* 500 Internal Server Error: Server error during retrieval.
 
 
 
----[END_OF_FILES]---
+## API Endpoint for Retrieving Matching Groups and Member Data
+
+**Endpoint:** `/matching/groups` (GET)
+
+
+**Response (Success):**
+
+```json
+[
+  {
+    "groupId": "group_id",
+    "members": [
+      {
+        "userId": "user_id",
+        "username": "username",
+        "region": "user_region",
+        "preferences": "user_preferences",
+        "interests": "user_interests"
+       },
+       // ... other members
+    ]
+  },
+  // ... other groups
+]
+```
+
+
+**Response (Error):**
+
+```json
+{
+  "error": "Error message"
+}
+```
+
+
+HTTP Status Codes:
+* 200 OK: Successful retrieval of matching groups.
+* 500 Internal Server Error: Server error during retrieval.
+
+```
