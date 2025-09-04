@@ -15,6 +15,38 @@ export const loginUser = async (credentials) => {
   }
 };
 
+
+export const getMatchingStatus = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/matching/status`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching matching status:', error);
+    throw error;
+  }
+};
+
+export const getMatchingResults = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/matching/results`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching matching results:', error);
+    throw error;
+  }
+};
+
+export const triggerMatching = async () => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/matching`);
+    return response.data;
+  } catch (error) {
+    console.error('Error triggering matching:', error);
+    throw error;
+  }
+};
+
+
 export const getMatchingVisualization = async (groupId) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/matching/visualization/${groupId}`);
@@ -55,7 +87,6 @@ export const getMatchingGroups = async () => {
         throw error;
     }
 };
-
 
 export const updateMatchingGroup = async (groupId, updatedGroupData) => {
     try {
