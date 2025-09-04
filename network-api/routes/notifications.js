@@ -29,8 +29,21 @@ router.put('/users/:userId/notifications/preferences', authMiddleware, async (re
       return res.status(400).json({ error: 'Invalid userId' });
     }
 
+    const { 
+      push_enabled, 
+      email_enabled, 
+      new_message_notifications,
+      new_connection_notifications,
+      matching_result_notifications,
+      time_window_start,
+      time_window_end
+    } = req.body;
+
     // ... logic to update preferences in database ...
-    // Example: Update preferences based on req.body
+    // Example:
+    // await db.updateUserNotificationPreferences(userId, {
+    //   push_enabled, email_enabled, new_message_notifications, //...
+    // });
 
     res.json({ message: 'Notification preferences updated successfully' });
   } catch (error) {
@@ -73,6 +86,37 @@ router.get('/users/:userId/notifications/matching', authMiddleware, async (req, 
     res.status(500).json({ error: 'Failed to fetch matching notifications' });
   }
 });
+
+
+// GET /users/:userId/notifications/preferences
+router.get('/users/:userId/notifications/preferences', authMiddleware, async (req, res) => {
+  try {
+    const userId = parseInt(req.params.userId, 10);
+
+    if (isNaN(userId)) {
+      return res.status(400).json({ error: 'Invalid userId' });
+    }
+
+
+    // Replace with actual data fetching logic
+    const preferences = {
+      push_enabled: true,
+      email_enabled: false,
+      new_message_notifications: true,
+      new_connection_notifications: false,
+      matching_result_notifications: true,
+      time_window_start: '09:00',
+      time_window_end: '17:00'
+    };
+
+    res.json(preferences);
+
+  } catch (error) {
+    console.error('Error fetching notification preferences:', error);
+    res.status(500).json({ error: 'Failed to fetch notification preferences' });
+  }
+});
+
 
 
 export default router;

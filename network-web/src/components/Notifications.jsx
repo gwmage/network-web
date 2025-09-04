@@ -6,13 +6,28 @@ const Notifications = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [preferences, setPreferences] = useState(null);
   const userId = 1; // Replace with actual user ID retrieval
+
+  useEffect(() => {
+    const fetchPreferences = async () => {
+      try {
+        const fetchedPreferences = await api.getNotificationPreferences();
+        setPreferences(fetchedPreferences);
+      } catch (error) {
+        console.error("Error fetching notification preferences:", error);
+        // Handle error appropriately
+      }
+    };
+
+    fetchPreferences();
+  }, []);
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
         const allNotifications = await Promise.all([
-          api.getNotifications(userId), // Existing API call for general notifications
+          api.getNotifications(userId),
           api.getMatchingResultNotifications(userId),
         ]);
 
@@ -27,9 +42,29 @@ const Notifications = () => {
       }
     };
 
-    fetchNotifications();
-  }, []);
 
+    if (preferences) {
+      fetchNotifications();
+    }
+  }, [preferences]);
+
+  const filterNotifications = () => {
+    if (!preferences) {
+      return notifications;
+    }
+
+    return notifications.filter(notification => {
+      switch (notification.type) {
+        case 'general':
+          return preferences.new_message_notifications;
+        case 'match_result':
+          return preferences.matching_result_notifications;
+        // Add other notification types and preference checks as needed.
+        default:
+          return true; 
+      }
+    });
+  };
 
   const markAsRead = async (notificationId) => {
     try {
@@ -53,6 +88,9 @@ const Notifications = () => {
     }
   };
 
+
+  const filteredNotifications = filterNotifications();
+
   return (
     <div>
       <h2>Notifications <span className="unread-badge">{unreadCount > 0 && unreadCount}</span></h2>
@@ -60,11 +98,11 @@ const Notifications = () => {
         <div>Loading notifications...</div>
       ) : error ? (
         <div>Error: {error}</div>
-      ) : notifications.length === 0 ? (
+      ) : filteredNotifications.length === 0 ? (
         <p>No notifications yet.</p>
       ) : (
         <ul>
-          {notifications.map((notification) => (
+          {filteredNotifications.map((notification) => (
             <li key={notification.id} className={`notification ${notification.read ? 'read' : 'unread'} ${notification.type === 'match_result' ? 'match-result' : ''}`}>
               {/* Display notification content based on type */}
               {notification.type === 'match_result' && (
@@ -87,5 +125,6 @@ const Notifications = () => {
     </div>
   );
 };
+
 
 export default Notifications;

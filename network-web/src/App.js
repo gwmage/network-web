@@ -1,4 +1,3 @@
-```
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -8,6 +7,7 @@ import AdminMatchingProgress from './components/AdminMatchingProgress';
 import AdminUsers from './components/AdminUsers';
 import AdminSettings from './components/AdminSettings';
 import AdminPermissions from './components/AdminPermissions';
+import NotificationSettings from './components/NotificationSettings';
 
 function App() {
   return (
@@ -15,6 +15,8 @@ function App() {
         <div>
             <AdminNavigation />
             <Routes>
+              {/* ... other routes */}
+              <Route path="/admin/settings/notifications" element={<NotificationSettings />} />
               <Route path="/admin/matching" element={<AdminMatching />} />
               <Route path="/admin/matching/progress" element={<AdminMatchingProgress />} />
               <Route path="/admin/users" element={<AdminUsers />} />
@@ -27,5 +29,3 @@ function App() {
 }
 
 export default App;
-
-```

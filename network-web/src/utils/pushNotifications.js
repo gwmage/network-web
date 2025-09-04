@@ -1,17 +1,16 @@
-import { getNotificationPreferences } from '../api/user';
+import { getNotificationPreferences } from './api'; // Import from api.js
+
 
 export const sendPushNotification = async (notificationData) => {
   try {
     const preferences = await getNotificationPreferences();
-    if (preferences.push) {
-      // Check if the browser supports push notifications
+    if (preferences.push_enabled) { // Use push_enabled from preferences
+
       if ("Notification" in window) {
-        // Request permission to display notifications
         if (Notification.permission === "granted") {
-          // Create and display the notification
           new Notification(notificationData.title, {
             body: notificationData.body,
-            data: notificationData.data, // Include any custom data
+            data: notificationData.data,
           });
         } else if (Notification.permission !== "denied") {
           Notification.requestPermission().then(async (permission) => {
@@ -24,12 +23,9 @@ export const sendPushNotification = async (notificationData) => {
           });
         }
       }
-
-      // Existing push service logic (e.g., Firebase) can be added here.
     }
   } catch (error) {
     console.error('Error sending push notification:', error);
-    // Handle errors appropriately
   }
 };
 

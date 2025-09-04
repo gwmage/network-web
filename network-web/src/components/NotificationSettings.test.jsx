@@ -1,4 +1,3 @@
-```typescript
 import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import NotificationSettings from '../components/NotificationSettings';
@@ -7,21 +6,38 @@ import * as api from '../utils/api';
 jest.mock('../utils/api');
 
 describe('NotificationSettings', () => {
+  const mockPreferences = {
+    push_enabled: true,
+    email_enabled: false,
+    new_message_notifications: true,
+    new_connection_notifications: false,
+    matching_result_notifications: true,
+    time_window_start: '09:00',
+    time_window_end: '17:00',
+  };
+
+  beforeEach(() => {
+    api.getNotificationPreferences.mockResolvedValue(mockPreferences);
+  });
+
   it('renders correctly', async () => {
-    api.getNotificationPreferences.mockResolvedValue({ email: true, push: false });
     render(<NotificationSettings />);
-    expect(await screen.findByLabelText('Email')).toBeInTheDocument();
-    expect(await screen.findByLabelText('Push')).toBeInTheDocument();
+    expect(await screen.findByLabelText('Push Notifications')).toBeInTheDocument();
+    expect(await screen.findByLabelText('Email Notifications')).toBeInTheDocument();
     expect(await screen.findByRole('button', { name: /Save Settings/i })).toBeInTheDocument();
   });
 
   it('fetches and displays initial settings', async () => {
-    api.getNotificationPreferences.mockResolvedValue({ email: true, push: false });
     render(<NotificationSettings />);
+    expect(await screen.findByLabelText('Push Notifications')).toBeChecked();
+    expect(await screen.findByLabelText('Email Notifications')).not.toBeChecked();
+    expect(await screen.findByLabelText('New Messages')).toBeChecked();
+    expect(await screen.findByLabelText('New Connection Requests')).not.toBeChecked();
+    expect(await screen.findByLabelText('Matching Results')).toBeChecked();
+    expect((await screen.findByLabelText('Start')).value).toBe('09:00');
+    expect((await screen.findByLabelText('End')).value).toBe('17:00');
 
-    expect(await screen.findByLabelText('Email')).toBeChecked();
-    expect(await screen.findByLabelText('Push')).not.toBeChecked();
-    expect(await screen.findByLabelText('None')).not.toBeChecked();
+
   });
 
   it('handles errors when fetching settings', async () => {
@@ -33,19 +49,18 @@ describe('NotificationSettings', () => {
 
   it('saves settings correctly', async () => {
     api.updateNotificationPreferences.mockResolvedValue({});
-    api.getNotificationPreferences.mockResolvedValue({ email: false, push: false });
     render(<NotificationSettings />);
 
-    fireEvent.click(await screen.findByLabelText('Email'));
+    fireEvent.click(await screen.findByLabelText('Email Notifications'));
     fireEvent.click(await screen.findByRole('button', { name: /Save Settings/i }));
 
-    expect(api.updateNotificationPreferences).toHaveBeenCalledWith({ email: true, push: false });
+    expect(api.updateNotificationPreferences).toHaveBeenCalledWith({ ...mockPreferences, email_enabled: true });
   });
+
 
   it('handles saving errors', async () => {
     const errorMessage = 'Failed to save settings';
     api.updateNotificationPreferences.mockRejectedValue(new Error(errorMessage));
-    api.getNotificationPreferences.mockResolvedValue({ email: true, push: false });
     render(<NotificationSettings />);
 
     fireEvent.click(await screen.findByRole('button', { name: /Save Settings/i }));
@@ -54,71 +69,22 @@ describe('NotificationSettings', () => {
   });
 
   it('disables save button while loading', async () => {
-    api.getNotificationPreferences.mockResolvedValue({ email: true, push: true });
     let resolvePromise;
     const promise = new Promise((resolve) => {
       resolvePromise = resolve;
     });
-
     api.updateNotificationPreferences.mockImplementation(() => promise);
 
     render(<NotificationSettings />);
     fireEvent.click(await screen.findByRole('button', { name: /Save Settings/i }));
     expect(await screen.findByRole('button', { name: /Save Settings/i })).toBeDisabled();
+
     resolvePromise({});
     await act(async () => {
       await promise;
     });
-
     expect(await screen.findByRole('button', { name: /Save Settings/i })).toBeEnabled();
   });
 
-  it('updates notification method state correctly', async () => {
-    api.getNotificationPreferences.mockResolvedValue({ email: true, push: false });
-    render(<NotificationSettings />);
-    await act(async () => {
-      fireEvent.click(await screen.findByLabelText('Push'));
-    });
-    expect(await screen.findByLabelText('Push')).toBeChecked();
-    expect(await screen.findByLabelText('Email')).not.toBeChecked();
-    expect(await screen.findByLabelText('None')).not.toBeChecked();
-  });
-
-  it('updates notifications enabled state correctly', async () => {
-    api.updateNotificationPreferences.mockResolvedValue({});
-    api.getNotificationPreferences.mockResolvedValue({ email: true, push: false });
-    render(<NotificationSettings />);
-    await act(async () => {
-      fireEvent.click(await screen.findByLabelText('None'));
-    });
-
-    fireEvent.click(await screen.findByRole('button', { name: /Save Settings/i }));
-    expect(api.updateNotificationPreferences).toHaveBeenCalledWith({ email: false, push: false });
-  });
-
-  it('updates email only state correctly', async () => {
-    api.updateNotificationPreferences.mockResolvedValue({});
-    api.getNotificationPreferences.mockResolvedValue({ email: false, push: true });
-    render(<NotificationSettings />);
-
-    await act(async() => {
-      fireEvent.click(await screen.findByLabelText('Email'));
-    });
-
-    fireEvent.click(await screen.findByRole('button', { name: /Save Settings/i }));
-    expect(api.updateNotificationPreferences).toHaveBeenCalledWith({ email: true, push: false });
-  });
-
-  it('retrieves and displays saved settings', async () => {
-    const savedSettings = { email: true, push: true };
-    api.getNotificationPreferences.mockResolvedValue(savedSettings);
-
-    render(<NotificationSettings />);
-
-    expect(await screen.findByLabelText('Email')).toBeChecked();
-    expect(await screen.findByLabelText('Push')).toBeChecked();
-    expect(await screen.findByLabelText('None')).not.toBeChecked();
-  });
+  // ... other tests for event types and time window
 });
-
-```
