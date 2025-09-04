@@ -1,10 +1,10 @@
 ```jsx
 import React, { useState, useEffect } from 'react';
-import MatchingProgress from './MatchingProgress';
+import MatchingResultsDisplay from './MatchingResultsDisplay';
+import MatchingCriteriaConfiguration from './MatchingCriteriaConfiguration';
 import ErrorDisplay from './ErrorDisplay';
 import * as api from '../utils/api';
-import { Box, Button, TextField, Typography, Grid, List, ListItem, ListItemText, IconButton } from '@mui/material';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { Box, Button, Typography, Grid, List, ListItem, ListItemText, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 
@@ -18,6 +18,8 @@ const AdminMatching = () => {
   const [groups, setGroups] = useState([]);
   const [loadingGroups, setLoadingGroups] = useState(true);
   const [groupsError, setGroupsError] = useState(null);
+  const [criteria, setCriteria] = useState([]);
+
 
   const fetchMatchingStatus = async () => {
     try {
@@ -89,54 +91,38 @@ const AdminMatching = () => {
     }
   };
 
-
-  const onDragEnd = (result) => {
-    if (!result.destination) {
-      return;
+  const handleUserRemove = async (userId, groupId) => {
+    try {
+      await api.removeUserFromGroup(groupId, userId);
+      fetchGroups(); // Refresh groups after update
+    } catch (error) {
+      setGroupsError("Failed to remove user from group");
     }
-
-    const sourceGroupId = parseInt(result.source.droppableId, 10);
-    const destinationGroupId = parseInt(result.destination.droppableId, 10);
-
-    if (sourceGroupId === destinationGroupId) {
-      return;
-    }
-
-
   };
+
+
 
   useEffect(() => {
     fetchMatchingStatus();
     fetchMatchingResults();
     fetchWeights();
     fetchGroups();
+    const fetchCriteria = async () => {
+      try {
+        const data = await api.getMatchingCriteria();
+        setCriteria(data);
+      } catch (error) {
+        console.error("Error fetching matching criteria:", error);
+      }
+    };
+    fetchCriteria();
+
   }, []);
 
-
-
-  const handleUserRemove = async (userId, groupId) => {
-      try {
-          const updatedGroups = groups.map(group => {
-              if (group.id === groupId) {
-                  return {
-                      ...group,
-                      users: group.users.filter(user => user.id !== userId)
-                  }
-              }
-              return group;
-          });
-          await api.updateMatchingGroup(groupId, { users: updatedGroups.find(group => group.id === groupId).users }); // Update in backend
-          setGroups(updatedGroups);
-      } catch (error) {
-          setGroupsError("Failed to remove user from group");
-      }
-  };
-
-
-
   return (
-    <div>
-      <h2>Matching Management</h2>
+    <Box>
+      <Typography variant="h2" gutterBottom>Matching Management</Typography>
+
       <Button onClick={triggerMatching} disabled={triggering} variant="contained" color="primary">
         {triggering ? 'Triggering...' : 'Trigger Matching'}
       </Button>
@@ -144,44 +130,44 @@ const AdminMatching = () => {
       {matchingError && <ErrorDisplay error={matchingError} />}
 
       {matchingStatus && !matchingError && (
-        <MatchingProgress status={matchingStatus} results={matchingResults} />
+        <MatchingResultsDisplay status={matchingStatus} results={matchingResults} />
       )}
 
-        <h2>Matching Groups</h2>
-
+      <Typography variant="h4" gutterBottom sx={{ mt: 4 }}>Matching Groups</Typography>
       {groupsError && <ErrorDisplay error={groupsError} />}
       {loadingGroups ? (
-          <p>Loading groups...</p>
+        <Typography>Loading groups...</Typography>
       ) : (
-          <div>
-              {groups.map((group) => (
-                  <div key={group.id}>
-                      <h3>Group {group.id}</h3>
-                      <List>
-                          {group.users && group.users.map((user) => (
-                              <ListItem
-                                  key={user.id}
-                                  secondaryAction={
-                                      <IconButton edge="end" aria-label="delete" onClick={() => handleUserRemove(user.id, group.id)}>
-                                          <DeleteIcon />
-                                      </IconButton>
-                                  }
-                              >
-                                  <ListItemText primary={user.name} secondary={`ID: ${user.id}`} />
-                              </ListItem>
-                          ))}
-                      </List>
-                  </div>
-              ))}
-          </div>
+        <Grid container spacing={2}>
+          {groups.map((group) => (
+            <Grid item xs={12} sm={6} md={4} key={group.id}>
+              <Box border={1} p={2}>
+                <Typography variant="h5" gutterBottom>Group {group.id}</Typography>
+                <List>
+                  {group.users && group.users.map((user) => (
+                    <ListItem
+                      key={user.id}
+                      secondaryAction={
+                        <IconButton edge="end" aria-label="delete" onClick={() => handleUserRemove(user.id, group.id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      }
+                    >
+                      <ListItemText primary={user.name} secondary={`ID: ${user.id}`} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
       )}
 
 
-
-
+      <MatchingCriteriaConfiguration criteria={criteria} setCriteria={setCriteria} />
 
       <Box mt={4}>
-        <Typography variant="h5" gutterBottom>
+        <Typography variant="h4" gutterBottom>
           Algorithm Weights
         </Typography>
         <Grid container spacing={2}>
@@ -199,17 +185,16 @@ const AdminMatching = () => {
             </Grid>
           ))}
         </Grid>
-          {weightsError && <ErrorDisplay error={weightsError} />}
+        {weightsError && <ErrorDisplay error={weightsError} />}
 
-        <Button variant="contained" color="secondary" onClick={updateWeights} sx={{mt: 2}}>
+        <Button variant="contained" color="secondary" onClick={updateWeights} sx={{ mt: 2 }}>
           Update Weights
         </Button>
       </Box>
-    </div>
+    </Box>
   );
 };
 
 export default AdminMatching;
 
 ```
----[END_OF_FILES]---
