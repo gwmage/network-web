@@ -1,23 +1,164 @@
 ```
-## New API Endpoints for Matching Groups
+## Network API - Matching Management Endpoints
 
-The following endpoints have been added to the `network-api` for managing matching groups:
+This document describes the API endpoints for managing matching results and criteria in the `network-api` repository.
 
-**GET /matching/groups**
+### 1. Get Matching Status
 
-Retrieves all matching groups with user details.
+**Endpoint:** `/matching/status`
 
-* **Response:** An array of group objects. Each group object contains:
-    * `id`: The group ID.
-    * `users`: An array of user objects belonging to the group. Each user object contains relevant user details (e.g., name, ID, matching criteria).
+**Method:** GET
 
-**PUT /matching/groups/:groupId**
+**Response:**
 
-Updates a specific matching group.  This endpoint allows admins to make manual adjustments to groups, such as moving users between groups or removing users from groups.
-
-* **Request Parameters:**
-    * `groupId`: The ID of the group to update.
-* **Request Body:**  An object containing the updated group data.  Currently supports updating the `users` array. The structure should mirror the `users` array in the GET response, containing an array of user objects with their respective IDs.  Users not included in this array are considered removed from the group.
-* **Response:** The updated group object.
+```json
+{
+  "state": "idle" | "running" | "completed",
+  "startTime": "ISO8601 timestamp" | null,
+  "endTime": "ISO8601 timestamp" | null,
+  "progress": 0-100 | null
+}
 ```
----[END_OF_FILES]---
+
+### 2. Get Matching Results
+
+**Endpoint:** `/matching/results`
+
+**Method:** GET
+
+**Response:**
+
+```json
+[
+  {
+    "id": "group ID",
+    "users": [
+      {
+        "id": "user ID",
+        "name": "user name"
+        // ... other user properties
+      }
+    ]
+    // ... other group properties (e.g., match score)
+  }
+]
+```
+
+### 3. Trigger Matching
+
+**Endpoint:** `/matching`
+
+**Method:** POST
+
+**Response:**
+```json
+{
+  "results": [ /* Same structure as GET /matching/results */ ],
+  "notification": "New match available"
+}
+```
+
+
+### 4. Get Matching Groups
+
+**Endpoint:** `/matching/groups`
+
+**Method:** GET
+
+**Response:** (Same as GET /matching/results)
+
+
+### 5. Update Matching Group
+
+**Endpoint:** `/matching/groups/:groupId`
+
+**Method:** PUT
+
+**Request Body:**
+
+```json
+{
+  "users": [
+    { "id": "user ID" },
+    // ... other users
+  ]
+}
+```
+
+**Response:** (Updated group object)
+
+
+### 6. Remove User from Matching Group
+
+**Endpoint:** `/matching/groups/:groupId/users/:userId`
+
+**Method:** DELETE
+
+**Response:** (Updated group object, or some success/failure indicator)
+
+
+### 7. Get Matching Criteria
+
+**Endpoint:** `/matching/criteria`
+
+**Method:** GET
+
+**Response:**
+
+```json
+[
+  "criterion1",
+  "criterion2",
+  // ... other criteria
+]
+```
+
+### 8. Add Matching Criterion
+
+**Endpoint:** `/matching/criteria`
+
+**Method:** POST
+
+**Request Body:**
+
+```json
+{
+  "criterion": "newCriterionName"
+}
+```
+
+**Response:** (Updated list of criteria)
+
+### 9. Remove Matching Criterion
+
+**Endpoint:** `/matching/criteria/:criterion`
+
+**Method:** DELETE
+
+**Response:** (Updated list of criteria)
+
+
+
+
+### 10. Get/Update Matching Weights
+
+**Endpoint:** `/matching/weights`
+
+**Method:** GET/PUT (GET to retrieve, PUT to update)
+
+**Request Body (for PUT):**
+
+```json
+{
+  "criterion1": 0.5, 
+  "criterion2": 0.3,
+  // ... weights for each criterion
+}
+```
+
+**Response (for both GET and PUT):** (Current weights object)
+
+
+
+// ... (Optional: Add endpoints for statistical analysis)
+```

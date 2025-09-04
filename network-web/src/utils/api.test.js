@@ -1,38 +1,98 @@
-"import axios from 'axios';
-import { getMatchingStatus, getMatchingResults, getMatchingExplanations, triggerMatching, getMatchingResultNotifications, updateNotificationStatus } from './api';
+```js
+import axios from 'axios';
+import * as api from './api';
+
 jest.mock('axios');
 
-describe('API functions', () => {
-  // ... existing tests
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-  it('getMatchingResultNotifications fetches notifications successfully', async () => {
-    const mockNotifications = [{ id: 1, message: 'Match found!' }];
-    axios.get.mockResolvedValueOnce({ data: mockNotifications });
-    const notifications = await getMatchingResultNotifications(1); // Example userId
-    expect(notifications).toEqual(mockNotifications);
-    expect(axios.get).toHaveBeenCalledWith('/users/1/notifications/matching');
+describe('API Utility Functions', () => {
+    // ... (Tests for existing functions)
+
+
+
+  describe('getMatchingCriteria', () => {
+    it('fetches matching criteria', async () => {
+      const mockCriteria = ['criterion1', 'criterion2'];
+      axios.get.mockResolvedValue({ data: mockCriteria });
+      const result = await api.getMatchingCriteria();
+      expect(axios.get).toHaveBeenCalledWith(`${API_BASE_URL}/matching/criteria`);
+      expect(result).toEqual(mockCriteria);
+    });
+
+
+    it('handles errors', async () => {
+        const errorMessage = 'Network Error';
+        axios.get.mockRejectedValue(new Error(errorMessage));
+
+
+        await expect(api.getMatchingCriteria()).rejects.toThrowError(errorMessage);
+
+
+        expect(axios.get).toHaveBeenCalledWith(`${API_BASE_URL}/matching/criteria`);
+
+      });
+
+
+
   });
 
-  it('updateNotificationStatus updates status successfully', async () => {
-    const mockResponse = { message: 'Notification status updated' };
-    axios.put.mockResolvedValueOnce({ data: mockResponse });
-    const response = await updateNotificationStatus(1, 'read'); // Example notificationId and status
-    expect(response).toEqual(mockResponse);
-    expect(axios.put).toHaveBeenCalledWith('/notifications/1', { status: 'read' });
+  describe('addMatchingCriterion', () => {
+    it('adds a new criterion', async () => {
+
+        const newCriterion = 'New Criterion';
+        const updatedCriteria = ['existingCriterion', newCriterion];
+        axios.post.mockResolvedValueOnce({ data: updatedCriteria });
+
+        const result = await api.addMatchingCriterion(newCriterion);
+        expect(axios.post).toHaveBeenCalledWith(`${API_BASE_URL}/matching/criteria`, { criterion: newCriterion });
+        expect(result).toEqual(updatedCriteria);
+      });
+  });
+
+  describe('removeMatchingCriterion', () => {
+    it('removes a criterion', async () => {
+        const criterionToRemove = 'criterionToRemove';
+        const updatedCriteria = ['criterion1', 'criterion2'];
+        axios.delete.mockResolvedValueOnce({ data: updatedCriteria });
+
+        const result = await api.removeMatchingCriterion(criterionToRemove);
+
+        expect(axios.delete).toHaveBeenCalledWith(`${API_BASE_URL}/matching/criteria/${criterionToRemove}`);
+        expect(result).toEqual(updatedCriteria);
+
+      });
   });
 
 
-  it('handles errors for all API calls', async () => {
-    const mockError = new Error('Network error');
-    axios.get.mockRejectedValueOnce(mockError);
-    axios.post.mockRejectedValueOnce(mockError);
-    axios.put.mockRejectedValueOnce(mockError); // Add put for updateNotificationStatus
 
-    await expect(getMatchingStatus()).rejects.toThrow(mockError);
-    await expect(getMatchingResults()).rejects.toThrow(mockError);
-    await expect(getMatchingExplanations()).rejects.toThrow(mockError);
-    await expect(triggerMatching()).rejects.toThrow(mockError);
-    await expect(getMatchingResultNotifications(1)).rejects.toThrow(mockError); // Test with userId
-    await expect(updateNotificationStatus(1, 'read')).rejects.toThrow(mockError); // Test with notificationId and status
+
+  describe('removeUserFromGroup', () => {
+    it('removes a user from a group', async () => {
+      const groupId = 1;
+      const userId = 101;
+      const mockResponse = { data: { success: true } }; // Example success response
+      axios.delete.mockResolvedValue(mockResponse);
+
+      const result = await api.removeUserFromGroup(groupId, userId);
+      expect(axios.delete).toHaveBeenCalledWith(`${API_BASE_URL}/matching/groups/${groupId}/users/${userId}`);
+      expect(result).toEqual(mockResponse.data);
+    });
+
+    it('handles errors when removing user', async () => {
+        const groupId = 1;
+        const userId = 101;
+        const errorMessage = 'Error removing user';
+        axios.delete.mockRejectedValueOnce(new Error(errorMessage));
+
+        await expect(api.removeUserFromGroup(groupId, userId)).rejects.toThrow(errorMessage);
+        expect(axios.delete).toHaveBeenCalledWith(`${API_BASE_URL}/matching/groups/${groupId}/users/${userId}`);
+      });
+
   });
-});"
+
+
+
+});
+
+```

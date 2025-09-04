@@ -1,30 +1,37 @@
-"import React from 'react';
+```jsx
+import React from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 
-const MatchingResultsDisplay = ({ results, explanations }) => {
-  if (!results) {
-    return <p>No results available.</p>;
+const MatchingResultsDisplay = ({ status, results }) => {
+  if (!results || results.length === 0) {
+    return <Typography>No matching results found.</Typography>;
   }
 
   return (
-    <div>
-      <h3>Matching Results</h3>
-      <ul>
-        {results.map((group, index) => (
-          <li key={index}>
-            <h4>Group {index + 1}</h4>
-            <ul>
-              {group.users.map((user) => (
-                <li key={user.id}>{user.name}</li>
-              ))}
-            </ul>
-            {explanations && explanations[index] && (
-              <p>Explanation: {explanations[index]}</p>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Group ID</TableCell>
+            <TableCell>User IDs</TableCell>
+            {/* Add other relevant columns as needed (e.g., match score, criteria values) */}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {results.map((group) => (
+            <TableRow key={group.id}>
+              <TableCell>{group.id}</TableCell>
+              <TableCell>{group.users.map(user => user.id).join(', ')}</TableCell>
+              {/* Populate other cells with relevant data */}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+
   );
 };
 
-export default MatchingResultsDisplay;"
+export default MatchingResultsDisplay;
+
+```
