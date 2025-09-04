@@ -2,7 +2,29 @@ import React, { useState, useEffect } from 'react';
 import * as api from '../utils/api';
 
 const NotificationSettings = () => {
-  // ... existing code
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const [emailEnabled, setEmailEnabled] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    const fetchNotificationPreferences = async () => {
+      try {
+        const preferences = await api.getNotificationPreferences(); // Implement this API call
+        setPushEnabled(preferences.push_enabled);
+        setEmailEnabled(preferences.email_enabled);
+      } catch (err) {
+        console.error("Error fetching notification preferences:", err);
+        setError("Failed to load notification settings.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotificationPreferences();
+  }, []);
+
 
   const handleSaveSettings = async () => {
     try {

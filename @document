@@ -1,116 +1,45 @@
 ```
-## API Changes for Updating User Profiles
+## New API Endpoints for Matching Result Notifications
 
-**Endpoint:** `/auth/me` (PUT)
+This document describes the new API endpoints added to the `network-api` backend for retrieving matching result notifications.
 
-**Request Body:**
+**Endpoint:**
 
-```json
-{
-  "region": "string (optional)",
-  "preferences": "string (optional)",
-  "interests": "string (optional)"
-}
-```
+- `GET /users/:userId/notifications/matching`
 
-**Response (Success):**
+**Description:**
 
-```json
-{
-  "id": "user_id",
-  "username": "username",
-  "email": "email",
-  "region": "region",
-  "preferences": "preferences",
-  "interests": "interests"
-}
-```
+Retrieves matching result notifications for a specific user.  Requires authentication.
 
+**Parameters:**
 
-**Response (Error):**
+- `userId` (path parameter): The ID of the user whose notifications are being retrieved.
 
-```json
-{
-  "error": "Error message"
-}
-```
+**Response:**
 
-HTTP Status Codes:
+- **200 OK:** Returns an array of matching result notification objects.  Each object may contain relevant information about the match, such as the number of matches found, the matching groups, etc.
+- **400 Bad Request:** Returned if the `userId` is invalid (e.g., not a number).
+- **401 Unauthorized:** Returned if the user is not authenticated.
+- **500 Internal Server Error:** Returned if there is an error fetching the notifications from the database.
 
-* 200 OK: Successful update.
-* 400 Bad Request: Invalid input data.
-* 401 Unauthorized: User not authenticated.
-* 500 Internal Server Error: Server error during update.
-
-
-## API Endpoint for Retrieving Matching Progress
-
-**Endpoint:** `/matching/progress` (GET)
-
-**Response (Success):**
-
-```json
-{
-  "state": "running" | "completed" | "failed",
-  "startTime": "ISO8601 timestamp",
-  "endTime": "ISO8601 timestamp (if completed or failed)",
-  "currentStage": "string (e.g., 'grouping', 'scoring', etc.)",
-  "progress": "number between 0 and 100 (optional)"
-}
-```
-
-**Response (Error):**
-
-```json
-{
-  "error": "Error message"
-}
-```
-
-HTTP Status Codes:
-* 200 OK: Successful retrieval of matching progress.
-* 500 Internal Server Error: Server error during retrieval.
-
-
-
-## API Endpoint for Retrieving Matching Groups and Member Data
-
-**Endpoint:** `/matching/groups` (GET)
-
-
-**Response (Success):**
+**Example Response (200 OK):**
 
 ```json
 [
   {
-    "groupId": "group_id",
-    "members": [
-      {
-        "userId": "user_id",
-        "username": "username",
-        "region": "user_region",
-        "preferences": "user_preferences",
-        "interests": "user_interests"
-       },
-       // ... other members
-    ]
+    "id": 1,
+    "message": "You have 3 new matches!",
+    "matchCount": 3,
+    "matchingGroupIds": [1, 2, 3], // Example: IDs of the matching groups
+    "timestamp": "2024-03-15T12:00:00Z"
   },
-  // ... other groups
+  {
+    "id": 2,
+    "message": "No new matches found.",
+    "matchCount": 0,
+    "timestamp": "2024-03-16T09:00:00Z"
+  }
 ]
 ```
-
-
-**Response (Error):**
-
-```json
-{
-  "error": "Error message"
-}
-```
-
-
-HTTP Status Codes:
-* 200 OK: Successful retrieval of matching groups.
-* 500 Internal Server Error: Server error during retrieval.
 
 ```

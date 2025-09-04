@@ -56,4 +56,23 @@ router.get('/users/:userId/notifications', authMiddleware, async (req, res) => {
     }
   });
 
+
+// GET /users/:userId/notifications/matching - Get matching result notifications
+router.get('/users/:userId/notifications/matching', authMiddleware, async (req, res) => {
+  try {
+    const userId = parseInt(req.params.userId, 10);
+    if (isNaN(userId)) {
+      return res.status(400).json({ error: 'Invalid userId' });
+    }
+
+    // ... logic to retrieve matching notifications from the database ...
+    const matchingNotifications = []; // Replace with actual data from the database
+    res.json(matchingNotifications);
+  } catch (error) {
+    console.error('Error fetching matching notifications:', error);
+    res.status(500).json({ error: 'Failed to fetch matching notifications' });
+  }
+});
+
+
 export default router;
