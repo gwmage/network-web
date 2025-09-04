@@ -1,80 +1,23 @@
 ```
-## New Matching API Endpoints
+## New API Endpoints for Matching Groups
 
-This document describes the new API endpoints added to the `network-api` for managing matching visualizations and weights.
+The following endpoints have been added to the `network-api` for managing matching groups:
 
-### 1. Fetching Visualization Data
+**GET /matching/groups**
 
-**Endpoint:** `/matching/visualization/:groupId`
-**Method:** GET
-**Description:** Retrieves visualization data for a specific matching group.
-**Request Parameters:**
-- `groupId` (path parameter): The ID of the matching group.
-**Response:**
-- **Success (200 OK):** Returns the visualization data. The format of the data can vary (e.g., JSON for charts, SVG for graphs, HTML).
-```json
-{
-  "nodes": [ /* Node data */ ],
-  "edges": [ /* Edge data */ ],
-  "criteria": [ /* Criteria used for matching */ ],
-  "weights": { /* Weights assigned to each criterion */ }
-}
-```
-- **Error (500 Internal Server Error):** Returns an error message if the visualization data cannot be retrieved.
-```json
-{
-  "error": "Failed to get matching visualization"
-}
-```
+Retrieves all matching groups with user details.
 
-### 2. Updating Matching Weights
+* **Response:** An array of group objects. Each group object contains:
+    * `id`: The group ID.
+    * `users`: An array of user objects belonging to the group. Each user object contains relevant user details (e.g., name, ID, matching criteria).
 
-**Endpoint:** `/matching/weights`
-**Method:** PUT
-**Description:** Updates the weights used by the matching algorithm.
-**Request Body:**  An object containing the new weights for each criterion.
-```json
-{
-  "criterion1": 0.5,
-  "criterion2": 0.3,
-  "criterion3": 0.2
-}
-```
-**Response:**
-- **Success (200 OK):** Returns the updated weights.
-```json
-{
-  "criterion1": 0.5,
-  "criterion2": 0.3,
-  "criterion3": 0.2
-}
-```
-- **Error (500 Internal Server Error):** Returns an error message if the weights cannot be updated.
-```json
-{
-  "error": "Failed to update matching weights"
-}
-```
+**PUT /matching/groups/:groupId**
 
-### 3. Getting Matching Weights
+Updates a specific matching group.  This endpoint allows admins to make manual adjustments to groups, such as moving users between groups or removing users from groups.
 
-**Endpoint:** `/matching/weights`
-**Method:** GET
-**Description:** Retrieves the current weights used by the matching algorithm.
-**Response:**
-- **Success (200 OK):** Returns an object containing the current weights for each criterion.
-```json
-{
-  "criterion1": 0.5,
-  "criterion2": 0.3,
-  "criterion3": 0.2
-}
+* **Request Parameters:**
+    * `groupId`: The ID of the group to update.
+* **Request Body:**  An object containing the updated group data.  Currently supports updating the `users` array. The structure should mirror the `users` array in the GET response, containing an array of user objects with their respective IDs.  Users not included in this array are considered removed from the group.
+* **Response:** The updated group object.
 ```
-- **Error (500 Internal Server Error):** Returns an error message if the weights cannot be retrieved.
-```json
-{
-  "error": "Failed to get matching weights"
-}
-```
-
-```
+---[END_OF_FILES]---

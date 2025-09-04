@@ -1,5 +1,6 @@
+```js
 import { Router } from 'express';
-import { matchUsers, getMatchingStatus, getMatchingResults, getMatchingVisualization, updateMatchingWeights, getMatchingWeights, getMatchingGroups } from '../controllers/matching'; // Import necessary functions
+import { matchUsers, getMatchingStatus, getMatchingResults, getMatchingVisualization, updateMatchingWeights, getMatchingWeights, getMatchingGroups, updateMatchingGroup } from '../controllers/matching'; // Import necessary functions
 
 const router = Router();
 
@@ -47,13 +48,24 @@ router.get('/progress', async (req, res) => {
 
 router.get('/groups', async (req, res) => {
     try {
-        const groups = await getMatchingGroups(); //make sure to await here
+        const groups = await getMatchingGroups();
         res.json(groups);
     } catch (error) {
         console.error("Error getting matching groups", error);
         res.status(500).json({ error: 'Failed to get matching groups' });
     }
 });
+
+router.put('/groups/:groupId', async (req, res) => {
+    try {
+        const updatedGroup = await updateMatchingGroup(req.params.groupId, req.body);
+        res.json(updatedGroup);
+    } catch (error) {
+        console.error("Error updating matching group:", error);
+        res.status(500).json({ error: 'Failed to update matching groups' });
+    }
+});
+
 
 
 router.get('/visualization/:groupId', async (req, res) => {
@@ -88,3 +100,4 @@ router.get('/weights', async (req, res) => {
 
 
 export default router;
+```

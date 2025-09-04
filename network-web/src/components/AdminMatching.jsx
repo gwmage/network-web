@@ -3,7 +3,10 @@ import React, { useState, useEffect } from 'react';
 import MatchingProgress from './MatchingProgress';
 import ErrorDisplay from './ErrorDisplay';
 import * as api from '../utils/api';
-import { Box, Button, TextField, Typography, Grid } from '@mui/material';
+import { Box, Button, TextField, Typography, Grid, List, ListItem, ListItemText, IconButton } from '@mui/material';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 const AdminMatching = () => {
   const [matchingStatus, setMatchingStatus] = useState(null);
@@ -12,7 +15,9 @@ const AdminMatching = () => {
   const [triggering, setTriggering] = useState(false);
   const [weights, setWeights] = useState({});
   const [weightsError, setWeightsError] = useState(null);
-
+  const [groups, setGroups] = useState([]);
+  const [loadingGroups, setLoadingGroups] = useState(true);
+  const [groupsError, setGroupsError] = useState(null);
 
   const fetchMatchingStatus = async () => {
     try {
@@ -28,10 +33,9 @@ const AdminMatching = () => {
       const data = await api.getMatchingResults();
       setMatchingResults(data);
     } catch (error) {
-      setMatchingError(error); 
+      setMatchingError(error);
     }
   };
-
 
   const triggerMatching = async () => {
     try {
@@ -44,6 +48,7 @@ const AdminMatching = () => {
       }
       await fetchMatchingStatus();
       await fetchMatchingResults();
+      fetchGroups(); // Fetch updated groups after matching
     } catch (error) {
       setMatchingError(error);
     } finally {
@@ -70,18 +75,69 @@ const AdminMatching = () => {
   const updateWeights = async () => {
     try {
       await api.updateMatchingWeights(weights);
-      fetchWeights(); // Refresh weights after update
+      fetchWeights();
     } catch (error) {
       setWeightsError(error);
     }
   };
 
 
+  const fetchGroups = async () => {
+    try {
+      setLoadingGroups(true);
+      const data = await api.getMatchingGroups();
+      setGroups(data);
+    } catch (error) {
+      setGroupsError(error);
+    } finally {
+      setLoadingGroups(false);
+    }
+  };
+
+
+  const onDragEnd = (result) => {
+    if (!result.destination) {
+      return;
+    }
+
+    const sourceGroupId = parseInt(result.source.droppableId, 10);
+    const destinationGroupId = parseInt(result.destination.droppableId, 10);
+
+    if (sourceGroupId === destinationGroupId) {
+      return;
+    }
+
+
+  };
+
   useEffect(() => {
     fetchMatchingStatus();
     fetchMatchingResults();
     fetchWeights();
+    fetchGroups();
   }, []);
+
+
+
+  const handleUserRemove = async (userId, groupId) => {
+      try {
+          const updatedGroups = groups.map(group => {
+              if (group.id === groupId) {
+                  return {
+                      ...group,
+                      users: group.users.filter(user => user.id !== userId)
+                  }
+              }
+              return group;
+          });
+          await api.updateMatchingGroup(groupId, { users: updatedGroups.find(group => group.id === groupId).users }); // Update in backend
+          setGroups(updatedGroups);
+      } catch (error) {
+          setGroupsError("Failed to remove user from group");
+      }
+  };
+
+
 
   return (
     <div>
@@ -96,6 +152,44 @@ const AdminMatching = () => {
         <MatchingProgress status={matchingStatus} results={matchingResults} />
       )}
 
+        <h2>Matching Groups</h2>
+
+      {groupsError && <ErrorDisplay error={groupsError} />}
+      {loadingGroups ? (
+          <p>Loading groups...</p>
+      ) : (
+
+          <DragDropContext onDragEnd={onDragEnd}>
+
+
+              {groups.map((group) => (
+                  <div key={group.id}>
+                      <h3>Group {group.id}</h3>
+                      <List>
+                          {group.users.map((user) => (
+                              <ListItem
+                                  key={user.id}
+                                  secondaryAction={
+                                      <IconButton edge="end" aria-label="delete" onClick={() => handleUserRemove(user.id, group.id)}>
+                                          <DeleteIcon />
+                                      </IconButton>
+                                  }
+                              >
+                                  <ListItemText primary={user.name} secondary={`ID: ${user.id}`} />
+                              </ListItem>
+                          ))}
+
+                      </List>
+
+                  </div>
+              ))}
+          </DragDropContext>
+      )}
+
+
+
+
+
       <Box mt={4}>
         <Typography variant="h5" gutterBottom>
           Algorithm Weights
@@ -106,7 +200,7 @@ const AdminMatching = () => {
               <TextField
                 label={criterion}
                 type="number"
-                inputProps={{ step: "0.1", min: "0", max: "1" }} // Add validation
+                inputProps={{ step: "0.1", min: "0", max: "1" }}
                 name={criterion}
                 value={weight}
                 onChange={handleWeightChange}
