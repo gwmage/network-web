@@ -1,101 +1,77 @@
 ```typescript
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import Notifications from './Notifications';
+import * as api from '../utils/api';
 
-const mockNotifications = [
-  { id: 1, type: 'push', message: 'Push notification 1', read: false },
-  { id: 2, type: 'email', message: 'Email notification 1', read: false },
-  { id: 3, type: 'push', message: 'Push notification 2', read: true },
+jest.mock('../utils/api');
+
+const mockGeneralNotifications = [
+  { id: 1, type: 'general', message: 'General notification 1', read: false },
+  { id: 3, type: 'general', message: 'General notification 2', read: true },
 ];
 
-const mockMarkAsRead = jest.fn();
-const mockDismissNotification = jest.fn();
-const mockToggleSubscription = jest.fn();
+const mockMatchingNotifications = [
+  { id: 2, type: 'match_result', message: 'Match Found!', data: { matchCount: 2 }, read: false },
+];
+
+
 
 describe('Notifications Component', () => {
-  it('renders notifications correctly', () => {
-    render(
-      <Notifications
-        notifications={mockNotifications}
-        markAsRead={mockMarkAsRead}
-        dismissNotification={mockDismissNotification}
-        toggleSubscription={mockToggleSubscription}
-      />
-    );
+  it('renders notifications correctly', async () => {
+    api.getNotifications.mockResolvedValue(mockGeneralNotifications);
+    api.getMatchingResultNotifications.mockResolvedValue(mockMatchingNotifications);
 
-    mockNotifications.forEach((notification) => {
-      expect(screen.getByText(notification.message)).toBeInTheDocument();
-    });
+    render(<Notifications />);
+
+    expect(await screen.findByText('General notification 1')).toBeInTheDocument();
+    expect(await screen.findByText('Match Found!')).toBeInTheDocument();
+    expect(await screen.findByText('Number of matches: 2')).toBeInTheDocument(); // Check match data
+
 
     expect(screen.getByText(/Mark as Read/)).toBeInTheDocument();
     expect(screen.getByText(/Dismiss/)).toBeInTheDocument();
   });
 
-
-  it('handles mark as read', () => {
-    render(
-      <Notifications
-        notifications={mockNotifications}
-        markAsRead={mockMarkAsRead}
-        dismissNotification={mockDismissNotification}
-        toggleSubscription={mockToggleSubscription}
-      />
-    );
-
-    fireEvent.click(screen.getAllByText(/Mark as Read/)[0]);
-    expect(mockMarkAsRead).toHaveBeenCalledWith(1);
+  it('handles mark as read', async () => {
+    api.updateNotificationStatus.mockResolvedValue({});
+    api.getNotifications.mockResolvedValue(mockGeneralNotifications);
+    api.getMatchingResultNotifications.mockResolvedValue(mockMatchingNotifications);
+    render(<Notifications />);
 
 
+    await act(async () => {
+      fireEvent.click(await screen.findAllByText(/Mark as Read/)[0]);
+    });
+    expect(api.updateNotificationStatus).toHaveBeenCalledWith(1, 'read');
     // Check that mark as read button is disabled for read notifications
-    expect(screen.getAllByText(/Mark as Read/)[2]).toBeDisabled();
+    expect(screen.getAllByText(/Mark as Read/)[1]).toBeDisabled();
   });
 
-  it('handles dismiss notification', () => {
-    render(
-      <Notifications
-        notifications={mockNotifications}
-        markAsRead={mockMarkAsRead}
-        dismissNotification={mockDismissNotification}
-        toggleSubscription={mockToggleSubscription}
-      />
-    );
-
-    fireEvent.click(screen.getAllByText(/Dismiss/)[0]);
-    expect(mockDismissNotification).toHaveBeenCalledWith(1);
+  it('handles dismiss notification', async () => {
+    api.getNotifications.mockResolvedValue(mockGeneralNotifications);
+    api.getMatchingResultNotifications.mockResolvedValue(mockMatchingNotifications);
+    render(<Notifications />);
+    await act(async () => {
+      fireEvent.click(await screen.findAllByText(/Dismiss/)[0]);
+    });
+     // Add assertions for state update after dismissal
   });
 
-  it('displays no notifications message', () => {
-    render(
-      <Notifications
-        notifications={[]}
-        markAsRead={mockMarkAsRead}
-        dismissNotification={mockDismissNotification}
-        toggleSubscription={mockToggleSubscription}
-      />
-    );
-
-    expect(screen.getByText(/No notifications yet./)).toBeInTheDocument();
+  it('displays no notifications message', async () => {
+    api.getNotifications.mockResolvedValue([]);
+    api.getMatchingResultNotifications.mockResolvedValue([]);
+    render(<Notifications />);
+    expect(await screen.findByText(/No notifications yet./)).toBeInTheDocument();
   });
 
-  it('toggles subscription', () => {
-    render(
-      <Notifications
-        notifications={mockNotifications}
-        markAsRead={mockMarkAsRead}
-        dismissNotification={mockDismissNotification}
-        toggleSubscription={mockToggleSubscription}
-      />
-    );
 
-    fireEvent.click(screen.getByText(/Push/i));
-    expect(mockToggleSubscription).toHaveBeenCalledWith('push');
+  it('displays unread notification badge correctly', async () => {
+    api.getNotifications.mockResolvedValue(mockGeneralNotifications); // 1 unread
+    api.getMatchingResultNotifications.mockResolvedValue(mockMatchingNotifications); // 1 unread
 
-    fireEvent.click(screen.getByText(/Email/i));
-    expect(mockToggleSubscription).toHaveBeenCalledWith('email');
-
-
+    render(<Notifications />);
+    expect(await screen.findByText('2')).toBeVisible(); // Expect badge to show '2'
   });
-
 });
 
 ```

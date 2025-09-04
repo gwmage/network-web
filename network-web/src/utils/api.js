@@ -123,4 +123,26 @@ export const getNotificationDeliveryStatus = async () => {
   }
 };
 
+
+export const getMatchingResultNotifications = async (userId) => {
+  try {
+    const response = await axios.get(`/users/${userId}/notifications/matching`);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting matching result notifications:', error);
+    throw error;
+  }
+};
+
+export const updateNotificationStatus = async (notificationId, status) => {
+  try {
+    const response = await axios.put(`/notifications/${notificationId}`, { status }); // Replace with your actual update endpoint
+    return response.data;
+  } catch (error) {
+    console.error('Error updating notification status:', error);
+    throw error;
+  }
+};
+
+
 // ... other API functions

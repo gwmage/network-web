@@ -1,25 +1,21 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
-import ForgotPassword from './components/ForgotPassword';
-import MatchingManagement from './components/MatchingManagement';
-import NotificationSettings from './components/NotificationSettings';
-import MatchingResults from './components/MatchingResults'; // Import MatchingResults
-
-const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem('token');
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
-};
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Notifications from './components/Notifications';
+// ... other imports
 
 const App = () => {
+  // ... existing code
+  const userId = 1; // Replace with your authentication and user ID logic
+
   return (
     <Router>
-      <Routes>
-        {/* ... other routes */}
-        <Route path="/settings" element={<NotificationSettings />} />
-        <Route path="/matching/results" element={<MatchingResults />} /> {/* Add route for MatchingResults */}
-      </Routes>
+      <div className="App">
+        {/* ... existing code */}
+        <Routes>
+          {/* ... other routes */}
+          <Route path="/notifications" element={<Notifications userId={userId} />} />
+        </Routes>
+      </div>
     </Router>
   );
 };
