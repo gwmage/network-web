@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import ForgotPassword from './components/ForgotPassword';
-import './App.css'; // Import your CSS file
+import './index.css'; // Corrected import path
 import RegisterForm from './components/RegisterForm.jsx'; // Import RegisterForm component
 // ... other imports
 
@@ -66,5 +66,3 @@ function MainAppContent({ user }) {
   }
 
 export default App;
-
----[END_OF_FILES]---
