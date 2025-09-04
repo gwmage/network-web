@@ -58,7 +58,10 @@ const RegisterForm = () => {
     email: '',
     password: '',
     name: '',
-    phoneNumber: '',
+    phoneNumber: '', // Contact information as phone number
+    region: '',
+    preferences: '',
+    interests: ''
   });
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState('');
@@ -66,24 +69,25 @@ const RegisterForm = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: '' });
-    setGeneralError(''); 
+    setGeneralError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({}); 
+    setErrors({});
     setGeneralError('');
 
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    const passwordRegex = /^.{6,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/;
     const nameRegex = /^.+$/;
-    const phoneRegex = /^.+$/;
+    const phoneRegex = /^.+$/; // Basic validation for now, can be more specific
+
 
     const newErrors = {};
-    if (!emailRegex.test(formData.email)) newErrors.email = 'Invalid email';
-    if (!passwordRegex.test(formData.password)) newErrors.password = 'Password must be at least 6 characters';
-    if (!nameRegex.test(formData.name)) newErrors.name = 'Name is required';
-    if (!phoneRegex.test(formData.phoneNumber)) newErrors.phoneNumber = 'Phone number is required';
+    if (!emailRegex.test(formData.email)) newErrors.email = 'Invalid email format.';
+    if (!passwordRegex.test(formData.password)) newErrors.password = 'Password must be at least 8 characters and include uppercase, lowercase, number and symbol.';
+    if (!nameRegex.test(formData.name)) newErrors.name = 'Name is required.';
+    if (!phoneRegex.test(formData.phoneNumber)) newErrors.phoneNumber = 'Phone number is required.';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -98,19 +102,22 @@ const RegisterForm = () => {
       console.error('Registration failed:', error);
       if (error.response) {
         const { status, data } = error.response;
-        if (status >= 400 && status < 500) {
-          setErrors(data.errors || {});
-          setGeneralError(data.message || 'Registration failed');
+
+        if (status === 400) {
+          setErrors(data.errors || data); // Use error object from backend
+          setGeneralError(data.message || 'Registration failed. Please check your input.');
         } else {
-          setGeneralError('Server error');
+            setGeneralError(data.message || 'A server error occurred.');
+
         }
       } else if (error.request) {
-        setGeneralError('Network error');
+        setGeneralError('Network error. Please check your connection.');
       } else {
-        setGeneralError('An error occurred');
+        setGeneralError('An error occurred during registration.');
       }
     }
   };
+
 
   return (
     <FormContainer>
@@ -130,6 +137,19 @@ const RegisterForm = () => {
       <Input type="tel" id="phoneNumber" name="phoneNumber" onChange={handleChange} value={formData.phoneNumber} placeholder="Enter your phone number" required />
       {errors.phoneNumber && <ErrorText>{errors.phoneNumber}</ErrorText>}
 
+        <Label htmlFor="region">Region:</Label>
+      <Input type="text" id="region" name="region" onChange={handleChange} value={formData.region} placeholder="Enter your region" required />
+      {errors.region && <ErrorText>{errors.region}</ErrorText>}
+
+        <Label htmlFor="preferences">Preferences:</Label>
+      <Input type="text" id="preferences" name="preferences" onChange={handleChange} value={formData.preferences} placeholder="Enter your preferences" required />
+      {errors.preferences && <ErrorText>{errors.preferences}</ErrorText>}
+
+        <Label htmlFor="interests">Interests:</Label>
+      <Input type="text" id="interests" name="interests" onChange={handleChange} value={formData.interests} placeholder="Enter your interests" required />
+      {errors.interests && <ErrorText>{errors.interests}</ErrorText>}
+
+
       {generalError && <ErrorText>{generalError}</ErrorText>}
 
       <Button type="submit" onClick={handleSubmit}>Register</Button>
@@ -138,4 +158,3 @@ const RegisterForm = () => {
 };
 
 export default RegisterForm;
----[END_OF_FILES]---
