@@ -1,7 +1,7 @@
-"import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { loginUser } from '../utils/api'; // Import the API function
-import './LoginForm.css'; // Import CSS file
+import { loginUser } from '../utils/api';
+import './LoginForm.css';
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ const LoginForm = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: '' }); // Clear error on input change
+    setErrors({ ...errors, [e.target.name]: '' });
     setGeneralError('');
   };
 
@@ -21,15 +21,16 @@ const LoginForm = () => {
     setGeneralError('');
 
     try {
-      const response = await loginUser(formData); // Use the API function
-      localStorage.setItem('token', response.token); // Store JWT in local storage
-      navigate('/'); // Redirect on success
+      const response = await loginUser(formData);
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response.user)); // Store user data
+      navigate('/');
     } catch (error) {
       if (error.response) {
         const errorData = error.response.data;
         if (error.response.status === 401) {
           setGeneralError(errorData.message || 'Invalid credentials');
-        } else if (error.response.status === 400) { // Check for 400 status (validation errors)
+        } else if (error.response.status === 400) {
           setErrors(errorData);
         } else {
           console.error('Login failed:', errorData);
@@ -47,16 +48,32 @@ const LoginForm = () => {
     <form onSubmit={handleSubmit} className="login-form">
       <div>
         <label htmlFor="email">Email:</label>
-        <input type="email" name="email" id="email" onChange={handleChange} value={formData.email} required />
-        {errors.email && <p className="error-message">{errors.email}</p>}
+        <input
+          type="email"
+          name="email"
+          id="email"
+          onChange={handleChange}
+          value={formData.email}
+          required
+          aria-label="Email"
+        />
+        {errors.email && <p className="error-message" role="alert">{errors.email}</p>}
       </div>
       <div>
         <label htmlFor="password">Password:</label>
-        <input type="password" name="password" id="password" onChange={handleChange} value={formData.password} required />
-        {errors.password && <p className="error-message">{errors.password}</p>}
+        <input
+          type="password"
+          name="password"
+          id="password"
+          onChange={handleChange}
+          value={formData.password}
+          required
+          aria-label="Password"
+        />
+        {errors.password && <p className="error-message" role="alert">{errors.password}</p>}
       </div>
 
-      {generalError && <p className="error-message">{generalError}</p>}
+      {generalError && <p className="error-message" role="alert">{generalError}</p>}
 
       <button type="submit">Login</button>
 
@@ -66,4 +83,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;"
+export default LoginForm;

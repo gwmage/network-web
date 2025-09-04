@@ -1,8 +1,9 @@
-"const express = require('express');
+const express = require('express');
 const router = express.Router();
 const User = require('../models/User'); // Import your User model
 const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator');
+// const nodemailer = require('nodemailer'); // Example using Nodemailer - install it: npm install nodemailer
 
 router.post(
   '/',
@@ -34,6 +35,27 @@ router.post(
       const newUser = new User({ email, password: hashedPassword, name, phoneNumber });
       await newUser.save();
 
+
+      //  Example email sending using Nodemailer (commented out - uncomment and configure)
+      /*
+      const transporter = nodemailer.createTransport({
+        service: 'your_email_service', // e.g., 'gmail'
+        auth: {
+          user: 'your_email@example.com',
+          pass: 'your_email_password',
+        },
+      });
+
+      const mailOptions = {
+        from: 'your_email@example.com',
+        to: email,
+        subject: 'Welcome to Network!',
+        text: 'Thank you for registering!',
+      };
+
+      await transporter.sendMail(mailOptions);
+      */
+
       res.status(201).json({ message: 'User registered successfully' });
     } catch (err) {
       console.error('Error registering user:', err);
@@ -42,4 +64,4 @@ router.post(
   }
 );
 
-module.exports = router;"
+module.exports = router;

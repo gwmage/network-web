@@ -1,8 +1,30 @@
-/**
- * Cancels a reservation.
- *
- * @param {string} reservationId - The ID of the reservation to cancel.
- * @param {string} [cancellationReason] - Optional reason for cancellation.
- * @returns {Promise<any>} - The response data from the server.
- * @throws {Error} If the cancellation fails.
- */
+## API Change: /auth/login Response
+
+The `/auth/login` API endpoint now returns user data along with the JWT in the successful login response (200 OK).
+
+**Previous Response:**
+
+```json
+{
+  "token": "your_jwt_token"
+}
+```
+
+**New Response:**
+
+```json
+{
+  "token": "your_jwt_token",
+  "user": {
+    "id": "user_id",
+    "name": "user_name",
+    "email": "user_email"
+  }
+}
+```
+
+This change allows the frontend to directly access user information upon successful login without needing a separate API call to fetch user details.
+
+
+
+---[END_OF_FILES]---
