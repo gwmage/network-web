@@ -1,7 +1,14 @@
 {
-  "functions": {
-    ".vercel/output/functions/fn-vercel-healthcheck.func/index.js": {
-      "runtime": "nodejs18.x"
+  "builds": [
+    {
+      "src": "network-web/package.json",
+      "use": "@vercel/next"
     }
-  }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "network-web"
+    }
+  ]
 }
