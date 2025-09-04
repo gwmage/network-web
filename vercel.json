@@ -1,17 +1,7 @@
 {
-  "builds": [
-    {
-      "src": "network-web/package.json",
-      "use": "@vercel/next",
-      "config": {
-        "distDir": "network-web/build"
-      }
+  "functions": {
+    ".vercel/output/functions/fn-vercel-healthcheck.func/index.js": {
+      "runtime": "nodejs18.x"
     }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/"
-    }
-  ]
+  }
 }
