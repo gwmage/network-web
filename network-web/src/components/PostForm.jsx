@@ -1,90 +1,28 @@
-```typescript
-import React, { useState, useEffect } from 'react';
-import { createPost, updatePost } from '../utils/api';
+import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid'; // Import uuid
 
-const PostForm = ({ post, onSubmit, onUpdate }) => {
-  const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    category: '',
-    tags: '',
-  });
-  const [error, setError] = useState(null);
+function PostForm({ onSubmit }) {
+  const [formData, setFormData] = useState({});
 
-  useEffect(() => {
-    if (post) {
-      setFormData({
-        ...post,
-        category: post.category || '',
-        tags: post.tags ? post.tags.join(',') : '',
-      });
-    }
-  }, [post]);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-
-    if (!formData.title) {
-      setError("Title is required.");
-      return;
-    }
-
-    if (!formData.content) {
-      setError("Content is required.");
-      return;
-    }
-
-
-    const updatedPostData = {
-      ...formData,
-      tags: formData.tags ? formData.tags.split(',').map((tag) => tag.trim()) : [],
-    };
-
-    try {
-      if (post) {
-        const updatedPost = await updatePost(post.id, updatedPostData);
-        onUpdate(updatedPost);
-      } else {
-        const newPost = await createPost(updatedPostData);
-        onSubmit(newPost);
-      }
-    } catch (error) {
-      setError("Failed to submit post. Please try again later.");
-      console.error("Error creating/updating post:", error);
-    }
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const dataWithUuid = { ...formData, id: uuidv4() };
+    onSubmit(dataWithUuid); 
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      {error && <div className="error-message">{error}</div>}
-
-      <label htmlFor="title">Title:</label>
-      <input type="text" name="title" id="title" value={formData.title} onChange={handleChange} required />
-
-      <label htmlFor="content">Content:</label>
-      <textarea name="content" id="content" value={formData.content} onChange={handleChange} required />
-
-      <label htmlFor="category">Category:</label>
-      <select name="category" id="category" value={formData.category} onChange={handleChange}>
-        <option value="">Select a category</option>
-        <option value="general">General</option>
-        <option value="technology">Technology</option>
-        <option value="other">Other</option>
-      </select>
-
-      <label htmlFor="tags">Tags (comma-separated):</label>
-      <input type="text" name="tags" id="tags" value={formData.tags} onChange={handleChange} />
-
-      <button type="submit">{post ? 'Update Post' : 'Create Post'}</button>
+      {/* Form inputs */}
+      <button type="submit">Submit</button>
     </form>
   );
-};
+}
 
 export default PostForm;
-
-```
