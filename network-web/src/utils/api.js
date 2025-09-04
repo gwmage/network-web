@@ -1,69 +1,40 @@
-import axios from 'axios';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL;
-
-// ... other API functions
-
-export const getNotificationPreferences = async () => {
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+export const fetchData = async (endpoint, options = {}) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/users/1/notifications/preferences`); // Replace 1 with actual user ID
-    return response.data;
+    const response = await fetch(`${API_URL}${endpoint}`, options);
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
   } catch (error) {
-    console.error('Error fetching notification preferences:', error);
-    throw error;
+    console.error("Error fetching data:", error);
+    throw error; // Re-throw the error to be handled by the caller
   }
 };
 
-export const updateNotificationPreferences = async (preferences) => {
+export const postData = async (endpoint, data, options = {}) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/users/1/notifications/preferences`, preferences); // Replace 1 with actual user ID
-    return response.data;
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      body: JSON.stringify(data),
+      ...options,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json(); // Attempt to parse error details
+      const errorMessage = errorData?.message || `HTTP error ${response.status}`;
+      throw new Error(errorMessage);
+    }
+
+    const responseData = await response.json();
+    return responseData;
   } catch (error) {
-    console.error('Error updating notification preferences:', error);
-    throw error;
+    console.error("Error posting data:", error);
+    throw error; // Re-throw the error to be handled by the caller
   }
 };
-
-
-export const removeUserFromGroup = async (groupId, userId) => {
-    try {
-        const response = await axios.delete(`${API_BASE_URL}/matching/groups/${groupId}/users/${userId}`);
-        return response.data;
-    } catch (error) {
-        console.error("Error removing user from group:", error);
-        throw error;
-    }
-};
-
-
-export const getMatchingCriteria = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/matching/criteria`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching matching criteria:', error);
-      throw error;
-    }
-  };
-  
-  export const addMatchingCriterion = async (criterion) => {
-    try {
-      const response = await axios.post(`${API_BASE_URL}/matching/criteria`, { criterion });
-      return response.data;
-    } catch (error) {
-      console.error('Error adding matching criterion:', error);
-      throw error;
-    }
-  };
-
-  export const removeMatchingCriterion = async (criterion) => {
-    try {
-        const response = await axios.delete(`${API_BASE_URL}/matching/criteria/${criterion}`);
-        return response.data;
-      } catch (error) {
-        console.error('Error removing matching criterion:', error);
-        throw error;
-      }
-  };
-
-// ... other API functions
