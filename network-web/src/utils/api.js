@@ -1,3 +1,4 @@
+```js
 import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
@@ -7,7 +8,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL;
 export const loginUser = async (credentials) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials);
-    return response.data; // Return both token and user data
+    return response.data;
   } catch (error) {
     console.error('Login failed:', error);
     throw error;
@@ -45,5 +46,28 @@ export const getMatchingWeights = async () => {
   }
 };
 
+export const getMatchingGroups = async () => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/matching/groups`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching matching groups:', error);
+        throw error;
+    }
+};
+
+
+export const updateMatchingGroup = async (groupId, updatedGroupData) => {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/matching/groups/${groupId}`, updatedGroupData);
+        return response.data;
+    } catch (error) {
+        console.error("Error updating matching group", error);
+        throw error;
+    }
+};
+
+
 
 // ... other API functions
+```
