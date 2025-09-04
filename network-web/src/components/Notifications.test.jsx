@@ -1,4 +1,3 @@
-```typescript
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import Notifications from './Notifications';
 import * as api from '../utils/api';
@@ -14,13 +13,26 @@ const mockMatchingNotifications = [
   { id: 2, type: 'match_result', message: 'Match Found!', data: { matchCount: 2 }, read: false },
 ];
 
+const mockPreferences = {
+  push_enabled: true,
+  email_enabled: false,
+  new_message_notifications: true,
+  new_connection_notifications: false,
+  matching_result_notifications: true,
+  time_window_start: '09:00',
+  time_window_end: '17:00',
+};
 
 
 describe('Notifications Component', () => {
-  it('renders notifications correctly', async () => {
+  beforeEach(() => {
     api.getNotifications.mockResolvedValue(mockGeneralNotifications);
     api.getMatchingResultNotifications.mockResolvedValue(mockMatchingNotifications);
+    api.getNotificationPreferences.mockResolvedValue(mockPreferences);
+  });
 
+
+  it('renders notifications correctly', async () => {
     render(<Notifications />);
 
     expect(await screen.findByText('General notification 1')).toBeInTheDocument();
@@ -34,8 +46,6 @@ describe('Notifications Component', () => {
 
   it('handles mark as read', async () => {
     api.updateNotificationStatus.mockResolvedValue({});
-    api.getNotifications.mockResolvedValue(mockGeneralNotifications);
-    api.getMatchingResultNotifications.mockResolvedValue(mockMatchingNotifications);
     render(<Notifications />);
 
 
@@ -48,8 +58,6 @@ describe('Notifications Component', () => {
   });
 
   it('handles dismiss notification', async () => {
-    api.getNotifications.mockResolvedValue(mockGeneralNotifications);
-    api.getMatchingResultNotifications.mockResolvedValue(mockMatchingNotifications);
     render(<Notifications />);
     await act(async () => {
       fireEvent.click(await screen.findAllByText(/Dismiss/)[0]);
@@ -66,12 +74,21 @@ describe('Notifications Component', () => {
 
 
   it('displays unread notification badge correctly', async () => {
-    api.getNotifications.mockResolvedValue(mockGeneralNotifications); // 1 unread
-    api.getMatchingResultNotifications.mockResolvedValue(mockMatchingNotifications); // 1 unread
-
     render(<Notifications />);
     expect(await screen.findByText('2')).toBeVisible(); // Expect badge to show '2'
   });
-});
 
-```
+
+  it('filters notifications based on preferences', async () => {
+    api.getNotificationPreferences.mockResolvedValue({
+      ...mockPreferences,
+      new_message_notifications: false,
+      matching_result_notifications: true
+    });
+
+    render(<Notifications />);
+
+    expect(await screen.findByText('Match Found!')).toBeVisible();
+    expect(screen.queryByText('General notification 1')).not.toBeInTheDocument();
+  });
+});
