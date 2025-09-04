@@ -1,45 +1,80 @@
 ```
-## New API Endpoints for Matching Result Notifications
+## New Matching API Endpoints
 
-This document describes the new API endpoints added to the `network-api` backend for retrieving matching result notifications.
+This document describes the new API endpoints added to the `network-api` for managing matching visualizations and weights.
 
-**Endpoint:**
+### 1. Fetching Visualization Data
 
-- `GET /users/:userId/notifications/matching`
-
-**Description:**
-
-Retrieves matching result notifications for a specific user.  Requires authentication.
-
-**Parameters:**
-
-- `userId` (path parameter): The ID of the user whose notifications are being retrieved.
-
+**Endpoint:** `/matching/visualization/:groupId`
+**Method:** GET
+**Description:** Retrieves visualization data for a specific matching group.
+**Request Parameters:**
+- `groupId` (path parameter): The ID of the matching group.
 **Response:**
-
-- **200 OK:** Returns an array of matching result notification objects.  Each object may contain relevant information about the match, such as the number of matches found, the matching groups, etc.
-- **400 Bad Request:** Returned if the `userId` is invalid (e.g., not a number).
-- **401 Unauthorized:** Returned if the user is not authenticated.
-- **500 Internal Server Error:** Returned if there is an error fetching the notifications from the database.
-
-**Example Response (200 OK):**
-
+- **Success (200 OK):** Returns the visualization data. The format of the data can vary (e.g., JSON for charts, SVG for graphs, HTML).
 ```json
-[
-  {
-    "id": 1,
-    "message": "You have 3 new matches!",
-    "matchCount": 3,
-    "matchingGroupIds": [1, 2, 3], // Example: IDs of the matching groups
-    "timestamp": "2024-03-15T12:00:00Z"
-  },
-  {
-    "id": 2,
-    "message": "No new matches found.",
-    "matchCount": 0,
-    "timestamp": "2024-03-16T09:00:00Z"
-  }
-]
+{
+  "nodes": [ /* Node data */ ],
+  "edges": [ /* Edge data */ ],
+  "criteria": [ /* Criteria used for matching */ ],
+  "weights": { /* Weights assigned to each criterion */ }
+}
+```
+- **Error (500 Internal Server Error):** Returns an error message if the visualization data cannot be retrieved.
+```json
+{
+  "error": "Failed to get matching visualization"
+}
+```
+
+### 2. Updating Matching Weights
+
+**Endpoint:** `/matching/weights`
+**Method:** PUT
+**Description:** Updates the weights used by the matching algorithm.
+**Request Body:**  An object containing the new weights for each criterion.
+```json
+{
+  "criterion1": 0.5,
+  "criterion2": 0.3,
+  "criterion3": 0.2
+}
+```
+**Response:**
+- **Success (200 OK):** Returns the updated weights.
+```json
+{
+  "criterion1": 0.5,
+  "criterion2": 0.3,
+  "criterion3": 0.2
+}
+```
+- **Error (500 Internal Server Error):** Returns an error message if the weights cannot be updated.
+```json
+{
+  "error": "Failed to update matching weights"
+}
+```
+
+### 3. Getting Matching Weights
+
+**Endpoint:** `/matching/weights`
+**Method:** GET
+**Description:** Retrieves the current weights used by the matching algorithm.
+**Response:**
+- **Success (200 OK):** Returns an object containing the current weights for each criterion.
+```json
+{
+  "criterion1": 0.5,
+  "criterion2": 0.3,
+  "criterion3": 0.2
+}
+```
+- **Error (500 Internal Server Error):** Returns an error message if the weights cannot be retrieved.
+```json
+{
+  "error": "Failed to get matching weights"
+}
 ```
 
 ```
