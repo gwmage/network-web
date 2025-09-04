@@ -40,15 +40,10 @@ const AdminMatching = () => {
   const triggerMatching = async () => {
     try {
       setTriggering(true);
-      const response = await fetch('/matching', { method: 'POST' });
-      if (!response.ok) {
-        const errorData = await response.json();
-        const errorMessage = errorData.message || `Failed to trigger matching: ${response.status}`;
-        throw new Error(errorMessage);
-      }
+      await api.triggerMatching();
       await fetchMatchingStatus();
       await fetchMatchingResults();
-      fetchGroups(); // Fetch updated groups after matching
+      fetchGroups();
     } catch (error) {
       setMatchingError(error);
     } finally {
@@ -158,15 +153,12 @@ const AdminMatching = () => {
       {loadingGroups ? (
           <p>Loading groups...</p>
       ) : (
-
-          <DragDropContext onDragEnd={onDragEnd}>
-
-
+          <div>
               {groups.map((group) => (
                   <div key={group.id}>
                       <h3>Group {group.id}</h3>
                       <List>
-                          {group.users.map((user) => (
+                          {group.users && group.users.map((user) => (
                               <ListItem
                                   key={user.id}
                                   secondaryAction={
@@ -178,12 +170,10 @@ const AdminMatching = () => {
                                   <ListItemText primary={user.name} secondary={`ID: ${user.id}`} />
                               </ListItem>
                           ))}
-
                       </List>
-
                   </div>
               ))}
-          </DragDropContext>
+          </div>
       )}
 
 
@@ -222,3 +212,4 @@ const AdminMatching = () => {
 export default AdminMatching;
 
 ```
+---[END_OF_FILES]---

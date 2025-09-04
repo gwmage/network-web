@@ -36,16 +36,6 @@ router.get('/results', async (req, res) => {
 });
 
 
-router.get('/progress', async (req, res) => {
-  try {
-    const progress = getMatchingProgress(); // Implement this function in your controller
-    res.json(progress);
-  } catch (error) {
-    console.error("Error getting matching progress:", error);
-    res.status(500).json({ error: 'Failed to get matching progress' });
-  }
-});
-
 router.get('/groups', async (req, res) => {
     try {
         const groups = await getMatchingGroups();
