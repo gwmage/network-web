@@ -1,4 +1,3 @@
-```js
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export const fetchData = async (endpoint, options = {}) => {
@@ -11,21 +10,43 @@ export const fetchData = async (endpoint, options = {}) => {
     return data;
   } catch (error) {
     console.error("Error fetching data:", error);
-    throw error; // Re-throw the error to be handled by the caller
+    throw error;
   }
 };
 
 export const postData = async (endpoint, data, options = {}) => {
-  // ... existing code
+  try {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      body: JSON.stringify(data),
+      ...options,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json(); // Attempt to parse error response
+      const errorMessage = errorData?.message || `HTTP error ${response.status}`;
+      throw new Error(errorMessage);
+    }
+
+    const responseData = await response.json();
+    return responseData;
+
+  } catch (error) {
+    console.error('Error posting data:', error);
+    throw error;
+  }
 };
 
-/**
- * Cancels a reservation.
- * @param {string} reservationId - The ID of the reservation to cancel.
- * @param {string} reason - The optional reason for cancellation.
- * @returns {Promise<void>}
- * @throws {Error} If the cancellation fails.
- */
+
+export const createApplication = async (applicationData) => {
+  return postData('/applications', applicationData);
+};
+
+
 export const cancelReservation = async (reservationId, reason = '') => {
   try {
     await fetchData(`/reservation/${reservationId}`, {
@@ -40,4 +61,3 @@ export const cancelReservation = async (reservationId, reason = '') => {
     throw error;
   }
 };
-```

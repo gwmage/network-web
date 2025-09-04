@@ -1,8 +1,8 @@
-"import React, { useState, useEffect } from 'react';
-import { getApplicationAPI } from '../api/application';
+import React, { useState, useEffect } from 'react';
+import { fetchData } from '../utils/api';
 import { Table, Pagination, Input, Button, Select, Form, message, Spin } from 'antd';
 import { ExportOutlined } from '@ant-design/icons';
-import { createApplication } from '../utils/api';
+import ApplicationForm from './ApplicationForm';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -13,53 +13,66 @@ const Applications: React.FC = () => {
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
   const [filter, setFilter] = useState({ region: '', career: '', search: '' });
   const [sort, setSort] = useState({ sortBy: '', sortOrder: 'asc' });
-  const [form] = Form.useForm();
-  const [submitting, setSubmitting] = useState(false);
 
-  // ... (Existing fetchData and related functions)
 
-  const onFinish = async (values) => {
-    setSubmitting(true);
+  const fetchData = async () => {
+    setLoading(true);
     try {
-      const response = await createApplication(values);
-      message.success(`Application submitted successfully! ID: ${response.id}`);
-      form.resetFields();
-      fetchData(); // Refresh the application list
+      const params = new URLSearchParams({
+        page: pagination.current,
+        limit: pagination.pageSize,
+        ...filter,
+        ...sort,
+      });
+
+      const data = await fetchData(`/applications?${params.toString()}`);
+      setApplications(data.applications);
+      setPagination({ ...pagination, total: data.total });
     } catch (error) {
-      console.error('Error submitting application:', error);
-      message.error('Failed to submit application. Please try again later.');
+      console.error('Error fetching applications:', error);
+      message.error('Failed to fetch applications. Please try again later.');
     } finally {
-      setSubmitting(false);
+      setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, [pagination.current, pagination.pageSize, filter, sort]);
+
+  const handleTableChange = (newPagination, filters, sorter) => {
+    setPagination(newPagination);
+    setFilter(filters);
+    setSort({ sortBy: sorter.field, sortOrder: sorter.order });
+  };
+
+  const columns = [
+    { title: 'ID', dataIndex: 'id', key: 'id' },
+    { title: 'User ID', dataIndex: 'userId', key: 'userId' },
+    { title: 'Region', dataIndex: 'region', key: 'region' },
+    { title: 'Career', dataIndex: 'career', key: 'career' },
+    { title: 'Self Introduction', dataIndex: 'selfIntroduction', key: 'selfIntroduction', ellipsis: true },
+    { title: 'Portfolio URL', dataIndex: 'portfolioUrl', key: 'portfolioUrl', render: (text) => <a href={text} target=\"_blank\" rel=\"noopener noreferrer\">{text}</a> },
+    { title: 'Created At', dataIndex: 'createdAt', key: 'createdAt' },
+    { title: 'Updated At', dataIndex: 'updatedAt', key: 'updatedAt' },
+  ];
+
+
   return (
     <div>
-      {/* ... (Existing search, filters, export button) */}
-
-      <Form form={form} onFinish={onFinish} layout=\"vertical\">
-        <Form.Item label=\"User ID\" name=\"userId\" rules={[{ required: true, message: 'Please input User ID!' }]}><Input type=\"number\" /></Form.Item>
-        <Form.Item label=\"Region\" name=\"region\" rules={[{ required: true, message: 'Please input region!' }]}><Input /></Form.Item>
-        <Form.Item label=\"Career\" name=\"career\" rules={[{ required: true, message: 'Please input career!' }]}><Input /></Form.Item>
-        <Form.Item label=\"Self Introduction\" name=\"selfIntroduction\" rules={[{ required: true, message: 'Please input self introduction!' }]}><Input.TextArea /></Form.Item>
-        <Form.Item label=\"Portfolio URL\" name=\"portfolioUrl\"><Input /></Form.Item>
-        <Form.Item>
-          <Button type=\"primary\" htmlType=\"submit\" loading={submitting}>Submit Application</Button>
-        </Form.Item>
-      </Form>
+      <ApplicationForm refreshData={fetchData} />
 
       <Spin spinning={loading}>
         <Table
           columns={columns}
           dataSource={applications}
-          loading={loading} // Use the loading state here
           pagination={pagination}
           onChange={handleTableChange}
-          rowKey=\"id\"
+          rowKey="id"
         />
       </Spin>
     </div>
   );
 };
 
-export default Applications;"
+export default Applications;

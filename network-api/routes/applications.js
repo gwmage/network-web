@@ -1,4 +1,4 @@
-"const express = require('express');
+const express = require('express');
 const router = express.Router();
 
 // Placeholder for database interaction (replace with your actual database logic)
@@ -9,7 +9,6 @@ router.post('/', (req, res) => {
   try {
     const { userId, region, career, selfIntroduction, portfolioUrl } = req.body;
 
-    // Basic validation (replace with more comprehensive validation as needed)
     if (!userId || !region || !career || !selfIntroduction) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
@@ -30,4 +29,43 @@ router.post('/', (req, res) => {
   }
 });
 
-module.exports = router;"
+
+router.get('/', (req, res) => {
+  try {
+    const { page = 1, limit = 10, region, career, search } = req.query;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    let filteredApplications = applications;
+
+    if (region) {
+      filteredApplications = filteredApplications.filter(app => app.region.includes(region));
+    }
+    if (career) {
+      filteredApplications = filteredApplications.filter(app => app.career.includes(career));
+    }
+    if (search) {
+      filteredApplications = filteredApplications.filter(app => {
+        return Object.values(app).some(value =>
+          String(value).toLowerCase().includes(search.toLowerCase())
+        );
+      });
+    }
+
+
+    const paginatedApplications = filteredApplications.slice(startIndex, endIndex);
+
+    res.json({
+      applications: paginatedApplications,
+      total: filteredApplications.length,
+    });
+
+
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+module.exports = router;
