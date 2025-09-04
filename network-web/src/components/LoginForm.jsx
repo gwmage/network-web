@@ -20,10 +20,28 @@ const LoginForm = () => {
     setErrors({});
     setGeneralError('');
 
+    // Client-side validation
+    const validationErrors = {};
+    if (!formData.email) {
+      validationErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      validationErrors.email = 'Invalid email format';
+    }
+    if (!formData.password) {
+      validationErrors.password = 'Password is required';
+    }
+    // Add more client-side validation as needed, mirroring backend rules
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+
     try {
       const response = await loginUser(formData);
       localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user)); // Store user data
+      localStorage.setItem('user', JSON.stringify(response.user));
       navigate('/');
     } catch (error) {
       if (error.response) {
