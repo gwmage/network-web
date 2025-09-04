@@ -1,23 +1,11 @@
 import { getNotificationPreferences } from './api'; // Import from api.js
 
-// Placeholder implementation for server-side push notifications
+// Placeholder implementation for client-side push notifications
 export const sendPushNotification = async (notificationData) => {
   try {
     const preferences = await getNotificationPreferences();
     if (preferences.push_enabled) {
-      console.warn("Push notifications are not fully implemented for this environment. This is a placeholder implementation.");
-      // Here you would integrate with a push notification service like Pusher
-      // Example (using Pusher - replace with your actual integration):
-      // const pusher = new Pusher({
-      //   appId: process.env.REACT_APP_PUSHER_APP_ID,
-      //   key: process.env.REACT_APP_PUSHER_APP_KEY,
-      //   secret: process.env.REACT_APP_PUSHER_APP_SECRET,
-      //   cluster: process.env.REACT_APP_PUSHER_CLUSTER,
-      //   useTLS: true
-      // });
-      // pusher.trigger('my-channel', 'my-event', notificationData);
-
-      // Fallback to browser notifications if possible (for development/testing)
+      // Check if browser notifications are supported and permitted
       if ("Notification" in window) {
         if (Notification.permission === "granted") {
           new Notification(notificationData.title, {
@@ -33,7 +21,11 @@ export const sendPushNotification = async (notificationData) => {
               });
             }
           });
+        } else {
+          console.warn("Push notifications are blocked by the user.");
         }
+      } else {
+        console.warn("This browser does not support push notifications.");
       }
     }
   } catch (error) {
@@ -42,7 +34,14 @@ export const sendPushNotification = async (notificationData) => {
 };
 
 export const handleCommentPushNotification = async (commentData, type) => {
-  // ... (rest of the function remains unchanged)
+  // Construct notification data based on comment type (reply or new comment)
+  const notificationData = {
+    title: type === 'reply' ? 'New Reply to Your Comment' : 'New Comment on Your Post',
+    body: commentData.content.slice(0, 50), // Display a preview of the comment
+    data: { postId: commentData.postId, commentId: commentData._id }, // Include relevant IDs
+  };
+
+  await sendPushNotification(notificationData);
 };
 
 export const handleReservationCancellationNotification = async (reservationId) => {
