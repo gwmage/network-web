@@ -12,6 +12,16 @@ export const loginUser = async (credentials) => {
   }
 };
 
+export const registerUser = async (userData) => {
+  try {
+    const response = await axios.post('/auth/register', userData);
+    return response.data;
+  } catch (error) {
+    console.error('Registration failed:', error);
+    throw error;
+  }
+};
+
 
 export const cancelReservation = async (reservationId, cancellationReason) => {
   try {
