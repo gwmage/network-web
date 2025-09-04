@@ -1,10 +1,11 @@
 ```jsx
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import MatchingResultsDisplay from './MatchingResultsDisplay';
 import MatchingCriteriaConfiguration from './MatchingCriteriaConfiguration';
 import ErrorDisplay from './ErrorDisplay';
 import * as api from '../utils/api';
-import { Box, Button, Typography, Grid, List, ListItem, ListItemText, IconButton } from '@mui/material';
+import { Box, Button, Typography, Grid, List, ListItem, ListItemText, IconButton, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 
@@ -126,6 +127,10 @@ const AdminMatching = () => {
       <Button onClick={triggerMatching} disabled={triggering} variant="contained" color="primary">
         {triggering ? 'Triggering...' : 'Trigger Matching'}
       </Button>
+      <Button component={Link} to="/admin/matching/progress" variant="contained" color="secondary" sx={{ ml: 2 }}>
+        View Matching Progress
+      </Button>
+
 
       {matchingError && <ErrorDisplay error={matchingError} />}
 
@@ -198,3 +203,4 @@ const AdminMatching = () => {
 export default AdminMatching;
 
 ```
+---[END_OF_FILES]---
