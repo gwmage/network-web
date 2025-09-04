@@ -1,1 +1,8 @@
-"{\"/applications\": {\"post\": {\"requestBody\": {\"description\": \"Application data\", \"required\": true, \"content\": {\"application/json\": {\"schema\": {\"type\": \"object\", \"properties\": {\"userId\": {\"type\": \"integer\"}, \"region\": {\"type\": \"string\"}, \"career\": {\"type\": \"string\"}, \"selfIntroduction\": {\"type\": \"string\"}, \"portfolioUrl\": {\"type\": \"string\"}}}, \"example\": {\"userId\": 123, \"region\": \"서울\", \"career\": \"3 years\", \"selfIntroduction\": \"I am a software developer.\", \"portfolioUrl\": \"https://myportfolio.com\"}}}}, \"responses\": {\"201\": {\"description\": \"Application created successfully\", \"content\": {\"application/json\": {\"schema\": {\"type\": \"object\", \"properties\": {\"id\": {\"type\": \"integer\"}, \"message\": {\"type\": \"string\"}}}, \"example\": {\"id\": 456, \"message\": \"Application submitted successfully\"}}}}, \"400\": {\"description\": \"Bad request\"}, \"500\": {\"description\": \"Internal server error\"}}}}}}"
+/**
+ * Cancels a reservation.
+ *
+ * @param {string} reservationId - The ID of the reservation to cancel.
+ * @param {string} [cancellationReason] - Optional reason for cancellation.
+ * @returns {Promise<any>} - The response data from the server.
+ * @throws {Error} If the cancellation fails.
+ */
