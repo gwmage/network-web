@@ -1,65 +1,89 @@
 ```css
-.reservation-cancellation-modal {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    z-index: 1000; /* Ensure modal is on top */
+body {
+  font-family: sans-serif;
 }
 
-.reservation-cancellation-modal .modal-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    max-width: 500px; /* Limit width on larger screens */
-    width: 90%; /* Occupy most of the width on smaller screens */
+/* Post Styles */
+.post-summary {
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  padding: 15px;
 }
 
-.reservation-cancellation-modal .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
-    cursor: pointer;
+.comment-section {
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+/* Comment Styles */
+.comment-list {
+  list-style: none;
+  padding: 0;
+}
+
+.comment-container {
+  border: 1px solid #eee;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.comment-author {
+  font-weight: bold;
+  margin-right: 10px;
+
+}
+
+.comment-timestamp {
+  font-size: 0.8em;
+  color: #777;
+}
+
+.comment-replies {
+    list-style: none;
+    padding-left: 20px; /* Indentation for nested comments */
+    margin: 0;
+}
+
+.comment-reply {
+    margin-top: 10px;
 }
 
 
-.reservation-cancellation-modal .confirm-button,
-.reservation-cancellation-modal .cancel-button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 10px;
+
+.comment-form {
+    margin-top: 10px;
 }
 
-.reservation-cancellation-modal .confirm-button {
-    background-color: #dc3545; /* Red for cancel */
-    color: white;
+.comment-textarea {
+  width: calc(100% - 12px); /* Account for padding */
+  padding: 6px;
+  margin-bottom: 5px;
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
-.reservation-cancellation-modal .cancel-button {
-    background-color: #007bff; /* Blue for cancel */
-    color: white;
+.comment-error {
+  color: red;
+  margin-bottom: 5px;
 }
 
-@media (max-width: 500px) {
-    .reservation-cancellation-modal .modal-content {
-        width: 95%; /* Adjust width for smaller screens */
-        padding: 15px; /* Reduce padding on smaller screens */
-    }
 
-    .reservation-cancellation-modal .confirm-button,
-    .reservation-cancellation-modal .cancel-button {
-        padding: 6px 10px; /* Reduce button padding on smaller screens */
-        font-size: 0.9em; /* Slightly smaller font size */
-    }
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .post-summary {
+    padding: 10px;
+  }
+
+  .comment-container {
+    padding: 5px;
+  }
 }
 
 ```

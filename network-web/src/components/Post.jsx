@@ -2,8 +2,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import CommentList from './CommentList';
+import './Post.css'; // Import CSS for styling
 
-const Post = ({ post }) => {
+const Post = ({ post, currentUser }) => {
   const formattedDate = format(new Date(post.createdAt), 'yyyy-MM-dd HH:mm:ss');
 
   return (
@@ -19,6 +21,11 @@ const Post = ({ post }) => {
       <Link to={`/posts/${post.id}`} className="read-more-link">
         Read More
       </Link>
+
+      {/* Comment section */}
+      <div className="comment-section">
+        <CommentList postId={post.id} currentUser={currentUser} />
+      </div>
     </div>
   );
 };

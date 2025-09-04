@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Comment from './Comment';
 import './CommentList.css';
-import api from '../api';
+import { getComments } from '../utils/api';
 
 const CommentList = ({ postId, currentUser, onCommentUpdate }) => {
   const [comments, setComments] = useState([]);
@@ -10,7 +10,7 @@ const CommentList = ({ postId, currentUser, onCommentUpdate }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const fetchedComments = await api.getComments(parseInt(postId, 10));
+        const fetchedComments = await getComments(postId);
         setComments(fetchedComments);
       } catch (error) {
         console.error("Error fetching comments:", error);
@@ -20,11 +20,12 @@ const CommentList = ({ postId, currentUser, onCommentUpdate }) => {
     fetchComments();
   }, [postId, onCommentUpdate]);
 
-  if (!comments || comments.length === 0) {
-    return <p>No comments yet.</p>;
-  }
 
   const renderComments = (commentList) => {
+    if (!commentList || commentList.length === 0) {
+      return <p>No comments yet.</p>;
+    }
+
     return (
       <ul className="comment-list">
         {commentList.map((comment) => (
@@ -32,7 +33,7 @@ const CommentList = ({ postId, currentUser, onCommentUpdate }) => {
             <Comment
               comment={comment}
               currentUser={currentUser}
-              onCommentUpdate={onCommentUpdate}
+              onCommentUpdate={onCommentUpdate} // Pass the update handler
             />
             {/* Render nested comments recursively */}
             {comment.children && renderComments(comment.children)}
@@ -42,11 +43,7 @@ const CommentList = ({ postId, currentUser, onCommentUpdate }) => {
     );
   };
 
-  return (
-    <div className="comment-list-container">
-      {renderComments(comments)}
-    </div>
-  );
+  return <div className="comment-list-container">{renderComments(comments)}</div>;
 };
 
 export default CommentList;

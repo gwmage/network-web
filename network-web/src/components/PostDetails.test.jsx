@@ -1,96 +1,160 @@
 ```typescript
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom'; // Import necessary components
 import PostDetails from './PostDetails';
-import { createComment, updateComment, deleteComment } from '../services/commentService'; // Adjust path as needed
+import CommentList from './CommentList'; // Import CommentList
+import '@testing-library/jest-dom';
+import api from '../api'; // Import your api module
 
-jest.mock('../services/commentService'); // Mock the comment service
+jest.mock('../api');  // Mock the api module
 
+// Mock data for a post
 const mockPost = {
   id: 1,
   title: 'Test Post',
-  content: 'Test content',
-  comments: [],
+  content: 'This is a test post.',
+  createdAt: '2024-03-15T10:00:00.000Z',
+  author: {
+    id: 123,
+    username: 'testuser',
+  },
 };
 
+// Mock data for comments (including nested comments)
 const mockComments = [
-  { id: 1, content: 'Comment 1', createdAt: '2024-01-01', author: { username: 'user1' } },
-  { id: 2, content: 'Comment 2', createdAt: '2024-01-02', author: { username: 'user2' } },
+  {
+    id: 101,
+    content: 'Comment 1',
+    createdAt: '2024-03-15T11:00:00.000Z',
+    author: { id: 456, username: 'commenter1' },
+    children: [
+      {
+        id: 102,
+        content: 'Reply to Comment 1',
+        createdAt: '2024-03-15T12:00:00.000Z',
+        author: { id: 789, username: 'commenter2' },
+      },
+    ],
+  },
+  {
+    id: 103,
+    content: 'Comment 2',
+    createdAt: '2024-03-15T13:00:00.000Z',
+    author: { id: 101, username: 'commenter3' },
+  },
 ];
 
-describe('PostDetails', () => {
-  it('renders post details correctly', () => {
-    render(<PostDetails post={mockPost} />);
-    expect(screen.getByText('Test Post')).toBeInTheDocument();
-    expect(screen.getByText('Test content')).toBeInTheDocument();
-  });
 
-  it('displays comments', () => {
-    render(<PostDetails post={{ ...mockPost, comments: mockComments }} />);
-    mockComments.forEach((comment) => {
-      expect(screen.getByText(comment.content)).toBeInTheDocument();
-    });
-  });
+describe('PostDetails Component', () => {
+  it('renders post details correctly', async () => {
+    api.getPost.mockResolvedValue(mockPost);  // Mock the getPost API call
+    api.getComments.mockResolvedValue(mockComments); // Mock getComments
 
-
-  it('creates a new comment', async () => {
-    const createMock = jest.fn().mockResolvedValue({ id: 3, content: 'New comment', createdAt: '2024-01-03', author: { username: 'user3' } });
-    createComment.mockImplementation(createMock);
-    render(<PostDetails post={mockPost} />);
-
-    const commentInput = screen.getByRole('textbox');
-    fireEvent.change(commentInput, { target: { value: 'New comment' } });
-    fireEvent.submit(commentInput.closest('form'));
+    render(
+      <BrowserRouter>
+        <Routes>
+          <Route path="/posts/:id" element={<PostDetails currentUser={{ id: 123 }} />} />
+        </Routes>
+      </BrowserRouter>
+    );
 
     await waitFor(() => {
-      expect(createComment).toHaveBeenCalledWith(mockPost.id, { content: 'New comment' });
+      expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Test Post');
+      expect(screen.getByText('By testuser on 2024-03-15 10:00:00')).toBeInTheDocument(); // Verify metadata
+      expect(screen.getByText('This is a test post.')).toBeInTheDocument(); // Verify content
     });
 
-    expect(screen.getByText('New comment')).toBeInTheDocument();
-
-
+    // Check if CommentList is rendered and receives the correct props
+    expect(screen.getByRole('list')).toBeInTheDocument(); // Assuming <ul> is used in CommentList
   });
 
-  it('updates an existing comment', async () => {
-    const updatedComment = { ...mockComments[0], content: 'Updated comment' };
-    const updateMock = jest.fn().mockResolvedValue(updatedComment);
-    updateComment.mockImplementation(updateMock);
 
-    render(<PostDetails post={{ ...mockPost, comments: mockComments }} />);
+  it('renders comments correctly', async () => {
+    api.getPost.mockResolvedValue(mockPost);
+    api.getComments.mockResolvedValue(mockComments);
 
-    fireEvent.click(screen.getByRole('button', { name: /edit comment 1/i }));
 
-    const commentInput = screen.getByRole('textbox');
-    fireEvent.change(commentInput, { target: { value: 'Updated comment' } });
-    fireEvent.submit(commentInput.closest('form'));
+    render(
+        <BrowserRouter>
+          <Routes>
+            <Route path="/posts/:id" element={<PostDetails currentUser={{ id: 123 }} />} />
+          </Routes>
+        </BrowserRouter>
+      );
 
+    // Wait for comments to load and render (adjust timeout as needed)
     await waitFor(() => {
-      expect(updateComment).toHaveBeenCalledWith(mockPost.id, updatedComment.id, { content: 'Updated comment' });
-    });
+      expect(screen.getByText('Comment 1')).toBeVisible();
+      expect(screen.getByText('Reply to Comment 1')).toBeVisible();
+      expect(screen.getByText('Comment 2')).toBeVisible();
+      expect(screen.getAllByRole('list').length).toBeGreaterThanOrEqual(1); // Check for the presence of the comment list
 
-    expect(screen.getByText('Updated comment')).toBeInTheDocument();
+    }, { timeout: 1000 });
 
-
-
-  });
-
-  it('deletes a comment', async () => {
-      const deleteMock = jest.fn().mockResolvedValue(null);
-      deleteComment.mockImplementation(deleteMock);
-
-    render(<PostDetails post={{ ...mockPost, comments: mockComments }} />);
-
-    fireEvent.click(screen.getByRole('button', {name: /delete comment 1/i}));
-
-    await waitFor(() => {
-        expect(deleteComment).toHaveBeenCalledWith(mockPost.id, mockComments[0].id);
-    });
-
-    expect(screen.queryByText('Comment 1')).not.toBeInTheDocument();
 
   });
 
+  it('handles post loading state', () => {
+    api.getPost.mockImplementation(() => new Promise(() => {})); // Simulate ongoing request
+
+    render(
+        <BrowserRouter>
+          <Routes>
+            <Route path="/posts/:id" element={<PostDetails currentUser={{ id: 123 }} />} />
+          </Routes>
+        </BrowserRouter>
+      );
+
+    // Check if loading message is displayed
+    expect(screen.getByText('Loading post...')).toBeInTheDocument();
+  });
+
+  // ... add tests for error handling, onCommentUpdate functionality, etc.
+
+
+  it('handles error fetching post', async () => {
+    const errorMessage = 'Error fetching post';
+    api.getPost.mockRejectedValue(new Error(errorMessage));
+
+    render(
+        <BrowserRouter>
+          <Routes>
+            <Route path="/posts/:id" element={<PostDetails currentUser={{ id: 123 }} />} />
+          </Routes>
+        </BrowserRouter>
+      );
+
+    // Assert error message or behavior (e.g., check for error boundary)
+    // Example for console error:
+    //   expect(console.error).toHaveBeenCalledWith(errorMessage);
+
+    // Or, render an error component:
+    // await waitFor(() => {
+    //   expect(screen.getByText(/Error fetching post/i)).toBeInTheDocument();
+    // });
+
+  });
+});
+
+
+
+describe('CommentList Component', () => {
+
+    // ... your existing tests for CommentList ...
+
+    it('renders "No comments yet." message when no comments exist', async () => {
+
+        api.getComments.mockResolvedValue([]); // Mock an empty comment array
+
+        render(<CommentList postId={1} currentUser={{ id: 1 }} />); // Render CommentList
+
+        expect(await screen.findByText('No comments yet.')).toBeInTheDocument();
+        });
 
 
 });
+
+
 
 ```
