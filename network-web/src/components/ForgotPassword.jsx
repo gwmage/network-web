@@ -1,6 +1,6 @@
-"import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './ForgotPassword.css'; // Import CSS
+import './ForgotPassword.css';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -12,7 +12,7 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('/auth/password-recovery', {
+      const response = await fetch('/auth/forgot-password', { // Updated endpoint
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -29,12 +29,12 @@ const ForgotPassword = () => {
         }, 3000);
       } else {
         const errorData = await response.json();
-        setMessage(errorData.message);
+        setMessage(errorData.message || 'Password reset failed.'); // More specific error message
         setIsError(true);
       }
     } catch (error) {
       console.error('An error occurred:', error);
-      setMessage('An error occurred during password reset.');
+      setMessage('An error occurred during password reset. Please try again later.');
       setIsError(true);
     }
   };
@@ -44,12 +44,19 @@ const ForgotPassword = () => {
       <h2>Forgot Password</h2>
       <div>
         <label htmlFor="email">Email:</label>
-        <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          aria-label="Email"
+        />
       </div>
       <button type="submit">Reset Password</button>
-      {message && <p className={isError ? 'error-message' : 'success-message'}>{message}</p>}
+      {message && <p className={isError ? 'error-message' : 'success-message'} role="alert">{message}</p>}
     </form>
   );
 };
 
-export default ForgotPassword;"
+export default ForgotPassword;
