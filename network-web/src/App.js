@@ -8,16 +8,23 @@ import RegisterForm from './components/RegisterForm.jsx'; // Import RegisterForm
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    setIsLoggedIn(!!token); // Update login status based on token presence
+    const storedUser = localStorage.getItem('user');
+
+    if (token && storedUser) {
+      setIsLoggedIn(true);
+      setUser(JSON.parse(storedUser));
+    }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setIsLoggedIn(false);
+    setUser(null);
   };
 
   return (
@@ -33,11 +40,11 @@ const App = () => {
 
 
         <Routes>
-        <Route path="/login" element={isLoggedIn ? <Navigate to="/" /> : <LoginForm />} />
+          <Route path="/login" element={isLoggedIn ? <Navigate to="/" /> : <LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route
             path="/"
-            element={isLoggedIn ? <MainAppContent /> : <Navigate to="/login" />}
+            element={isLoggedIn ? <MainAppContent user={user} /> : <Navigate to="/login" />}
           />
           {/* ... other routes */}
           <Route path="/password-reset" element={<ForgotPassword />} />
@@ -48,14 +55,16 @@ const App = () => {
 };
 
 
-function MainAppContent() {
+function MainAppContent({ user }) {
     return (
       <div>
          {/* Content displayed when user is logged in  */}
-         <h1>Welcome to the App!</h1>
+         <h1>Welcome to the App, {user && user.name}!</h1>
          {/* Rest of your app content */}
       </div>
     );
   }
 
 export default App;
+
+---[END_OF_FILES]---
