@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { matchUsers, getMatchingStatus, getMatchingResults } from '../controllers/matching'; // Import getMatchingResults
+import { matchUsers, getMatchingStatus, getMatchingResults, getMatchingVisualization, updateMatchingWeights, getMatchingWeights, getMatchingGroups } from '../controllers/matching'; // Import necessary functions
 
 const router = Router();
 
@@ -47,7 +47,7 @@ router.get('/progress', async (req, res) => {
 
 router.get('/groups', async (req, res) => {
     try {
-        const groups = getMatchingGroups();
+        const groups = await getMatchingGroups(); //make sure to await here
         res.json(groups);
     } catch (error) {
         console.error("Error getting matching groups", error);
@@ -56,6 +56,35 @@ router.get('/groups', async (req, res) => {
 });
 
 
-export default router;
+router.get('/visualization/:groupId', async (req, res) => {
+  try {
+    const visualization = await getMatchingVisualization(req.params.groupId);
+    res.json(visualization);
+  } catch (error) {
+    console.error("Error getting matching visualization:", error);
+    res.status(500).json({ error: 'Failed to get matching visualization' });
+  }
+});
 
----[END_OF_FILES]---
+router.put('/weights', async (req, res) => {
+  try {
+    const updatedWeights = await updateMatchingWeights(req.body);
+    res.json(updatedWeights);
+  } catch (error) {
+    console.error("Error updating matching weights:", error);
+    res.status(500).json({ error: 'Failed to update matching weights' });
+  }
+});
+
+router.get('/weights', async (req, res) => {
+  try {
+    const weights = await getMatchingWeights();
+    res.json(weights);
+  } catch (error) {
+    console.error("Error getting matching weights:", error);
+    res.status(500).json({ error: 'Failed to get matching weights' });
+  }
+});
+
+
+export default router;
