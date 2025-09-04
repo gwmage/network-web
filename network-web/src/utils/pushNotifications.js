@@ -1,7 +1,6 @@
-```typescript
 import { getNotificationPreferences } from '../api/user';
 
-export const sendPushNotification = async (notificationData: any) => {
+export const sendPushNotification = async (notificationData) => {
   try {
     const preferences = await getNotificationPreferences();
     if (preferences.push) {
@@ -34,11 +33,11 @@ export const sendPushNotification = async (notificationData: any) => {
   }
 };
 
-export const handleCommentPushNotification = async (commentData: any, type: string) => {
+export const handleCommentPushNotification = async (commentData, type) => {
   // ... (rest of the function remains unchanged)
 };
 
-export const handleReservationCancellationNotification = async (reservationId: string) => {
+export const handleReservationCancellationNotification = async (reservationId) => {
   const notificationData = {
     title: 'Reservation Cancelled',
     body: `Your reservation (ID: ${reservationId}) has been successfully cancelled.`,
@@ -47,6 +46,3 @@ export const handleReservationCancellationNotification = async (reservationId: s
 
   await sendPushNotification(notificationData);
 };
-```
-
----[END_OF_FILES]---
