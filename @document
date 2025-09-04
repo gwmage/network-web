@@ -1,150 +1,72 @@
 ```
-## Comment API Endpoints
-
-This document describes the API endpoints for managing comments.
-
-**Base URL:** `/comments`
-
-### 1. Get Comments for a Post
-
-**Endpoint:** `/comments/{postId}`
-**Method:** `GET`
-**Description:** Retrieves all comments for a specific post, including nested comments.
-
-**Path Parameters:**
-
-- `postId` (integer, required): The ID of the post.
-
-**Response (200 OK):**
-
-```json
-[
-  {
-    "id": 1,
-    "content": "This is a comment.",
-    "createdAt": "2024-03-10T12:30:00Z",
-    "author": {
-      "id": 123,
-      "username": "user123"
-    },
-    "children": [
-        {
-          "id": 2,
-          "content": "This is a reply.",
-          "createdAt": "2024-03-10T13:00:00Z",
-          "author": {
-            "id": 456,
-            "username": "user456"
-          },
-          "children": [] // Potentially more nested comments
-        }
-    ]
-  },
-  // ... more comments
-]
+/**
+ * @swagger
+ * /posts/search:
+ *   get:
+ *     summary: Search for posts by keyword, title, content, or author.
+ *     parameters:
+ *       - in: query
+ *         name: keyword
+ *         schema:
+ *           type: string
+ *         description: Keyword to search in title and content.
+ *       - in: query
+ *         name: title
+ *         schema:
+ *           type: string
+ *         description: Filter posts by title.
+ *       - in: query
+ *         name: content
+ *         schema:
+ *           type: string
+ *         description: Filter posts by content.
+ *       - in: query
+ *         name: author
+ *         schema:
+ *           type: string
+ *         description: Filter posts by author.
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *           enum: [relevance, recency]
+ *         description: Sort order (relevance or recency). Defaults to recency.
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number for pagination. Defaults to 1.
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of posts per page. Defaults to 10.
+ *     responses:
+ *       200:
+ *         description: Returns a list of posts and metadata.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Post'  # Assuming you have a Post schema
+ *                 meta:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *                       description: Total number of posts matching the criteria.
+ *                     page:
+ *                       type: integer
+ *                       description: Current page number.
+ *                     limit:
+ *                       type: integer
+ *                       description: Number of posts per page.
+ *       500:
+ *         description: Internal Server Error
+ */
 ```
-
-**Error Responses:**
-
-- 500 Internal Server Error: If an error occurs during retrieval.
-
-
-### 2. Create a New Comment
-
-**Endpoint:** `/comments/{postId}`
-**Method:** `POST`
-**Description:** Creates a new comment on a specific post.
-
-**Path Parameters:**
-
-- `postId` (integer, required): The ID of the post.
-
-**Request Body:**
-
-```json
-{
-  "content": "This is the comment text.",
-  "parentCommentId": 123  // Optional: ID of the parent comment for replies. Omit for top-level comments.
-}
-```
-
-**Response (201 Created):**
-
-```json
-{
-  "id": 1,
-  "content": "This is a comment.",
-  "createdAt": "2024-03-10T12:30:00Z",
-  "author": {
-    "id": 123,
-    "username": "user123"
-  }
-}
-```
-
-
-**Error Responses:**
-
-- 400 Bad Request: If the request body is invalid or missing required fields.
-- 401 Unauthorized: If the user is not authenticated.
-- 404 Not Found: If the post or parent comment (if specified) does not exist.
-- 500 Internal Server Error: If an error occurs during creation.
-
-
-
-### 3. Update an Existing Comment
-
-**Endpoint:** `/comments/{commentId}`
-**Method:** `PUT`
-**Description:** Updates the content of an existing comment. Only the author of the comment can update it.
-
-**Path Parameters:**
-- `commentId` (integer, required): The ID of the comment to update.
-
-
-**Request Body:**
-
-```json
-{
-  "content": "This is the updated comment text."
-}
-```
-
-**Response (200 OK):**
-
-Returns the updated comment object (similar to the response of the POST endpoint).
-
-**Error Responses:**
-
-- 400 Bad Request: If the request body is invalid.
-- 401 Unauthorized: If the user is not the author of the comment.
-- 404 Not Found: If the comment does not exist.
-- 500 Internal Server Error: If an error occurs during the update.
-
-
-### 4. Delete a Comment
-
-**Endpoint:** `/comments/{commentId}`
-**Method:** `DELETE`
-**Description:** Deletes a comment. Only the author of the comment can delete it.
-
-**Path Parameters:**
-
-- `commentId` (integer, required): The ID of the comment to delete.
-
-**Response (204 No Content):**
-
-No content is returned on successful deletion.
-
-**Error Responses:**
-
-- 401 Unauthorized: If the user is not the author of the comment.
-- 404 Not Found: If the comment does not exist.
-- 500 Internal Server Error: If an error occurs during deletion.
-
-**Nested Comments:**
-
-Nested comments are handled by including a "children" array in the comment object. This array contains any direct replies to the comment. Replies to replies are nested within the "children" array of their parent comment and so on, creating a tree structure.
-
-
-```
+---[END_OF_FILES]---

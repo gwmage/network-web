@@ -1,11 +1,39 @@
+```
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export const fetchData = async (endpoint, options = {}) => {
-  // ... (Existing fetchData function remains unchanged)
+  const url = `${API_URL}${endpoint}`;
+  const response = await fetch(url, options);
+
+  if (!response.ok) {
+    const errorData = await response.json(); // Attempt to parse error data from the response
+    const errorMessage = errorData?.message || response.statusText; // Use error message from response if available
+    throw new Error(errorMessage);
+  }
+
+  try {
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    // Handle cases where response is not JSON (e.g., empty response for DELETE)
+    if (response.status === 204) {
+      return null; // Or any other appropriate value for successful empty responses
+    }
+    console.error("Error parsing JSON response:", error);
+    throw error;
+  }
 };
 
 export const postData = async (endpoint, data, options = {}) => {
-  // ... (Existing postData function remains unchanged)
+  return fetchData(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      // ... any other headers
+    },
+    body: JSON.stringify(data),
+    ...options, // Allow overriding default options
+  });
 };
 
 
@@ -63,3 +91,24 @@ export const createApplication = async (applicationData) => {
 export const cancelReservation = async (reservationId, reason = '') => {
   // ... (Existing cancelReservation function remains unchanged)
 };
+
+export const searchPosts = async (keyword, filters, sort, page, limit) => {
+  try {
+    const queryParams = new URLSearchParams({
+      keyword,
+      title: filters.title,
+      content: filters.content,
+      author: filters.author,
+      sort,
+      page,
+      limit,
+    }).toString();
+
+    const data = await fetchData(`/posts/search?${queryParams}`);
+    return data;
+  } catch (error) {
+    console.error("Error searching posts:", error);
+    throw error;
+  }
+};
+```

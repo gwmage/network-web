@@ -5,6 +5,7 @@ import PostDetails from './PostDetails';
 import PostForm from './PostForm';
 import Filters from './Filters';
 import LoadingIndicator from './LoadingIndicator';
+import PostSearch from './PostSearch'; // Import PostSearch component
 import { deletePost, updatePost } from '../utils/api'; // Import API functions
 
 import './CommunityBoard.css'; // Import CSS file
@@ -14,6 +15,7 @@ const CommunityBoard = () => {
   const [loading, setLoading] = useState(true);
   const [currentPost, setCurrentPost] = useState(null);
   const [filters, setFilters] = useState({ category: '', tags: [] });
+  const [searchResults, setSearchResults] = useState([]); // State for search results
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -32,19 +34,62 @@ const CommunityBoard = () => {
     fetchPosts();
   }, [filters]);
 
-  // ... (rest of the code remains the same)
+  const handlePostCreated = (newPost) => {
+    setPosts([newPost, ...posts]);
+  };
+
+  const handlePostSelect = (post) => {
+    setCurrentPost(post);
+  };
+
+  const handlePostDelete = async (postId) => {
+    try {
+      await deletePost(postId);
+      setPosts(posts.filter((post) => post.id !== postId));
+      if (currentPost && currentPost.id === postId) {
+        setCurrentPost(null);
+      }
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      // Handle error, e.g., display error message
+    }
+  };
+
+
+  const handlePostUpdate = async (updatedPost) => {
+    try {
+      await updatePost(updatedPost.id, updatedPost);
+      setPosts(posts.map((post) => (post.id === updatedPost.id ? updatedPost : post)));
+      if (currentPost && currentPost.id === updatedPost.id) {
+        setCurrentPost(updatedPost);
+      }
+    } catch (error) {
+      console.error("Error updating post:", error);
+    }
+  };
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
+
+  const handleSearch = (results) => {
+    setSearchResults(results);
+    setLoading(false); // Set loading to false after receiving search results
+  };
+
 
   return (
-    <div className="community-board-container"> {/* Added container */}
+    <div className="community-board-container">
       <h1>Community Board</h1>
       <PostForm onPostCreated={handlePostCreated} />
+      <PostSearch onSearch={handleSearch} /> {/* Integrate PostSearch */}
       {loading ? (
         <LoadingIndicator />
       ) : (
         <>
           <Filters onFilterChange={handleFilterChange} />
           <PostList
-            posts={posts}
+            posts={searchResults.length > 0 ? searchResults : posts} // Display search results if available
             onPostSelect={handlePostSelect}
             onPostDelete={handlePostDelete}
             onPostUpdate={handlePostUpdate}

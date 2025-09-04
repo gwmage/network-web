@@ -5,33 +5,16 @@ import { format } from 'date-fns'; // Import date-fns for formatting
 import Filters from './Filters';
 
 
-const PostList = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const PostList = ({ posts, onPostSelect, onPostDelete, onPostUpdate }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
-  const [totalPosts, setTotalPosts] = useState(0);
-  const [filters, setFilters] = useState({});
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setLoading(true);
-      try {
-        const data = await api.getPosts(currentPage, postsPerPage, filters);
-        setPosts(data.posts || data.items || []); // Handle both "items" and "posts"
-        setTotalPosts(data.total || data.meta?.totalItems || 0); // Extract total from different data structures
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchPosts();
-  }, [currentPage, postsPerPage, filters]);
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
-  const totalPages = Math.ceil(totalPosts / postsPerPage);
+  const totalPages = Math.ceil(posts.length / postsPerPage);
   const pageNumbers = [];
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
@@ -43,29 +26,24 @@ const PostList = () => {
 
   const handleDelete = async (postId) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
-      try {
-        await api.deletePost(postId);
-        setPosts(posts.filter((post) => post.id !== postId));
-      } catch (error) {
-        console.error('Error deleting post:', error);
-        alert('Failed to delete post. Please try again later.');
+        try {
+          await api.deletePost(postId);
+          onPostDelete(postId)
+        } catch (error) {
+          console.error('Error deleting post:', error);
+          alert('Failed to delete post. Please try again later.');
+        }
       }
-    }
-  };
-
-  const handleFilterChange = (updatedFilters) => {
-    setFilters(updatedFilters);
-    setCurrentPage(1); // Reset to first page when filters change
   };
 
 
-  if (loading) return <div>Loading posts...</div>; // More descriptive loading message
-  if (error) return <div>Error: {error.message}</div>;
+  if (!posts) return <div>Loading posts...</div>; // More descriptive loading message
+
 
   return (
     <div>
-      <Filters onChange={handleFilterChange} /> {/* Integrate Filters component */}
-      {posts.map((post) => (
+
+      {currentPosts.map((post) => (
         <div key={post.id} className="post-container">
           <h3>{post.title}</h3>
           <p>{post.content}</p>
