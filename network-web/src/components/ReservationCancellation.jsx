@@ -1,33 +1,37 @@
-```typescript
 import React, { useState } from 'react';
+import { cancelReservation } from '../utils/api';
+import { handleReservationCancellationNotification } from '../utils/pushNotifications';
+import ErrorDisplay from './ErrorDisplay'; // Import your error component
 
 const ReservationCancellation = ({ reservation, onClose, onCancel }) => {
   const [cancellationReason, setCancellationReason] = useState('');
+  const [error, setError] = useState(null);
 
   const handleCancellation = async () => {
     try {
-      const response = await fetch(`/reservations/${reservation.id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-      }
-
-      // Display success message to the user
+      await cancelReservation(reservation.id, cancellationReason);
+      handleReservationCancellationNotification(reservation.id);
       alert('Reservation cancelled successfully!');
-      onCancel(); // Callback to update the parent component
+      onCancel();
     } catch (error) {
       console.error('Error cancelling reservation:', error);
-      alert(error.message); // Display error message to the user
+      setError(error.message); // Set error message to state
     }
   };
 
   return (
-    // ... rest of the component code ...
+    <div className="reservation-cancellation-modal">
+      <h3>Cancel Reservation</h3>
+      <p>Are you sure you want to cancel reservation {reservation.id}?</p>
+      <label htmlFor="cancellationReason">Reason for Cancellation (Optional):</label>
+      <textarea id="cancellationReason" value={cancellationReason} onChange={(e) => setCancellationReason(e.target.value)} />
+      {error && <ErrorDisplay message={error} />}
+      <div className="modal-buttons">
+        <button onClick={onClose}>Close</button>
+        <button onClick={handleCancellation}>Confirm Cancellation</button>
+      </div>
+    </div>
   );
 };
 
 export default ReservationCancellation;
-```
