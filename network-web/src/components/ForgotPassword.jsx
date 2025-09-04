@@ -12,7 +12,7 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('/auth/forgot-password', { // Updated endpoint
+      const response = await fetch('/auth/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ const ForgotPassword = () => {
         }, 3000);
       } else {
         const errorData = await response.json();
-        setMessage(errorData.message || 'Password reset failed.'); // More specific error message
+        setMessage(errorData.message || 'Password reset failed.');
         setIsError(true);
       }
     } catch (error) {
