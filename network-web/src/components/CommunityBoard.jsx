@@ -1,29 +1,29 @@
-```javascript
 import React, { useState, useEffect } from 'react';
 import PostList from './PostList';
 import PostDetails from './PostDetails';
 import PostForm from './PostForm';
 import Filters from './Filters';
 import LoadingIndicator from './LoadingIndicator';
-import PostSearch from './PostSearch'; // Import PostSearch component
-import { deletePost, updatePost } from '../utils/api'; // Import API functions
+import PostSearch from './PostSearch';
+import { deletePost } from '../utils/api';
 
-import './CommunityBoard.css'; // Import CSS file
+import './CommunityBoard.css';
 
 const CommunityBoard = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPost, setCurrentPost] = useState(null);
   const [filters, setFilters] = useState({ category: '', tags: [] });
-  const [searchResults, setSearchResults] = useState([]); // State for search results
+  const [searchResults, setSearchResults] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null); // Add currentUser state
 
   useEffect(() => {
     const fetchPosts = async () => {
+      setLoading(true);
       try {
-        const queryParams = new URLSearchParams(filters).toString();
-        const response = await fetch(`/api/posts?${queryParams}`); // Updated API endpoint
-        const data = await response.json();
-        setPosts(data.items || data.posts);
+        // Fetch initial posts without filters (or apply default filters if needed)
+        const fetchedPosts = await getPosts();
+        setPosts(fetchedPosts.data);
       } catch (error) {
         console.error("Error fetching posts:", error);
       } finally {
@@ -31,8 +31,14 @@ const CommunityBoard = () => {
       }
     };
 
+
+    // Simulated user login - replace with your actual authentication logic
+    const user = { id: 1, username: 'testuser' };
+    setCurrentUser(user);
+
+
     fetchPosts();
-  }, [filters]);
+  }, []);
 
   const handlePostCreated = (newPost) => {
     setPosts([newPost, ...posts]);
@@ -49,56 +55,60 @@ const CommunityBoard = () => {
       if (currentPost && currentPost.id === postId) {
         setCurrentPost(null);
       }
+      // Remove the deleted post from search results if it exists
+      setSearchResults(searchResults.filter(post => post.id !== postId));
     } catch (error) {
       console.error('Error deleting post:', error);
       // Handle error, e.g., display error message
     }
   };
 
-
   const handlePostUpdate = async (updatedPost) => {
-    try {
-      await updatePost(updatedPost.id, updatedPost);
-      setPosts(posts.map((post) => (post.id === updatedPost.id ? updatedPost : post)));
-      if (currentPost && currentPost.id === updatedPost.id) {
-        setCurrentPost(updatedPost);
-      }
-    } catch (error) {
-      console.error("Error updating post:", error);
+    // Update the posts state and potentially the currentPost
+    setPosts(posts.map((post) => (post.id === updatedPost.id ? updatedPost : post)));
+    if (currentPost && currentPost.id === updatedPost.id) {
+      setCurrentPost(updatedPost);
     }
+    // Update the search results if the updated post is in the search results
+    setSearchResults(searchResults.map((post) => (post.id === updatedPost.id ? updatedPost : post)));
   };
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
+    setSearchResults([]); // Clear search results when filters change
+    setCurrentPage(1);     // Reset pagination to first page when filters are changed
   };
 
   const handleSearch = (results) => {
     setSearchResults(results);
-    setLoading(false); // Set loading to false after receiving search results
+    setLoading(false);
   };
-
 
   return (
     <div className="community-board-container">
       <h1>Community Board</h1>
-      <PostForm onPostCreated={handlePostCreated} />
-      <PostSearch onSearch={handleSearch} /> {/* Integrate PostSearch */}
+      <PostForm onPostCreated={handlePostCreated} /> {/* Pass onPostCreated handler */}
+      <PostSearch onSearch={handleSearch} filters={filters} onFilterChange={handleFilterChange} />
       {loading ? (
         <LoadingIndicator />
       ) : (
         <>
           <Filters onFilterChange={handleFilterChange} />
           <PostList
-            posts={searchResults.length > 0 ? searchResults : posts} // Display search results if available
+            posts={posts}
             onPostSelect={handlePostSelect}
             onPostDelete={handlePostDelete}
             onPostUpdate={handlePostUpdate}
+            filters={filters}
+            searchResults={searchResults} // Pass searchResults to PostList
+            currentUser={currentUser} // Pass currentUser to PostList
           />
           {currentPost && (
             <PostDetails
               post={currentPost}
               onPostUpdate={handlePostUpdate}
               onPostDelete={handlePostDelete}
+              currentUser={currentUser} // Pass currentUser to PostDetails
             />
           )}
         </>
@@ -108,4 +118,3 @@ const CommunityBoard = () => {
 };
 
 export default CommunityBoard;
-```

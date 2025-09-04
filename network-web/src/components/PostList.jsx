@@ -1,20 +1,45 @@
-```typescript
 import React, { useState, useEffect } from 'react';
-import * as api from '../utils/api';
-import { format } from 'date-fns'; // Import date-fns for formatting
-import Filters from './Filters';
+import { getPosts } from '../utils/api';
+import { format } from 'date-fns';
+import Post from './Post';
+import './PostList.css';
 
 
-const PostList = ({ posts, onPostSelect, onPostDelete, onPostUpdate }) => {
+const PostList = ({ onPostSelect, onPostDelete, onPostUpdate, filters, searchResults }) => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(10);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const fetchedPosts = await getPosts(currentPage, postsPerPage, filters);
+        setPosts(fetchedPosts.data); // Assuming your API returns data in a 'data' field
+
+      } catch (err) {
+        setError("Error fetching posts. Please try again later.");
+        console.error("Error fetching posts:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [currentPage, postsPerPage, filters, onPostUpdate, searchResults]);
+
+
+  const postsToDisplay = searchResults.length > 0 ? searchResults : posts;
 
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPosts = postsToDisplay.slice(indexOfFirstPost, indexOfLastPost);
 
-  const totalPages = Math.ceil(posts.length / postsPerPage);
+  const totalPages = Math.ceil(postsToDisplay.length / postsPerPage);
   const pageNumbers = [];
   for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
@@ -26,33 +51,33 @@ const PostList = ({ posts, onPostSelect, onPostDelete, onPostUpdate }) => {
 
   const handleDelete = async (postId) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
-        try {
-          await api.deletePost(postId);
-          onPostDelete(postId)
-        } catch (error) {
-          console.error('Error deleting post:', error);
-          alert('Failed to delete post. Please try again later.');
-        }
+      try {
+        await deletePost(postId);
+        onPostDelete(postId);
+        setCurrentPage(1); // Reset to the first page after deletion
+      } catch (error) {
+        console.error('Error deleting post:', error);
+        alert('Failed to delete post. Please try again later.');
       }
+    }
   };
 
 
-  if (!posts) return <div>Loading posts...</div>; // More descriptive loading message
-
+  if (loading) return <div>Loading posts...</div>;
+  if (error) return <div className="error-message">{error}</div>;
+  if (!postsToDisplay || postsToDisplay.length === 0) return <div>No posts found.</div>;
 
   return (
-    <div>
-
+    <div className="post-list-container"> {/* Added a container for styling */}
       {currentPosts.map((post) => (
-        <div key={post.id} className="post-container">
-          <h3>{post.title}</h3>
-          <p>{post.content}</p>
-          <p>By: {post.author?.username || 'Unknown'}</p>
-          <p>Created: {format(new Date(post.createdAt), 'yyyy-MM-dd HH:mm')}</p>
-          <p>Category: {post.categories?.map(c => c.name).join(', ') || 'None'}</p>
-          <p>Tags: {post.tags?.map(t => t.name).join(', ') || 'None'}</p>
-          <button onClick={() => handleDelete(post.id)}>Delete</button>
-        </div>
+        <Post
+          key={post.id}
+          post={post}
+          onPostSelect={onPostSelect}
+          onPostDelete={handleDelete} // Pass the handleDelete function
+          currentUser={currentUser} // Make sure currentUser is being passed down.
+          onPostUpdate={onPostUpdate} // Pass update handler
+        />
       ))}
 
       <ul className="pagination">
@@ -67,5 +92,3 @@ const PostList = ({ posts, onPostSelect, onPostDelete, onPostUpdate }) => {
 };
 
 export default PostList;
-
-```

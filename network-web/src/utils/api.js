@@ -1,26 +1,15 @@
-```
+import axios from 'axios';
+
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export const fetchData = async (endpoint, options = {}) => {
   const url = `${API_URL}${endpoint}`;
-  const response = await fetch(url, options);
-
-  if (!response.ok) {
-    const errorData = await response.json(); // Attempt to parse error data from the response
-    const errorMessage = errorData?.message || response.statusText; // Use error message from response if available
-    throw new Error(errorMessage);
-  }
-
   try {
-    const data = await response.json();
-    return data;
+    const response = await axios(url, options);
+    return response.data;
   } catch (error) {
-    // Handle cases where response is not JSON (e.g., empty response for DELETE)
-    if (response.status === 204) {
-      return null; // Or any other appropriate value for successful empty responses
-    }
-    console.error("Error parsing JSON response:", error);
-    throw error;
+    console.error(`Error fetching from ${url}:`, error);
+    throw error; // Re-throw to be handled by the calling component
   }
 };
 
@@ -29,11 +18,54 @@ export const postData = async (endpoint, data, options = {}) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      // ... any other headers
     },
-    body: JSON.stringify(data),
-    ...options, // Allow overriding default options
+    data: JSON.stringify(data),
+    ...options,
   });
+};
+
+export const putData = async (endpoint, data, options = {}) => {
+  return fetchData(endpoint, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: JSON.stringify(data),
+    ...options,
+  });
+};
+
+export const deleteData = async (endpoint, options = {}) => {
+  return fetchData(endpoint, {
+    method: 'DELETE',
+    ...options,
+  });
+};
+
+export const getPosts = async (page = 1, limit = 10, filters = {}) => {
+  const queryParams = new URLSearchParams({
+    page,
+    limit,
+    ...filters, // Add category and tag filters here
+  }).toString();
+  return fetchData(`/api/posts?${queryParams}`);
+};
+
+export const getPost = async (postId) => {
+  return fetchData(`/api/posts/${postId}`);
+};
+
+
+export const createPost = async (postData) => {
+  return postData('/api/posts', postData);
+};
+
+export const updatePost = async (postId, updatedPost) => {
+  return putData(`/api/posts/${postId}`, updatedPost);
+};
+
+export const deletePost = async (postId) => {
+  return deleteData(`/api/posts/${postId}`);
 };
 
 
@@ -43,54 +75,39 @@ export const getComments = async (postId) => {
     return data;
   } catch (error) {
     console.error('Error getting comments:', error);
-    throw error; // Re-throw the error to be handled by the calling component
+    throw error;
   }
 };
 
 export const createComment = async (postId, { content, parentCommentId }) => {
-    try {
-      const data = await postData(`/comments/${postId}`, { content, parentCommentId });
-      return data;
-    } catch (error) {
-      console.error("Error creating comment:", error);
-      throw error;
-    }
-  };
-  
-  export const updateComment = async (postId, commentId, { content }) => {
-    try {
-      const data = await fetchData(`/comments/${commentId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ content }),
-      });
-      return data;
-    } catch (error) {
-      console.error("Error updating comment:", error);
-      throw error;
-    }
-  };
-  
-  export const deleteComment = async (commentId) => {
-    try {
-      await fetchData(`/comments/${commentId}`, { method: 'DELETE' });
-    } catch (error) {
-      console.error("Error deleting comment:", error);
-      throw error;
-    }
-  };
-
-
-
-export const createApplication = async (applicationData) => {
-  // ... (Existing createApplication function remains unchanged)
+  try {
+    const data = await postData(`/comments/${postId}`, { content, parentCommentId });
+    return data;
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    throw error;
+  }
 };
 
-export const cancelReservation = async (reservationId, reason = '') => {
-  // ... (Existing cancelReservation function remains unchanged)
+export const updateComment = async (postId, commentId, { content }) => {
+  try {
+    const data = await putData(`/comments/${commentId}`, { content });
+    return data;
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    throw error;
+  }
 };
+
+export const deleteComment = async (commentId) => {
+  try {
+    await deleteData(`/comments/${commentId}`);
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    throw error;
+  }
+};
+
 
 export const searchPosts = async (keyword, filters, sort, page, limit) => {
   try {
@@ -99,6 +116,8 @@ export const searchPosts = async (keyword, filters, sort, page, limit) => {
       title: filters.title,
       content: filters.content,
       author: filters.author,
+      category: filters.category, // Add category filter
+      tags: filters.tags.join(','),    // Add tags filter (comma separated)
       sort,
       page,
       limit,
@@ -111,4 +130,12 @@ export const searchPosts = async (keyword, filters, sort, page, limit) => {
     throw error;
   }
 };
-```
+
+
+export const createApplication = async (applicationData) => {
+  // ... (Existing createApplication function remains unchanged)
+};
+
+export const cancelReservation = async (reservationId, reason = '') => {
+  // ... (Existing cancelReservation function remains unchanged)
+};

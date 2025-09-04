@@ -1,72 +1,128 @@
+## Backend API Endpoints for Posts
+
+**Base URL:** `/api/posts`
+
+### 1. Create Post
+
+* **Endpoint:** `/api/posts`
+* **Method:** `POST`
+* **Request Body:**
+```json
+{
+  "title": "Post Title",
+  "content": "Post content goes here...",
+  "category": 1, // Category ID (optional)
+  "tags": ["tag1", "tag2"] // Array of tag names (optional)
+}
 ```
-/**
- * @swagger
- * /posts/search:
- *   get:
- *     summary: Search for posts by keyword, title, content, or author.
- *     parameters:
- *       - in: query
- *         name: keyword
- *         schema:
- *           type: string
- *         description: Keyword to search in title and content.
- *       - in: query
- *         name: title
- *         schema:
- *           type: string
- *         description: Filter posts by title.
- *       - in: query
- *         name: content
- *         schema:
- *           type: string
- *         description: Filter posts by content.
- *       - in: query
- *         name: author
- *         schema:
- *           type: string
- *         description: Filter posts by author.
- *       - in: query
- *         name: sort
- *         schema:
- *           type: string
- *           enum: [relevance, recency]
- *         description: Sort order (relevance or recency). Defaults to recency.
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *         description: Page number for pagination. Defaults to 1.
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *         description: Number of posts per page. Defaults to 10.
- *     responses:
- *       200:
- *         description: Returns a list of posts and metadata.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Post'  # Assuming you have a Post schema
- *                 meta:
- *                   type: object
- *                   properties:
- *                     total:
- *                       type: integer
- *                       description: Total number of posts matching the criteria.
- *                     page:
- *                       type: integer
- *                       description: Current page number.
- *                     limit:
- *                       type: integer
- *                       description: Number of posts per page.
- *       500:
- *         description: Internal Server Error
- */
-```
----[END_OF_FILES]---
+* **Response (201 Created):** Returns the newly created post object.
+
+### 2. Get All Posts (Paginated)
+
+* **Endpoint:** `/api/posts`
+* **Method:** `GET`
+* **Query Parameters:**
+  * `page`: Page number (default: 1)
+  * `limit`: Number of posts per page (default: 10)
+  * `category`: Category ID (optional)
+  * `tags`: Comma-separated tag IDs (optional)
+* **Response (200 OK):** Returns an object containing the list of posts and pagination metadata.
+
+### 3. Get Single Post
+
+* **Endpoint:** `/api/posts/{postId}`
+* **Method:** `GET`
+* **Path Parameters:**
+  * `postId`: The ID of the post to retrieve.
+* **Response (200 OK):** Returns the post object.
+
+### 4. Update Post
+
+* **Endpoint:** `/api/posts/{postId}`
+* **Method:** `PUT`
+* **Path Parameters:**
+  * `postId`: The ID of the post to update.
+* **Request Body:** Same as create post request body (all fields optional).
+* **Response (200 OK):** Returns the updated post object.
+
+
+### 5. Delete Post
+
+* **Endpoint:** `/api/posts/{postId}`
+* **Method:** `DELETE`
+* **Path Parameters:**
+  * `postId`: The ID of the post to delete.
+* **Response (204 No Content):**
+
+
+### 6. Search Posts
+
+* **Endpoint:** `/posts/search`
+* **Method:** `GET`
+* **Query parameters:**
+    * `keyword`: Keyword to search in title and content
+    * `title`: Filter by title
+    * `content`: Filter by content
+    * `author`: Filter by author
+    * `category`: Filter by category ID
+    * `tags`: Filter by comma-separated tag IDs
+    * `sort`: Sorting order ('recency' or 'relevance')
+    * `page`: Page number
+    * `limit`: Number of posts per page
+
+* **Response (200 OK):**
+    ```json
+    {
+        "data": [ /* Array of matching posts */ ],
+        "meta": { /* Pagination information */ }
+    }
+    ```
+
+## Backend API Endpoints for Comments
+
+**Base URL:** `/comments`
+
+### 1. Get Comments for a Post
+
+* **Endpoint:** `/comments/{postId}`
+* **Method:** `GET`
+* **Path Parameters:**
+    * `postId`: ID of the post
+* **Response (200 OK):** Array of comment objects, including nested replies.
+
+### 2. Create a New Comment
+
+* **Endpoint:** `/comments/{postId}`
+* **Method:** `POST`
+* **Path Parameters:**
+    * `postId`: ID of the post
+* **Request Body:**
+    ```json
+    {
+        "content": "Comment text",
+        "parentCommentId": 123 // Optional, for replies
+    }
+    ```
+* **Response (201 Created):** The newly created comment object.
+
+### 3. Update a Comment
+
+* **Endpoint:** `/comments/{commentId}`
+* **Method:** `PUT`
+* **Path Parameters:**
+    * `commentId`: ID of the comment to update
+* **Request Body:**
+    ```json
+    {
+        "content": "Updated comment text"
+    }
+    ```
+* **Response (200 OK):** Updated comment object.
+
+### 4. Delete a Comment
+
+* **Endpoint:** `/comments/{commentId}`
+* **Method:** `DELETE`
+* **Path Parameters:**
+    * `commentId`: ID of the comment to delete
+* **Response (204 No Content):**

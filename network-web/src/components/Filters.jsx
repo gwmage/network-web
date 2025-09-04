@@ -1,7 +1,8 @@
-```typescript
 import React, { useState, useEffect } from 'react';
+import { getPosts } from '../utils/api'; // Import getPosts
+import './Filters.css'; // Import CSS for styling
 
-const Filters = ({ onChange }) => {
+const Filters = ({ onFilterChange }) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
@@ -10,7 +11,7 @@ const Filters = ({ onChange }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('/api/categories');
+        const response = await fetch('/api/categories'); // Fetch categories from your API
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -23,7 +24,7 @@ const Filters = ({ onChange }) => {
 
     const fetchTags = async () => {
       try {
-        const response = await fetch('/api/tags');
+        const response = await fetch('/api/tags'); // Fetch tags from your API
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -39,37 +40,45 @@ const Filters = ({ onChange }) => {
   }, []);
 
   useEffect(() => {
-    onChange({ category: selectedCategory, tags: selectedTags });
-  }, [selectedCategory, selectedTags, onChange]);
+    onFilterChange({ category: selectedCategory, tags: selectedTags });
+  }, [selectedCategory, selectedTags, onFilterChange]);
 
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
   };
 
   const handleTagChange = (event) => {
-    const tag = event.target.value;
+    const tagId = parseInt(event.target.value, 10); // Parse tag ID as integer
     const isChecked = event.target.checked;
 
-    setSelectedTags(prevTags => {
-      return isChecked
-        ? [...prevTags, tag]
-        : prevTags.filter(t => t !== tag);
-    });
+    setSelectedTags(prevTags =>
+      isChecked
+        ? [...prevTags, tagId]
+        : prevTags.filter(t => t !== tagId),
+    );
   };
 
   return (
-    <div>
+    <div className="filters-container">
+      {/* ... other JSX ... */}
+
       <label htmlFor="categorySelect">Category:</label>
-      <select id="categorySelect" value={selectedCategory} onChange={handleCategoryChange}>
-        <option value="">All</option>
-        {categories.map(category => (
-          <option key={category.id} value={category.id}>{category.name}</option>
+      <select
+        id="categorySelect"
+        value={selectedCategory}
+        onChange={handleCategoryChange}
+      >
+        <option value="">All</option> {/* Option to select all categories */}
+        {categories.map((category) => (
+          <option key={category.id} value={category.id}>
+            {category.name}
+          </option>
         ))}
       </select>
 
       <div>
         <label>Tags:</label>
-        {availableTags.map(tag => (
+        {availableTags.map((tag) => (
           <label key={tag.id}>
             <input
               type="checkbox"
@@ -85,5 +94,6 @@ const Filters = ({ onChange }) => {
   );
 };
 
+
+
 export default Filters;
-```
