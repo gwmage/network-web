@@ -1,4 +1,3 @@
-```typescript
 import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import './AdminDashboard.css';
@@ -29,5 +28,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-
-```
