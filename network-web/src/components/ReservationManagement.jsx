@@ -1,40 +1,34 @@
-// File: network-web/src/components/ReservationManagement.jsx
-import React, { useState } from 'react';
+```jsx
+import React, { useState, useEffect } from 'react';
+import ReservationCancellation from './ReservationCancellation';
+import { fetchData } from '../utils/api';
 
 const ReservationManagement = () => {
-  // ... other code ...
+  const [reservations, setReservations] = useState([]);
 
-  const handleCancelReservation = async () => {
-    try {
-      const response = await fetch(`/reservation/${selectedReservation.id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        // More specific error handling based on the status code
-        if (response.status === 400) {
-          throw new Error(`Bad Request: ${errorData.message}`);
-        } else if (response.status === 404) {
-          throw new Error('Not Found: Reservation not found.');
-        } else {
-          throw new Error(`${response.status}: ${errorData.message || 'Failed to cancel reservation'}`);
-        }
+  useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        const data = await fetchData('/reservations'); // Fetch upcoming reservations
+        setReservations(data);
+      } catch (error) {
+        console.error('Error fetching reservations:', error);
+        // Handle error, e.g., display an error message
       }
-
-      setReservations(reservations.filter((r) => r.id !== selectedReservation.id));
-      setSelectedReservation(null);
-      // Optionally display a success message to the user
-      alert('Reservation cancelled successfully');
-    } catch (error) {
-      console.error("Error cancelling reservation:", error); // Log the full error object
-      // Display an error message to the user
-      alert(`Failed to cancel reservation: ${error.message}`);
-    }
-  };
+    };
+    fetchReservations();
+  }, []);
 
 
-  // ... rest of component code
+
+  return (
+    <div>
+      {/* ... other code ... */}
+      <ReservationCancellation reservations={reservations} setReservations={setReservations} />
+    </div>
+  );
 };
 
 export default ReservationManagement;
+
+```

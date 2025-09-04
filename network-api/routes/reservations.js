@@ -15,7 +15,7 @@ router.delete(
       id: Joi.string().required(),
     }),
     body: Joi.object({
-      cancellationReason: Joi.string().optional(),
+      cancellationReason: Joi.string().optional().allow(''), // Explicitly allow empty strings
     }),
   }),
   reservationsController.cancel

@@ -37,19 +37,16 @@
     border-radius: 5px;
     cursor: pointer;
     margin-left: 10px;
-
-
 }
 
 .reservation-cancellation-modal .confirm-button {
     background-color: #dc3545; /* Red for cancel */
     color: white;
-
 }
+
 .reservation-cancellation-modal .cancel-button {
     background-color: #007bff; /* Blue for cancel */
     color: white;
-
 }
 
 @media (max-width: 500px) {
@@ -63,8 +60,6 @@
         padding: 6px 10px; /* Reduce button padding on smaller screens */
         font-size: 0.9em; /* Slightly smaller font size */
     }
-
-
-
 }
+
 ```
