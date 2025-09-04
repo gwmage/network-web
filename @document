@@ -1,164 +1,35 @@
 ```
-## Network API - Matching Management Endpoints
+## Documentation for Reservation Cancellation Feature
 
-This document describes the API endpoints for managing matching results and criteria in the `network-api` repository.
+### Frontend Component: `ReservationCancellation.jsx`
 
-### 1. Get Matching Status
+**Purpose:** This component provides the user interface for cancelling reservations. It displays a list of upcoming reservations, allows the user to select a reservation to cancel, provides an optional text input for a cancellation reason, and handles the confirmation process.
 
-**Endpoint:** `/matching/status`
+**Parameters:**
 
-**Method:** GET
+* `reservations`: An array of reservation objects. Each reservation object should have at least an `id`, `description`, and `date` property.
+* `setReservations`: A function to update the `reservations` state in the parent component after a successful cancellation.
 
-**Response:**
 
-```json
-{
-  "state": "idle" | "running" | "completed",
-  "startTime": "ISO8601 timestamp" | null,
-  "endTime": "ISO8601 timestamp" | null,
-  "progress": 0-100 | null
-}
+**Return Value:**  Renders the reservation cancellation UI.  Doesn't return a specific value.
+
+**Usage:**  The component is used within `ReservationManagement.jsx` to provide reservation cancellation functionality.
+
+
+
+### API Utility Function: `cancelReservation` (in `api.js`)
+
+**Purpose:** Makes an API call to cancel a reservation.
+
+**Parameters:**
+
+* `reservationId`: The ID of the reservation to be cancelled (string).
+* `reason`: (Optional) A string providing the reason for cancellation. Defaults to an empty string.
+
+**Return Value:** A Promise that resolves when the cancellation is successful.  It does not return any specific data.
+
+**Throws:** An error if the API call fails. The error message will contain details about the failure.
+
+
 ```
-
-### 2. Get Matching Results
-
-**Endpoint:** `/matching/results`
-
-**Method:** GET
-
-**Response:**
-
-```json
-[
-  {
-    "id": "group ID",
-    "users": [
-      {
-        "id": "user ID",
-        "name": "user name"
-        // ... other user properties
-      }
-    ]
-    // ... other group properties (e.g., match score)
-  }
-]
-```
-
-### 3. Trigger Matching
-
-**Endpoint:** `/matching`
-
-**Method:** POST
-
-**Response:**
-```json
-{
-  "results": [ /* Same structure as GET /matching/results */ ],
-  "notification": "New match available"
-}
-```
-
-
-### 4. Get Matching Groups
-
-**Endpoint:** `/matching/groups`
-
-**Method:** GET
-
-**Response:** (Same as GET /matching/results)
-
-
-### 5. Update Matching Group
-
-**Endpoint:** `/matching/groups/:groupId`
-
-**Method:** PUT
-
-**Request Body:**
-
-```json
-{
-  "users": [
-    { "id": "user ID" },
-    // ... other users
-  ]
-}
-```
-
-**Response:** (Updated group object)
-
-
-### 6. Remove User from Matching Group
-
-**Endpoint:** `/matching/groups/:groupId/users/:userId`
-
-**Method:** DELETE
-
-**Response:** (Updated group object, or some success/failure indicator)
-
-
-### 7. Get Matching Criteria
-
-**Endpoint:** `/matching/criteria`
-
-**Method:** GET
-
-**Response:**
-
-```json
-[
-  "criterion1",
-  "criterion2",
-  // ... other criteria
-]
-```
-
-### 8. Add Matching Criterion
-
-**Endpoint:** `/matching/criteria`
-
-**Method:** POST
-
-**Request Body:**
-
-```json
-{
-  "criterion": "newCriterionName"
-}
-```
-
-**Response:** (Updated list of criteria)
-
-### 9. Remove Matching Criterion
-
-**Endpoint:** `/matching/criteria/:criterion`
-
-**Method:** DELETE
-
-**Response:** (Updated list of criteria)
-
-
-
-
-### 10. Get/Update Matching Weights
-
-**Endpoint:** `/matching/weights`
-
-**Method:** GET/PUT (GET to retrieve, PUT to update)
-
-**Request Body (for PUT):**
-
-```json
-{
-  "criterion1": 0.5, 
-  "criterion2": 0.3,
-  // ... weights for each criterion
-}
-```
-
-**Response (for both GET and PUT):** (Current weights object)
-
-
-
-// ... (Optional: Add endpoints for statistical analysis)
-```
+---[END_OF_FILES]---
