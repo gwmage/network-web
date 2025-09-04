@@ -1,4 +1,4 @@
-"import React, { useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../utils/api';
@@ -66,15 +66,15 @@ const RegisterForm = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: '' });
-    setGeneralError(''); // Clear general error on input change
+    setGeneralError(''); 
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({}); // Clear previous errors
+    setErrors({}); 
     setGeneralError('');
 
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$/i;
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     const passwordRegex = /^.{6,}$/;
     const nameRegex = /^.+$/;
     const phoneRegex = /^.+$/;
@@ -137,4 +137,5 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm;"
+export default RegisterForm;
+---[END_OF_FILES]---
