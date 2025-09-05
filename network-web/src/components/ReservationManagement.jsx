@@ -1,6 +1,6 @@
 ```jsx
 import React, { useState, useEffect } from 'react';
-import ReservationCancellation from './ReservationCancellation';
+import ReservationDetails from './ReservationDetails';
 import { fetchData } from '../utils/api';
 
 const ReservationManagement = () => {
@@ -20,10 +20,19 @@ const ReservationManagement = () => {
     fetchReservations();
   }, []);
 
+  const handleReservationCancelled = (reservationId) => {
+    setReservations(reservations.filter((r) => r.id !== reservationId));
+  };
+
   return (
     <div>
-      <ReservationCancellation reservations={reservations} setReservations={setReservations} />
-      {/* ... other code ... */}
+      {reservations.map((reservation) => (
+        <ReservationDetails
+          key={reservation.id}
+          reservation={reservation}
+          onReservationCancelled={handleReservationCancelled}
+        />
+      ))}
     </div>
   );
 };
@@ -31,4 +40,3 @@ const ReservationManagement = () => {
 export default ReservationManagement;
 
 ```
----[END_OF_FILES]---

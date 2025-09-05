@@ -1,3 +1,4 @@
+```js
 import axios from 'axios';
 
 export const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
@@ -6,7 +7,7 @@ export const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
 export const cancelReservation = async (reservationId, reason = '') => {
   try {
-    const response = await axios.delete(`/reservations/${reservationId}`, {
+    const response = await axios.delete(`${API_URL}/reservations/${reservationId}`, {
       data: { cancellationReason: reason },
     });
     return response;
@@ -17,3 +18,5 @@ export const cancelReservation = async (reservationId, reason = '') => {
 };
 
 // ... (other functions)
+
+```
