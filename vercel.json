@@ -2,13 +2,13 @@
   "builds": [
     {
       "src": "network-web/package.json",
-      "use": "@vercel/next"
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "/index.html"
     }
   ]
 }
