@@ -1,5 +1,4 @@
-```javascript
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import * as api from '../utils/api';
 import {
   Box,
@@ -57,5 +56,3 @@ const MatchingProgress = ({ status, results }) => {
 };
 
 export default MatchingProgress;
-
-```
