@@ -2,13 +2,14 @@
   "builds": [
     {
       "src": "network-web/package.json",
-      "use": "@vercel/node"
+      "use": "@vercel/static-build"
     }
   ],
+  "outputDirectory": "network-web/build",
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "network-web/build/index.html"
+      "dest": "/index.html"
     }
   ]
 }
