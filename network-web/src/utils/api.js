@@ -1,7 +1,6 @@
-```js
 import axios from 'axios';
 
-export const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
+export const API_URL = process.env.REACT_APP_API_URL || "/api"; // Use relative path for api requests
 
 // ... (other functions)
 
@@ -18,5 +17,3 @@ export const cancelReservation = async (reservationId, reason = '') => {
 };
 
 // ... (other functions)
-
-```
