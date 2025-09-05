@@ -4,7 +4,9 @@ import { getNotificationPreferences } from './api'; // Import from api.js
 export const sendPushNotification = async (notificationData) => {
   try {
     const preferences = await getNotificationPreferences();
-    if (preferences.push_enabled) {
+    // Check if push notifications are enabled in user preferences
+    // Adapt the property name ('pushEnabled' in this example) to match your actual API response 
+    if (preferences && preferences.pushEnabled) {
       // Check if browser notifications are supported and permitted
       if ("Notification" in window) {
         if (Notification.permission === "granted") {
