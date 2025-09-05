@@ -56,7 +56,7 @@ export const handleReservationCancellationNotification = async (reservationId) =
   await sendPushNotification(notificationData);
 };
 
-// Placeholder for the pusher app key.  Replace with appropriate client-side key management if needed.
-const pusherAppKey = "YOUR_PUSHER_APP_KEY_OR_IMPLEMENTATION"; // Replace or remove as needed.
+// Placeholder for the pusher app key. Replace with your actual key or remove if not using Pusher.
+const pusherAppKey = ""; 
 
 export { pusherAppKey };
