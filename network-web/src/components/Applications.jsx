@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchData } from '../utils/api';
+import { fetchData as fetchAppData } from '../utils/api';
 import { Table, Pagination, Input, Button, Select, Form, message, Spin } from 'antd';
 import { ExportOutlined } from '@ant-design/icons';
 import ApplicationForm from './ApplicationForm';
@@ -25,7 +25,7 @@ const Applications: React.FC = () => {
         ...sort,
       });
 
-      const data = await fetchData(`/applications?${params.toString()}`);
+      const data = await fetchAppData(`/applications?${params.toString()}`);
       setApplications(data.applications);
       setPagination({ ...pagination, total: data.total });
     } catch (error) {
@@ -68,7 +68,7 @@ const Applications: React.FC = () => {
           dataSource={applications}
           pagination={pagination}
           onChange={handleTableChange}
-          rowKey="id"
+          rowKey=\"id\"
         />
       </Spin>
     </div>
