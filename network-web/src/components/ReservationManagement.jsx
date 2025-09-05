@@ -9,22 +9,21 @@ const ReservationManagement = () => {
   useEffect(() => {
     const fetchReservations = async () => {
       try {
-        const data = await fetchData('/reservations'); // Fetch upcoming reservations
+        const data = await fetchData('/reservations');
         setReservations(data);
       } catch (error) {
         console.error('Error fetching reservations:', error);
-        // Handle error, e.g., display an error message
+        // Handle error, e.g., display an error message to the user
       }
     };
+
     fetchReservations();
   }, []);
 
-
-
   return (
     <div>
-      {/* ... other code ... */}
       <ReservationCancellation reservations={reservations} setReservations={setReservations} />
+      {/* ... other code ... */}
     </div>
   );
 };
@@ -32,3 +31,4 @@ const ReservationManagement = () => {
 export default ReservationManagement;
 
 ```
+---[END_OF_FILES]---
