@@ -1,18 +1,8 @@
 {
-  "functions": {
-    "api/auth/*": {
-      "memory": 128,
-      "maxDuration": 10
-    },
-    "api/graphql/*": {
-      "memory": 128,
-      "maxDuration": 10
-    }
-  },
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/network-web/index.html"
+      "source": "/api/:path*",
+      "destination": "<your-backend-url>/:path*"
     }
   ]
 }
