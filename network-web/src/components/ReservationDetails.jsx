@@ -1,9 +1,9 @@
+```jsx
 import React, { useState } from 'react';
 import ReservationCancellation from './ReservationCancellation';
 
 const ReservationDetails = ({ reservation, onReservationCancelled }) => {
   const [isCancellationModalOpen, setIsCancellationModalOpen] = useState(false);
-  const [isCancelled, setIsCancelled] = useState(false);
 
   const handleCancelReservation = () => {
     setIsCancellationModalOpen(true);
@@ -15,27 +15,25 @@ const ReservationDetails = ({ reservation, onReservationCancelled }) => {
 
   const handleConfirmCancellation = () => {
     setIsCancellationModalOpen(false);
-    setIsCancelled(true);
     onReservationCancelled(reservation.id);
   };
 
   return (
     <div className="reservation-details">
       {/* ... other details ... */}
-      {!isCancelled && <button onClick={handleCancelReservation}>Cancel Reservation</button>}
-      {isCancelled && <span>Cancelled</span>}
+      <button onClick={handleCancelReservation}>Cancel Reservation</button>
 
       {isCancellationModalOpen && (
-        <div className="modal-overlay">
-          <ReservationCancellation
-            reservation={reservation}
-            onClose={handleCloseCancellationModal}
-            onCancel={handleConfirmCancellation}
-          />
-        </div>
+        <ReservationCancellation
+          reservation={reservation}
+          onClose={handleCloseCancellationModal}
+          onCancel={handleConfirmCancellation}
+        />
       )}
     </div>
   );
 };
 
 export default ReservationDetails;
+
+```
