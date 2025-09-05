@@ -6,13 +6,13 @@ export const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
 export const cancelReservation = async (reservationId, reason = '') => {
   try {
-    const response = await deleteData(`/reservations/${reservationId}`, {
-      data: { cancellationReason: reason }, // Include reason in the request body
+    const response = await axios.delete(`/reservations/${reservationId}`, {
+      data: { cancellationReason: reason },
     });
     return response;
   } catch (error) {
     console.error('Error cancelling reservation:', error);
-    throw error;
+    throw error;  // Re-throw the error for proper handling in the calling component
   }
 };
 
