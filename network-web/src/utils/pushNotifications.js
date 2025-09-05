@@ -1,4 +1,4 @@
-import { getNotificationPreferences } from './api'; 
+import { getNotificationPreferences } from './api';
 
 // Placeholder implementation for client-side push notifications
 export const sendPushNotification = async (notificationData) => {
@@ -55,3 +55,8 @@ export const handleReservationCancellationNotification = async (reservationId) =
 
   await sendPushNotification(notificationData);
 };
+
+// Placeholder for the pusher app key.  Replace with appropriate client-side key management if needed.
+const pusherAppKey = "YOUR_PUSHER_APP_KEY_OR_IMPLEMENTATION"; // Replace or remove as needed.
+
+export { pusherAppKey };
