@@ -1,14 +1,18 @@
 {
-  "builds": [
-    {
-      "src": "network-web/package.json",
-      "use": "@vercel/next"
+  "functions": {
+    "api/auth/*": {
+      "memory": 128,
+      "maxDuration": 10
+    },
+    "api/graphql/*": {
+      "memory": 128,
+      "maxDuration": 10
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/",
-      "dest": "network-web"
+      "source": "/(.*)",
+      "destination": "/network-web/index.html"
     }
   ]
 }
