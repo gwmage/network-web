@@ -1,8 +1,17 @@
 {
-  "rewrites": [
+  "builds": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
+      "src": "network-web/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "network-web/build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "network-web/build/$1"
     }
   ]
 }
