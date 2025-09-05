@@ -1,4 +1,4 @@
-import { getNotificationPreferences } from './api'; // Import from api.js
+import { getNotificationPreferences } from './api'; 
 
 // Placeholder implementation for client-side push notifications
 export const sendPushNotification = async (notificationData) => {
