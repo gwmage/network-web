@@ -2,10 +2,7 @@
   "builds": [
     {
       "src": "network-web/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "network-web/build"
-      }
+      "use": "@vercel/next"
     }
   ],
   "routes": [
