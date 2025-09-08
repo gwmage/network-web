@@ -19,5 +19,15 @@
   "experimental": {
     "urlRewrites": []
   },
+  "routes": [
+    {
+      "src": "/api/health",
+      "dest": "/api/health"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/(.*)"
+    }
+  ],
   "target": "production"
 }
