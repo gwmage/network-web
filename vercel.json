@@ -5,5 +5,11 @@
       "src": "network-web/package.json",
       "use": "@vercel/next"
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index"
+    }
   ]
 }
