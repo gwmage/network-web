@@ -2,7 +2,7 @@
   "builds": [
     {
       "src": "network-web/package.json",
-      "use": "@vercel/node"
+      "use": "@vercel/next"
     }
   ],
   "routes": [
