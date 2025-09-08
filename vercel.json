@@ -1,7 +1,7 @@
 {
   "builds": [
     {
-      "src": "pages/**/*.@(js|jsx|ts|tsx)",
+      "src": "package.json",
       "use": "@vercel/next"
     }
   ]
