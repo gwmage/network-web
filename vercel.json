@@ -6,7 +6,6 @@
       "use": "@vercel/next"
     }
   ],
-  "outputDirectory": ".next",
   "rewrites": [
     {
       "source": "/(.*)",
