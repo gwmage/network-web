@@ -16,8 +16,14 @@ export default function MyApp({ Component, pageProps }) {
         if (event.error) {
           console.error('Error Object:', event.error.message, event.error.stack);
         }
-        // Log the entire event object for debugging, ensuring proper stringification
-        console.error('Full Event:', JSON.stringify(event, null, 2)); 
+        // Log specific event properties instead of the entire object
+        console.error('Event Details:', {
+          message: event.message,
+          filename: event.filename,
+          lineno: event.lineno,
+          colno: event.colno,
+          errorStack: event.error?.stack, // Safely access error.stack
+        });
       });
     }
   }, []);
