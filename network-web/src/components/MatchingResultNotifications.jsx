@@ -1,1 +1,0 @@
-// This component is removed as per the instructions.
