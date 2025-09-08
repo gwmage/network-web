@@ -3,11 +3,15 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+// Check if window is defined (meaning we're in a browser environment)
+if (typeof window !== 'undefined') {
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}
 
-// Moved reportWebVitals to a useEffect hook within App.js to ensure it only runs in the browser
+// Export App for server-side rendering
+export default App;
