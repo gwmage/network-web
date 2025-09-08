@@ -10,7 +10,7 @@ export default function MyApp({ Component, pageProps }) {
     // Check if window object exists (client-side)
     window.addEventListener('error', (event) => {
       // Capture and log JavaScript errors with detailed information
-      console.error('Client-side error:', event.error.message, event.error.stack);
+      console.error('Client-side error:', event.error.message, event.error.filename, event.error.lineno, event.error.colno);
     });
   }
 
