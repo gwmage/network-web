@@ -16,14 +16,14 @@ export default function MyApp({ Component, pageProps }) {
         if (event.error) {
           console.error('Error Object:', event.error.message, event.error.stack);
         }
-        // Log specific event properties instead of the entire event object
-        console.error('Event Details:', {
+        // Log specific event properties instead of the entire event object. Stringify objects for better logging.
+        console.error('Event Details:', JSON.stringify({
           message: event.message,
           filename: event.filename,
           lineno: event.lineno,
           colno: event.colno,
           errorStack: event.error?.stack, // Safely access error.stack
-        });
+        }, null, 2)); // Use JSON.stringify for proper formatting in logs
       });
     }
   }, []);
