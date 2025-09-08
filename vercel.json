@@ -5,6 +5,7 @@
       "use": "@vercel/next"
     }
   ],
+  "framework": "nextjs",
   "env": [
     "NEXT_PUBLIC_API_URL",
     "NEXT_PUBLIC_SOME_OTHER_KEY"
