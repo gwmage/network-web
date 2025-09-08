@@ -10,6 +10,6 @@
     "NEXT_PUBLIC_SOME_OTHER_KEY"
   ],
   "healthCheck": {
-    "path": "/"
+    "path": "/api/health"
   }
 }
