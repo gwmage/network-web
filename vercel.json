@@ -15,5 +15,6 @@
   },
   "experimental": {
     "urlRewrites": []
-  }
+  },
+  "target": "serverless"
 }
