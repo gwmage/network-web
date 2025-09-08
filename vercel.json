@@ -5,11 +5,10 @@
       "use": "@vercel/react"
     }
   ],
-  "outputDirectory": "network-web/build",
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "network-web/build/index.html"
+      "dest": "/index.html"
     }
   ]
 }
