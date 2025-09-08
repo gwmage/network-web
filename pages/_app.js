@@ -11,11 +11,18 @@ export default function MyApp({ Component, pageProps }) {
     window.addEventListener('error', (event) => {
       // Capture and log JavaScript errors with detailed information
       console.error('Client-side error:', event.message, event.filename, event.lineno, event.colno);
-      // Log other relevant error properties individually
-      console.error('Error stack:', event.error.stack);
-      console.error('Error name:', event.error.name);
-      // Log the entire error object as a JSON string for debugging
-      console.error('Full error object (JSON):', JSON.stringify(event.error));
+
+      // Safely access error properties, checking for their existence first
+      if (event.error) {
+        console.error('Error stack:', event.error.stack);
+        console.error('Error name:', event.error.name);
+        // Log the entire error object as a JSON string for debugging
+        try {
+          console.error('Full error object (JSON):', JSON.stringify(event.error));
+        } catch (jsonError) {
+          console.error('Error stringifying error object:', jsonError);
+        }
+      }
     });
   }
 
