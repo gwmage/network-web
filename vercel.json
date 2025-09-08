@@ -9,7 +9,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/network-web"
+      "dest": "/network-web/pages/index.js"
     }
   ]
 }
