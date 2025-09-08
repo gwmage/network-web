@@ -14,5 +14,5 @@ if (typeof window !== 'undefined') {
 
   // Example of how to properly log an object. Replace this with your actual object.
   const exampleObject = { message: 'Hello, world!', data: { someValue: 123 } };
-  console.log(JSON.stringify(exampleObject, null, 2));
+  console.log(JSON.stringify(exampleObject, null, 2)); // Stringify the object before logging
 }
