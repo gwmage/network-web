@@ -11,4 +11,8 @@ if (typeof window !== 'undefined') {
       <App />
     </React.StrictMode>
   );
+
+  // Example of how to properly log an object. Replace this with your actual object.
+  const exampleObject = { message: 'Hello, world!', data: { someValue: 123 } };
+  console.log(JSON.stringify(exampleObject, null, 2));
 }
