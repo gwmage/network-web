@@ -16,8 +16,8 @@ export default function MyApp({ Component, pageProps }) {
         if (event.error) {
           console.error('Error Object:', event.error.message, event.error.stack);
         }
-        // Log the entire event object for debugging
-        console.error('Full Event:', JSON.stringify(event, null, 2)); // Convert to JSON string
+        // Log the entire event object for debugging, ensuring proper stringification
+        console.error('Full Event:', JSON.stringify(event, null, 2)); 
       });
     }
   }, []);
