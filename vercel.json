@@ -11,6 +11,9 @@
   ],
   "healthCheck": {
     "path": "/api/health",
-    "timeout": 300
+    "timeout": 600
+  },
+  "experimental": {
+    "urlRewrites": []
   }
 }
