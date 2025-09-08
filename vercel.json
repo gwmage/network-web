@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "builds": [
     {
       "src": "network-web/package.json",
@@ -8,7 +9,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "network-web/index.js"
+      "dest": "/network-web"
     }
   ]
 }
