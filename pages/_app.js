@@ -16,7 +16,7 @@ export default function MyApp({ Component, pageProps }) {
         if (event.error) {
           console.error('Error Object:', event.error.message, event.error.stack);
         }
-        // Log specific event properties instead of the entire object
+        // Log specific event properties instead of the entire event object
         console.error('Event Details:', {
           message: event.message,
           filename: event.filename,
