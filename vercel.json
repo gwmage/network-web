@@ -2,7 +2,10 @@
   "builds": [
     {
       "src": "pages/**",
-      "use": "@vercel/next"
+      "use": "@vercel/next",
+      "config": {
+        "outputDirectory": ".next"
+      }
     }
   ],
   "env": [
