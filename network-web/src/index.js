@@ -12,6 +12,3 @@ if (typeof window !== 'undefined') {
     </React.StrictMode>
   );
 }
-
-// Export App for server-side rendering
-export default App;
