@@ -1,7 +1,7 @@
 {
   "builds": [
     {
-      "src": "package.json",
+      "src": "**/*.@(js|jsx|ts|tsx)",
       "use": "@vercel/next"
     }
   ]
