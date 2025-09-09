@@ -1,11 +1,8 @@
 export default async function handler(req, res) {
   try {
     // Perform any necessary health checks here (e.g., database connection)
-    // Example: Check database connection
-    // const db = await connectToDatabase();
-    // if (!db) {
-    //   throw new Error('Database connection failed');
-    // }
+    // In a production environment, you'd likely want to perform real checks here.
+    // For this example, we'll keep it simple and return a 200 status immediately.
 
     res.status(200).json({ status: 'ok' });
   } catch (error) {
