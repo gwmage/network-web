@@ -28,7 +28,7 @@
       "timeout": 300
     },
     "api/health.js": {
-      "timeout": 10000
+      "timeout": 30000
     }
   }
 }
