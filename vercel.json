@@ -10,12 +10,12 @@
     "NEXT_PUBLIC_SOME_OTHER_KEY"
   ],
   "healthCheck": {
-    "path": "/health",
+    "path": "/api/health",
     "timeout": 120000
   },
   "routes": [
     {
-      "src": "/health",
+      "src": "/api/health",
       "dest": "/api/health"
     },
     {
