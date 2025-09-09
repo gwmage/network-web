@@ -25,7 +25,7 @@
   ],
   "functions": {
     "api/**/*.{ts,tsx,js,jsx}": {
-      "timeout": 30
+      "timeout": 120
     }
   }
 }
