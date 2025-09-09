@@ -1,4 +1,17 @@
 {
+  "version": 2,
+  "builds": [
+    {
+      "src": "**/*.js",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
   "env": [
     "NEXT_PUBLIC_API_URL",
     "NEXT_PUBLIC_SOME_OTHER_KEY"
@@ -7,25 +20,9 @@
     "path": "/api/health",
     "timeout": 1800
   },
-  "routes": [
-    {
-      "src": "/api/(.+)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
   "functions": {
     "api/**/*.{ts,tsx,js,jsx}": {
       "timeout": 300
     }
-  },
-  "builds": [
-    {
-      "src": "/",
-      "use": "@vercel/next"
-    }
-  ]
+  }
 }
