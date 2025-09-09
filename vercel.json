@@ -26,6 +26,9 @@
   "functions": {
     "api/**/*.{ts,tsx,js,jsx}": {
       "timeout": 300
+    },
+    "api/health.js": {
+      "timeout": 10000
     }
   }
 }
