@@ -21,5 +21,11 @@
     "api/**/*.{ts,tsx,js,jsx}": {
       "timeout": 300
     }
-  }
+  },
+  "builds": [
+    {
+      "src": "/",
+      "use": "@vercel/next"
+    }
+  ]
 }
