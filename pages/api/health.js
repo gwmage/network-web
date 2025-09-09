@@ -1,11 +1,12 @@
 export default async function handler(req, res) {
   try {
-    // Simulate a database or service check that could potentially fail
-    // await new Promise(resolve => setTimeout(resolve, 500)); // Simulate a 500ms delay for testing
+    // Perform any necessary health checks here (e.g., database connection)
 
-    res.status(200).json({ status: 'ok' });
+    // If all checks pass, return a 200 status code
+    res.status(200).json({ status: "ok" });
   } catch (error) {
-    console.error("Health check failed:", error);
-    res.status(500).json({ status: 'error', message: 'Health check failed' });
+    // If any check fails, return a 500 status code
+    console.error(error);
+    res.status(500).json({ status: "error", message: error.message });
   }
 }
