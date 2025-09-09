@@ -5,7 +5,7 @@
   ],
   "healthCheck": {
     "path": "/api/health",
-    "timeout": 600
+    "timeout": 1800
   },
   "routes": [
     {
