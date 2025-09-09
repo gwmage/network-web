@@ -30,10 +30,5 @@
       "dest": "/$1"
     }
   ],
-  "target": "production",
-  "functions": {
-    "api/**/*.{ts,tsx,js,jsx}": {
-      "outputDirectory": ".next/server/pages/api"
-    }
-  }
+  "target": "production"
 }
