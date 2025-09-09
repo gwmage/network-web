@@ -29,5 +29,12 @@
     "api/health.js": {
       "timeout": 30000
     }
+  },
+  "preview": {
+    "functions": {
+      "api/health.js": {
+        "includeFiles": ".*"
+      }
+    }
   }
 }
