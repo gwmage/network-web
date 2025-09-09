@@ -22,5 +22,10 @@
       "src": "/(.*)",
       "dest": "/$1"
     }
-  ]
+  ],
+  "functions": {
+    "api/**/*.{ts,tsx,js,jsx}": {
+      "timeout": 30
+    }
+  }
 }
