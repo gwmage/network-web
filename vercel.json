@@ -2,13 +2,7 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/next",
-      "config": {
-        "outputFileTracing": {
-          "directory": "pages",
-          "type": "automatic"
-        }
-      }
+      "use": "@vercel/next"
     }
   ],
   "env": [
