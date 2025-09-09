@@ -13,9 +13,6 @@
     "path": "/api/health",
     "timeout": 120000
   },
-  "experimental": {
-    "urlRewrites": []
-  },
   "routes": [
     {
       "src": "/api/health",
@@ -26,9 +23,8 @@
       "dest": "/api/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "/$1"
+        "src": "/(.*)",
+        "dest": "/$1"
     }
-  ],
-  "target": "production"
+  ]
 }
