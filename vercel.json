@@ -22,14 +22,13 @@
       "dest": "/api/health"
     },
     {
-      "src": "/(.*)",
-      "dest": "/(.*)",
-      "continue": true  // This crucial addition ensures other routes (including root route and pages) get served.
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
-        "src": "/api/(.*)",
-        "dest": "/api/$1"
-      }      
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
   ],
   "target": "production"
 }
