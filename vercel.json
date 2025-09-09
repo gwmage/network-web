@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "**/*.js",
+      "src": "pages/**/*.js",
       "use": "@vercel/next"
     }
   ],
@@ -21,7 +21,7 @@
     "timeout": 1800
   },
   "functions": {
-    "api/**/*.{ts,tsx,js,jsx}": {
+    "api/**/*.js": {
       "timeout": 300
     }
   }
