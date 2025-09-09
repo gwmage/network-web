@@ -2,8 +2,7 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/next",
-      "target": "experimental-server-components"
+      "use": "@vercel/next"
     }
   ],
   "env": [
