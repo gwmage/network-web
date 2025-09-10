@@ -25,7 +25,7 @@
     "NEXT_PUBLIC_SOME_OTHER_KEY"
   ],
   "healthCheck": {
-    "path": "/api/healthcheck"
+    "path": "/api/health"
   },
   "functions": {
     "api/**/*.js": {
