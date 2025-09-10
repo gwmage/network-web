@@ -24,6 +24,5 @@
     "api/**/*.js": {
       "timeout": 300
     }
-  },
-  "outputDirectory": ".next"
+  }
 }
