@@ -13,23 +13,11 @@
     },
     {
       "src": "/api/health",
-      "dest": "api/health.js"
+      "dest": "pages/api/health.js"
     },
     {
       "src": "/api/hello",
-      "dest": "api/hello.js"
+      "dest": "pages/api/hello.js"
     }
-  ],
-  "env": [
-    "NEXT_PUBLIC_API_URL",
-    "NEXT_PUBLIC_SOME_OTHER_KEY"
-  ],
-  "healthCheck": {
-    "path": "/api/health"
-  },
-  "functions": {
-    "api/**/*.js": {
-      "timeout": 300
-    }
-  }
+  ]
 }
