@@ -6,7 +6,6 @@
     "devCommand": null,
     "installCommand": null,
     "buildCommand": "next build",
-    "outputDirectory": ".next",
     "rootDirectory": null,
     "previewCommand": null
   }
