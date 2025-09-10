@@ -21,8 +21,7 @@
     "NEXT_PUBLIC_SOME_OTHER_KEY"
   ],
   "healthCheck": {
-    "path": "/api/health",
-    "timeout": 60
+    "path": "/api/health"
   },
   "functions": {
     "api/**/*.js": {
