@@ -18,7 +18,7 @@
   ],
   "healthCheck": {
     "path": "/api/health",
-    "timeout": 30
+    "timeout": 60
   },
   "functions": {
     "api/**/*.js": {
