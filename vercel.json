@@ -13,11 +13,11 @@
     },
     {
       "src": "/api/health",
-      "dest": "api/health"
+      "dest": "api/health.js"
     },
     {
       "src": "/api/hello",
-      "dest": "api/hello"
+      "dest": "api/hello.js"
     }
   ],
   "env": [
