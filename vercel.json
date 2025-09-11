@@ -10,15 +10,6 @@
     {
       "src": "/(.*)",
       "dest": "/$1"
-    },
-    {
-      "src": "/api/health",
-      "dest": "pages/api/health.js"
-    },
-    {
-      "src": "/api/hello",
-      "dest": "pages/api/hello.js"
     }
-  ],
-  "timeout": 15
+  ]
 }
