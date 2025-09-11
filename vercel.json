@@ -19,5 +19,6 @@
       "src": "/api/hello",
       "dest": "pages/api/hello.js"
     }
-  ]
+  ],
+  "timeout": 15
 }
