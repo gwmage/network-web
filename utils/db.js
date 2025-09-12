@@ -32,5 +32,3 @@ export async function connectToDatabase() {
 
   return db;
 }
-
----[END_OF_FILES]---
