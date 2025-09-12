@@ -1,9 +1,20 @@
 export default function Home() {
+  console.log("Home component mounted");
+
+  const MainScreen = () => {
+    console.log("MainScreen component rendered");
+    return (
+      <>
+        <h1>Main Screen</h1>
+        <p>This is the content of the main screen.</p>
+      </>
+    );
+  };
+
+
   return (
     <div>
-      <h1>Deployment Success!</h1>
-      <p>This confirms the Next.js app is deploying correctly on Vercel.</p>
-
+      <MainScreen />
     </div>
   );
 }

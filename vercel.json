@@ -8,8 +8,14 @@
   ],
   "routes": [
     {
+      "src": "/",
+      "dest": "/"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": "/$1" // This handles all other routes
     }
+
   ]
 }
+---[END_OF_FILES]---
