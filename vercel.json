@@ -1,3 +1,4 @@
+```json
 {
   "version": 2,
   "builds": [
@@ -15,11 +16,7 @@
       "src": "/(.*)",
       "dest": "/$1"
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/$1"
-    }
   ]
 }
+```
+---[END_OF_FILES]---
