@@ -1,7 +1,10 @@
+```jsx
 export default function Home() {
   return (
-    <div>
+    <main>
       <h1>Hello, Next.js!</h1>
-    </div>
+      <p>This is the main page. If you see this, it's working!</p>
+    </main>
   )
 }
+```
