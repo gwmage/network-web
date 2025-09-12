@@ -1,3 +1,11 @@
+```
 body {
   font-family: sans-serif;
+  margin: 0; /* Reset default margin to ensure content is visible */
 }
+
+main {
+  display: block; /* Ensure the main element is displayed as a block */
+}
+
+```

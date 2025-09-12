@@ -1,3 +1,4 @@
+```json
 {
   "version": 2,
   "builds": [
@@ -13,8 +14,8 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/$1" // This handles all other routes
+      "dest": "/$1"
     }
-
   ]
 }
+```
