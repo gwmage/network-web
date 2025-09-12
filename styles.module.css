@@ -1,0 +1,55 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Ensure the main content takes up the full viewport height */
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 80%; /* Make the form responsive by setting width as a percentage */
+  max-width: 400px; /* Set a maximum width for larger screens */
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+}
+
+
+.form label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form input {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+
+.form button {
+  padding: 10px;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+}
+
+.form button:hover {
+  background-color: #0056b3;
+}
+
+
+.error {
+  color: red;
+  margin-top: 5px;
+  font-size: small;
+}

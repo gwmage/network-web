@@ -1,0 +1,57 @@
+```
+### /api/register
+
+Registers a new user.
+
+**Method:** POST
+
+**Request Body:**
+
+- `email` (string, required): User's email address. Must be a valid email format.
+- `password` (string, required): User's password.
+- `name` (string, required): User's full name.
+- `phone` (string, required): User's phone number.
+
+
+**Validation Rules:**
+
+- All fields are required.
+- Email must be a valid format.
+- Email must be unique.
+
+**Response Codes:**
+
+- 201 Created: User registered successfully. Returns the new user's ID.
+- 400 Bad Request: Validation error. Returns a JSON object with a `message` field indicating the error.
+- 405 Method Not Allowed: Request method is not POST.
+- 409 Conflict: Email already exists.
+- 500 Internal Server Error: An unexpected error occurred.
+
+**Example Usage:**
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{
+  "email": "user@example.com",
+  "password": "password123",
+  "name": "John Doe",
+  "phone": "123-456-7890"
+}' http://localhost:3000/api/register
+```
+
+**Example Response (Success):**
+
+```json
+{
+  "message": "User registered successfully",
+  "userId": "some_user_id" 
+}
+```
+
+**Example Response (Error):**
+
+```json
+{
+  "message": "Invalid email format"
+}
+```
+```
