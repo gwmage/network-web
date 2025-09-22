@@ -1,57 +1,92 @@
 ```
-### /api/register
+## Network API - Community Board Endpoints
 
-Registers a new user.
+This document describes the API endpoints for the community board feature.
 
-**Method:** POST
+**Posts Endpoints:**
 
-**Request Body:**
+* **POST /api/posts:** Creates a new post.
+    * **Request Body:**
+        * `title` (string, required): The title of the post.
+        * `content` (string, required): The content of the post.
+        * `category` (string, required): The category of the post.
+        * `tags` (array of strings, required): Tags associated with the post.
+        * `author` (string, required): The ID of the author. (Authentication required)
+    * **Response:**
+        * 201 Created: `{ message: 'Post created', postId: <new_post_id> }`
+        * 400 Bad Request: `{ message: 'Missing required fields' }`
+        * 500 Internal Server Error: `{ message: 'Internal server error' }`
 
-- `email` (string, required): User's email address. Must be a valid email format.
-- `password` (string, required): User's password.
-- `name` (string, required): User's full name.
-- `phone` (string, required): User's phone number.
+* **GET /api/posts/[id]:** Retrieves a specific post by ID.
+    * **Path Parameters:**
+        * `id` (string, required): The ID of the post.
+    * **Response:**
+        * 200 OK: `{ <post_data> }`
+        * 400 Bad Request: `{ message: 'Invalid post ID' }`
+        * 404 Not Found: `{ message: 'Post not found' }`
+        * 500 Internal Server Error: `{ message: 'Internal server error' }`
+
+* **PUT /api/posts/[id]:** Updates a specific post by ID. (Authentication required)
+    * **Path Parameters:**
+        * `id` (string, required): The ID of the post.
+    * **Request Body:** (Same as POST /api/posts, but fields are optional for partial updates)
+    * **Response:**
+        * 200 OK: `{ message: 'Post updated', post: <updated_post_data> }`
+        * 400 Bad Request: `{ message: 'Invalid post ID' }`
+        * 404 Not Found: `{ message: 'Post not found' }`
+        * 500 Internal Server Error: `{ message: 'Internal server error' }`
+
+* **DELETE /api/posts/[id]:** Deletes a specific post by ID. (Authentication required)
+    * **Path Parameters:**
+        * `id` (string, required): The ID of the post.
+    * **Response:**
+        * 200 OK: `{ message: 'Post deleted' }`
+        * 400 Bad Request: `{ message: 'Invalid post ID' }`
+        * 404 Not Found: `{ message: 'Post not found' }`
+        * 500 Internal Server Error: `{ message: 'Internal server error' }`
+
+* **GET /api/posts/list:** Retrieves a paginated list of posts.
+    * **Query Parameters:**
+        * `page` (integer, optional): Page number (default: 1).
+        * `limit` (integer, optional): Number of posts per page (default: 10).
+        * `category` (string, optional): Filter posts by category.
+        * `tags` (comma-separated string, optional): Filter posts by tags.
+    * **Response:**
+        * 200 OK: `{ posts: [<post_data>], currentPage: <current_page>, totalPages: <total_pages>, totalPosts: <total_posts_count> }`
+        * 500 Internal Server Error: `{ message: 'Internal server error' }`
+
+**Comments Endpoints:**
+
+* **POST /api/posts/comments:** Creates a new comment. (Authentication required)
+    * **Request Body:**
+        * `content` (string, required): The content of the comment.
+        * `postId` (string, required): The ID of the post to which the comment belongs.
+        * `author` (string, required): The ID of the author.
+    * **Response:**
+        * 201 Created: `{ message: 'Comment created successfully', commentId: <new_comment_id> }`
+        * 400 Bad Request: `{ message: 'All fields are required' or 'Invalid post ID' }`
+        * 500 Internal Server Error: `{ message: 'Internal server error' }`
+
+* **PUT /api/posts/comments/[id]:** Updates a specific comment by ID. (Authentication required)
+    * **Path Parameters:**
+        * `id` (string, required): The ID of the comment.
+    * **Request Body:**
+        * `content` (string, optional): The updated content of the comment.
+
+    * **Response:**
+        * 200 OK: `{ message: 'Comment updated', comment: <updated_comment_data> }`
+        * 400 Bad Request: `{ message: 'Invalid comment ID' }`
+        * 404 Not Found: `{ message: 'Comment not found' }`
+        * 500 Internal Server Error: `{ message: 'Internal server error' }`
 
 
-**Validation Rules:**
+* **DELETE /api/posts/comments/[id]:** Deletes a specific comment by ID. (Authentication required)
+    * **Path Parameters:**
+        * `id` (string, required): The ID of the comment.
+    * **Response:**
+        * 200 OK: `{ message: 'Comment deleted' }`
+        * 400 Bad Request: `{ message: 'Invalid comment ID' }`
+        * 404 Not Found: `{ message: 'Comment not found' }`
+        * 500 Internal Server Error: `{ message: 'Internal server error' }`
 
-- All fields are required.
-- Email must be a valid format.
-- Email must be unique.
-
-**Response Codes:**
-
-- 201 Created: User registered successfully. Returns the new user's ID.
-- 400 Bad Request: Validation error. Returns a JSON object with a `message` field indicating the error.
-- 405 Method Not Allowed: Request method is not POST.
-- 409 Conflict: Email already exists.
-- 500 Internal Server Error: An unexpected error occurred.
-
-**Example Usage:**
-
-```bash
-curl -X POST -H "Content-Type: application/json" -d '{
-  "email": "user@example.com",
-  "password": "password123",
-  "name": "John Doe",
-  "phone": "123-456-7890"
-}' http://localhost:3000/api/register
-```
-
-**Example Response (Success):**
-
-```json
-{
-  "message": "User registered successfully",
-  "userId": "some_user_id" 
-}
-```
-
-**Example Response (Error):**
-
-```json
-{
-  "message": "Invalid email format"
-}
-```
 ```
