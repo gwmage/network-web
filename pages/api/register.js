@@ -2,6 +2,10 @@ import bcrypt from 'bcrypt';
 import { connectToDatabase } from '../../utils/db';
 
 export default async function handler(req, res) {
+  console.log('Register request:', req.method, req.url);
+  console.log('Request headers:', req.headers);
+  console.log('Request body:', req.body);
+
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
@@ -35,6 +39,8 @@ export default async function handler(req, res) {
       name,
       phone,
     });
+
+    console.log('User registered:', result);
 
     res.status(201).json({ message: 'User registered successfully', userId: result.insertedId });
   } catch (error) {
