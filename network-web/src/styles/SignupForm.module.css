@@ -1,0 +1,127 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+    padding: 1rem;
+}
+
+.form {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.form h1 {
+    margin: 0 0 1.5rem;
+    font-size: 2rem;
+    color: #333;
+    text-align: center;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.input {
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #0070f3;
+    box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+}
+
+.inputError {
+    border-color: #d32f2f;
+}
+
+.errorMessage {
+    color: #d32f2f;
+    font-size: 0.875rem;
+    margin-top: 0.3rem;
+    min-height: 1.2em; /* Prevents layout shifts */
+}
+
+.submitButton {
+    padding: 0.9rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #0070f3;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 1rem;
+}
+
+.submitButton:hover {
+    background-color: #005bb5;
+}
+
+.submitButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.socialButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+    border-top: 1px solid #eee;
+    padding-top: 1.5rem;
+}
+
+.socialButton {
+    padding: 0.9rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+}
+
+.googleButton {
+    background-color: #4285F4;
+    color: white;
+    border: 1px solid #4285F4;
+}
+
+.kakaoButton {
+    background-color: #FEE500;
+    color: #3C1E1E;
+    border: 1px solid #FEE500;
+}
+
+@media (max-width: 480px) {
+    .form {
+        padding: 1.5rem;
+    }
+
+    .form h1 {
+        font-size: 1.8rem;
+    }
+}
