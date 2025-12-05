@@ -11,6 +11,14 @@
   "dependencies": {
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "bcryptjs": "^2.4.3",
+    "validator": "^13.11.0",
+    "nodemailer": "^6.9.7",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-kakao": "^1.0.1",
+    "next-connect": "^1.0.0",
+    "mongodb": "^5.7.0"
   }
 }
